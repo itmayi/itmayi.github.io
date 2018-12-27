@@ -263,6 +263,494 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/dex2oat源码分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/26/dex2oat源码分析/" itemprop="url">dex2oat源码分析</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T17:52:49+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/26/dex2oat源码分析/" class="leancloud_visitors" data-flag-title="dex2oat源码分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>dex2oat是将dex文件编译成Oat文件的工具。<br>源码位置：/art/dex2oat/dex2oat.cc</p>
+<p>dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下。同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：  </p>
+<ul>
+<li>/data/dalvik-cache/arm/  </li>
+<li>/data/dalvik-cache/arm64/</li>
+</ul>
+<h1 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h1><p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --zip-fd=6 --zip-location=/system/app/</span><br><span class="line">Email.apk --oat-fd=7 --oat-location=/data/dalvik-cache/</span><br><span class="line">system@app@Email.apk@classes.dex --profile-file=/data/</span><br><span class="line">dalvik-cache/profiles/com.android.email</span><br></pre></td></tr></table></figure></p>
+<p>参数说明：<br>–zip-fd=\<file-descriptor>:包含classes.dex文件的zip文件描述符。<br>–oat-fd=\<number>:通过此文件描述符指定输出的oat文件的路径。<br>–oat-location=\<oat-name>:指定一个与–oat-fd指定的文件描述符相对应的象征性名字。<br>–profile-file：引导dex2oat编译优化的配置文件。文件位置：/data/dalvik-cache/profiles/应用包名</oat-name></number></file-descriptor></p>
+<p>其他重要参数说明(参考android7.0.0源码)：<br>-j\<number>:指定进行编译优化时要用到的线程总数。默认根据硬件适配，例如：-j12<br>–dex-file=\<dex-file>:指定要编译的文件，后缀可以是.dex、.jar、.apk，例如：–dex-file=/system/framework/core.jar<br>–dex-location=\<dex-location>:dex文件路径,与–dex-file相对应，例如：–dex-file=/home/build//out/system/framework/core.jar;–dex-location=/system/framework/core.jar。<br>–zip-location=\<zip-location>:zip文件路径。例如：–zip-location=/system/app/Calculator.apk<br>–oat-file=\&lt;file.oat&gt;:输出的oat文件名。例如：–oat-file=/system/framework/boot.oat。<br>–oat-symbols=\&lt;file.oat&gt;:指定输出完整符号的oat路径。例如：–oat-symbols=/symbols/system/framework/boo.art。<br>–instruction-set=(arm|arm64|mips|mips64|x86|x86_64):指定指令集架构类型，默认为arm。<br>–compile-backend=(Quick|Optimizing):指定编译器后端。默认为Optimizing。<br>–compiler-filter=(verify-none|verify-at-runtime|verify-profile|interpret-only|time|space-profile|space|balanced|speed-profile|speed|everything-profile|everything):指定编译器过滤模式，默认为speed。</zip-location></dex-location></dex-file></number></p>
+<h1 id="dex2oat："><a href="#dex2oat：" class="headerlink" title="dex2oat："></a>dex2oat：</h1><ul>
+<li>Retrieve classes.dex from APK (从apk中检索classes.dex)</li>
+<li>verify each class（验证每个类）</li>
+<li>verify each method（验证每个方法）</li>
+<li>verify each dalvik instruction（验证每条dalvik指令）</li>
+<li>compile bytecode in all methods in each class into native code (except class initializers \<cinit>) （编译除了类初始化方法外的所有方法字节码为机器码）</cinit></li>
+</ul>
+<h1 id="boot-oat"><a href="#boot-oat" class="headerlink" title="boot.oat"></a>boot.oat</h1><ul>
+<li>system@<a href="mailto:framework@boot.oat" target="_blank" rel="noopener">framework@boot.oat</a></li>
+<li>Contains libs and    frameworks in boot    class    path<br>–    To    be    pre-loaded    in    all    apps（系统启动路径下的的需要预加载库和框架）    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --image=/data/dalvik-cache/system@framework@boot.art --runtime-arg</span><br><span class="line">-Xms64m --runtime-arg -Xmx64m --dex-file=/system/framework/core-libart.jar --dex-file=/</span><br><span class="line">system/framework/conscrypt.jar --dex-file=/system/framework/okhttp.jar --dex-file=/</span><br><span class="line">system/framework/core-junit.jar --dex-file=/system/framework/bouncycastle.jar --dexfile=/system/framework/ext.jar --dex-file=/system/framework/framework.jar --dex-file=/</span><br><span class="line">system/framework/framework2.jar --dex-file=/system/framework/telephony-common.jar --</span><br><span class="line">dex-file=/system/framework/voip-common.jar --dex-file=/system/framework/mms-common.jar</span><br><span class="line">--dex-file=/system/framework/android.policy.jar --dex-file=/system/framework/</span><br><span class="line">services.jar --dex-file=/system/framework/apache-xml.jar --dex-file=/system/framework/</span><br><span class="line">webviewchromium.jar --oat-file=/data/dalvik-cache/system@framework@boot.oat --runtimearg -implicit-checks:none --instruction-set=arm --instruction-set-features=default --</span><br><span class="line">base=0x70000000 --image-classes-zip=/system/framework/framework.jar</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>编译进boot.oat中的jar:<br>§ /system/framework/core-libart.jar<br>§ /system/framework/conscrypt.jar<br>§ /system/framework/okhQp.jar<br>§ /system/framework/core-junit.jar<br>§ /system/framework/bouncycastle.jar<br>§ /system/framework/ext.jar<br>§ /system/framework/framework.jar<br>§ /system/framework/framework2.jar<br>§ /system/framework/telephony-common.jar<br>§ /system/framework/voip-common.jar<br>§ /system/framework/mms-common.jar<br>§ /system/framework/android.policy.jar<br>§ /system/framework/services.jar<br>§ /system/framework/apache-xml.jar<br>§ /system/framework/webviewchromium.jar</p>
+<h1 id="boot-art-boot-image"><a href="#boot-art-boot-image" class="headerlink" title="boot.art(boot image)"></a>boot.art(boot image)</h1><ul>
+<li>system@<a href="mailto:framework@boot.art" target="_blank" rel="noopener">framework@boot.art</a></li>
+<li>contains absolute pointers for methods in boot.oat(以绝对地址指向boot.oat中的方法)</li>
+<li>boot.oat contain absolute pointers to methods in the boot image</li>
+<li>loaded by zygote along with boot.oat(zygote进程启动时加载boot.art到固定地址,且boot.oat紧跟着boot.art)</li>
+<li>boot.art和boot.oat的加载地址都是32位，在64位的系统上，高32位都是0</li>
+<li>boot.oat中如果要使用某个类、field、method,只要其在boot.art中有定义，就可以使用绝对地址直接访问。</li>
+</ul>
+<h1 id="compiler-backend"><a href="#compiler-backend" class="headerlink" title="compiler-backend"></a>compiler-backend</h1><ul>
+<li>Portable</li>
+<li>Quick</li>
+<li>Optimizing</li>
+</ul>
+<h2 id="Quick-Backend"><a href="#Quick-Backend" class="headerlink" title="Quick Backend"></a>Quick Backend</h2><blockquote>
+<p>MIR -&gt; LIR -&gt; Native Code</p>
+</blockquote>
+<ul>
+<li>Medium level IR(DEX ByteCode)</li>
+<li>Low level IR</li>
+<li>Native Code</li>
+<li>some optimizations at each stage</li>
+</ul>
+<h2 id="Optimizing-Backend"><a href="#Optimizing-Backend" class="headerlink" title="Optimizing Backend"></a>Optimizing Backend</h2><ul>
+<li>Basically Quick with additional optimizations</li>
+</ul>
+<h2 id="Portable-Backend"><a href="#Portable-Backend" class="headerlink" title="Portable Backend"></a>Portable Backend</h2><blockquote>
+<p>MIR -&gt; LLVM Bitcode -&gt; LLVM optimizer -&gt; LLVM Backend -&gt; native code</p>
+</blockquote>
+<ul>
+<li>Uses LLVM Bitcode as its LIR</li>
+<li>Optimizations using LLVM optimizer</li>
+<li>Code generation is done by LLVM backends</li>
+</ul>
+<h1 id="Profiling-引导dex2oat编译优化"><a href="#Profiling-引导dex2oat编译优化" class="headerlink" title="Profiling(引导dex2oat编译优化)"></a>Profiling(引导dex2oat编译优化)</h1><ul>
+<li>By default,ART compiles methods regardless of impact on performance(ART编译方法时，不会考虑对性能的影响)</li>
+<li>Profiling feature allows ART to be more selective on which methods to compile(profile能够控制dex2oat具体要对哪些方法进行编译优化)</li>
+<li>Profiling配置默认可能是关闭的。可以通过setprop手动打开<blockquote>
+<p>setprop dalvik.vm.profiler 1</p>
+</blockquote>
+</li>
+<li>No AOT compilation upon app install(在App安装时不会进行AOT优化，一方面时为了减少安装时间、另一方面时节省存储空间)</li>
+<li>Profiling data is collected while app is runing(在App运行期间，会收集profile数据)</li>
+<li>Profile files are placed in /data/dalvik-cache/profiles</li>
+<li>Profile file name is the package name</li>
+<li>Profile data is used to determine if AOT compilation will be done</li>
+</ul>
+<p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">42/2/352  </span><br><span class="line">android.database.Cursor com.android.email.provider.EmailProvider.uiAccounts(java.lang.String[])/1/128  </span><br><span class="line">void com.android.email.NotificationController.ensureHandlerExists()/1/37</span><br><span class="line">int com.android.email.provider.EmailProvider.getFolderTypeFromMailboxType(int)/2/56</span><br><span class="line">boolean com.android.mail.browse.ConversationCursor$ConversationProvider.onCreate()/1/49</span><br><span class="line">com.google.common.collect.ImmutableList com.google.common.collect.ImmutableList.of()/1/3</span><br><span class="line">&lt;snip&gt;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>First line is the summary inforamtion<br>-Samples count/Null methods count/Boot path methods count </li>
+<li>Subsequent lines are the profile data<br>-Methods name/Count/Size</li>
+</ul>
+<h2 id="编译优化条件和对象（没太搞明白的地方）"><a href="#编译优化条件和对象（没太搞明白的地方）" class="headerlink" title="编译优化条件和对象（没太搞明白的地方）"></a>编译优化条件和对象（没太搞明白的地方）</h2><h4 id="什么情况下App需要使用dex2oat进行编译优化"><a href="#什么情况下App需要使用dex2oat进行编译优化" class="headerlink" title="什么情况下App需要使用dex2oat进行编译优化?"></a>什么情况下App需要使用dex2oat进行编译优化?</h4><ul>
+<li>Number of methods comprising 90% of called methods has changed by &gt; 10%.(被调用方法的比例若大于10%，则会触发dex2oat编译优化)<h4 id="若要使用dex2oat-哪些方法会被dex2oat考虑进去？"><a href="#若要使用dex2oat-哪些方法会被dex2oat考虑进去？" class="headerlink" title="若要使用dex2oat,哪些方法会被dex2oat考虑进去？"></a>若要使用dex2oat,哪些方法会被dex2oat考虑进去？</h4></li>
+<li>Methods comprising 90% of called methods.()</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Android-部分系统版本变更行为/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/26/Android-部分系统版本变更行为/" itemprop="url">Android 部分系统版本变更行为</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T17:34:14+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/26/Android-部分系统版本变更行为/" class="leancloud_visitors" data-flag-title="Android 部分系统版本变更行为">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>主要关注安全方面</strong></p>
+<h1 id="Android-6-0部分变更行为："><a href="#Android-6-0部分变更行为：" class="headerlink" title="Android 6.0部分变更行为："></a>Android 6.0部分变更行为：</h1><ul>
+<li>Boring SSL<br>Android 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让自己暴露在安全漏洞的风险之下。请改为修改原生代码，以通过 JNI 调用 Java 加密 API，或静态链接到您选择的加密库。</li>
+<li>运行时<br>ART 运行时环境现在可正确实现 newInstance() 方法的访问规则。此变更修正了之前版本中 Dalvik 无法正确检查访问规则的问题。如果您的应用使用 newInstance() 方法，并且您想重写访问检查，请调用 setAccessible() 方法（将输入参数设置为 true）。如果您的应用使用 v7 appcompat 库或 v7 recyclerview 库，则您必须更新应用以使用这些库的最新版本。否则，请务必更新从 XML 引用的任何自定义类，以便能够访问它们的类构造函数。</li>
+</ul>
+<p>此版本更新了动态链接程序的行为。动态链接程序现在可以识别库的 soname 与其路径之间的差异（公开错误 6670），并且现在已实现了按 soname 搜索。之前包含错误的 DT_NEEDED 条目（通常是开发计算机文件系统上的绝对路径）却仍工作正常的应用，如今可能会出现加载失败。</p>
+<p>现已正确实现 dlopen(3) RTLD_LOCAL 标记。请注意，RTLD_LOCAL 是默认值，因此不显式使用 RTLD_LOCAL 的 dlopen(3) 调用将受到影响（除非您的应用显式使用 RTLD_GLOBAL）。使用 RTLD_LOCAL 时，在随后通过调用 dlopen(3) 加载的库中并不能使用这些符号（这与由 DT_NEEDED 条目引用的情况截然不同）。</p>
+<p>在之前版本的 Android 上，如果您的应用请求系统加载包含文本重定位信息的共享库，系统会显示警告，但仍允许加载共享库。从此版本开始，如果您的应用的目标 SDK 版本为 23 或更高，则系统会拒绝加载该库。为帮助您检测库是否加载失败，您的应用应该记录 dlopen(3) 失败日志，并在日志中加入 dlerror(3) 调用返回的问题描述文本。要详细了解如何处理文本重定位，请参阅此指南。</p>
+<ul>
+<li>APK验证<br>该平台现在执行的 APK 验证更为严格。如果在清单中声明的文件在 APK 中并不存在，该 APK 将被视为已损坏。移除任何内容后必须重新签署 APK。</li>
+</ul>
+<h1 id="Android-7-0部分变更行为："><a href="#Android-7-0部分变更行为：" class="headerlink" title="Android 7.0部分变更行为："></a>Android 7.0部分变更行为：</h1><ul>
+<li>配置文件指导的 JIT/AOT 编译<br>在 Android 7.0 中，我们添加了即时 (JIT) 编译器，对 ART 进行代码分析，让它可以在应用运行时持续提升 Android 应用的性能。JIT 编译器对 Android 运行组件当前的 Ahead of Time (AOT) 编译器进行了补充，有助于提升运行时性能，节省存储空间，加快应用更新和系统更新速度。</li>
+</ul>
+<p>配置文件指导的编译让 Android 运行组件能够根据应用的实际使用以及设备上的情况管理每个应用的 AOT/JIT 编译。例如，Android 运行组件维护每个应用热方法的配置文件，并且可以预编译和缓存这些方法以实现最佳性能。对于应用的其他部分，在实际使用之前不会进行编译。</p>
+<p>除提升应用的关键部分的性能外，配置文件指导的编译还有助于减少整个 RAM 占用，包括关联的二进制文件。此功能对于低内存设备非常尤其重要。</p>
+<p>Android 运行组件在管理配置文件指导的编译时，可最大程度降低对设备电池的影响。仅当设备处于空闲状态和充电时才进行编译，从而可以通过提前执行该工作节约时间和省电。</p>
+<ul>
+<li>快速的应用安装路径<br>Android 运行组件的 JIT 编译器最实际的好处之一是应用安装和系统更新的速度。即使在 Android 6.0 中需要几分钟进行优化和安装的大型应用，现在只需几秒钟就可以完成安装。系统更新也变得更快，因为省去了优化步骤</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Android系统版本分布/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/26/Android系统版本分布/" itemprop="url">Android系统版本分布</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T15:56:56+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/26/Android系统版本分布/" class="leancloud_visitors" data-flag-title="Android系统版本分布">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Android 信息中心：<a href="https://developer.android.com/about/dashboards/?hl=zh-cn" target="_blank" rel="noopener">https://developer.android.com/about/dashboards/?hl=zh-cn</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Java-打印堆栈信息/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -493,6 +981,8 @@
         
           
             <p>.oatdata -&gt; .rodata(oatHeader、dex文件相关信息、dex原始文件、类中方法与翻译为native code的对应关系)<br>.oatexec -&gt; .text(native code)</p>
+<p>Oat文件结构概览：</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/WEBd91be5da5cc9c70b50ac5355d12d6e84?method=download&amp;shareKey=cfbfd9c6f94f41b648fc4d3b4ebacadb" alt="avatar"></p>
 <h1 id="elf文件结构-32位-："><a href="#elf文件结构-32位-：" class="headerlink" title="elf文件结构(32位)："></a>elf文件结构(32位)：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef uint16_t Elf32_Half; //2 bytes</span><br><span class="line">typedef uint32_t Elf32_Word; //4 bytes</span><br><span class="line">typedef uint32_t Elf32_Addr; //4 bytes</span><br><span class="line">typedef uint32_t Elf32_Off;  //4 bytes</span><br><span class="line">typedef int32_t  Elf32_Sword;//4 bytes</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Object file magic string.</span><br><span class="line">static const char ElfMagic[] = &#123; 0x7f, &apos;E&apos;, &apos;L&apos;, &apos;F&apos;, &apos;\0&apos; &#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// e_ident size and indices.</span><br><span class="line">enum &#123;</span><br><span class="line">  EI_MAG0       = 0,          // File identification index.</span><br><span class="line">  EI_MAG1       = 1,          // File identification index.</span><br><span class="line">  EI_MAG2       = 2,          // File identification index.</span><br><span class="line">  EI_MAG3       = 3,          // File identification index.</span><br><span class="line">  EI_CLASS      = 4          ,// File class.</span><br><span class="line">  EI_DATA       = 5,          // Data encoding.</span><br><span class="line">  EI_VERSION    = 6,          // File version.</span><br><span class="line">  EI_OSABI      = 7,          // OS/ABI identification.</span><br><span class="line">  EI_ABIVERSION = 8,          // ABI version.</span><br><span class="line">  EI_PAD        = 9,          // Start of padding bytes.</span><br><span class="line">  EI_NIDENT     = 16          // Number of bytes in e_ident.</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -624,6 +1114,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// art/runtime/oat.h</span><br><span class="line">class PACKED(4) OatMethodOffsets &#123;</span><br><span class="line"> public:</span><br><span class="line">  OatMethodOffsets();</span><br><span class="line"></span><br><span class="line">  OatMethodOffsets(uint32_t code_offset,</span><br><span class="line">                   uint32_t gc_map_offset);</span><br><span class="line"></span><br><span class="line">  ~OatMethodOffsets();</span><br><span class="line"></span><br><span class="line">  uint32_t code_offset_;//native code相对于oatdata段的偏移</span><br><span class="line">  uint32_t gc_map_offset_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>// OatMethodOffsets 计算方法<br>//函数参数method_idx是方法在dex表示的类中的偏移，比如类的第0个方法method_index为0，第一个方法为method_index为1，依次类推。<br>由于在OatClass中没有保存类中方法的数目，因而没有检查method_index的边界。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">const OatMethodOffsets* OatFile::OatClass::GetOatMethodOffsets(uint32_t method_index) const &#123;</span><br><span class="line">  // NOTE: We don&apos;t keep the number of methods and cannot do a bounds check for method_index.</span><br><span class="line">  if (methods_pointer_ == nullptr) &#123;//没有编译成native code</span><br><span class="line">    CHECK_EQ(kOatClassNoneCompiled, type_);</span><br><span class="line">    return nullptr;</span><br><span class="line">  &#125;</span><br><span class="line">  size_t methods_pointer_index;</span><br><span class="line">  if (bitmap_ == nullptr) &#123;//该类所有方法被编译成native code</span><br><span class="line">    CHECK_EQ(kOatClassAllCompiled, type_);</span><br><span class="line">    methods_pointer_index = method_index;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    CHECK_EQ(kOatClassSomeCompiled, type_);</span><br><span class="line">    if (!BitVector::IsBitSet(bitmap_, method_index)) &#123;//该方法没有对应的native code</span><br><span class="line">      return nullptr;</span><br><span class="line">    &#125;</span><br><span class="line">    size_t num_set_bits = BitVector::NumSetBits(bitmap_, method_index);//使用bitmap记录哪些方法被编译成了native code</span><br><span class="line">    methods_pointer_index = num_set_bits;//找到相应的索引</span><br><span class="line">  &#125;</span><br><span class="line">  const OatMethodOffsets&amp; oat_method_offsets = methods_pointer_[methods_pointer_index];</span><br><span class="line">  return &amp;oat_method_offsets;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//art/runtime/base/bit_vector.cc</span><br><span class="line">uint32_t BitVector::NumSetBits(const uint32_t* storage, uint32_t end) &#123;</span><br><span class="line">  uint32_t word_end = end &gt;&gt; 5; // end/32</span><br><span class="line">  uint32_t partial_word_bits = end &amp; 0x1f;// end%32</span><br><span class="line"></span><br><span class="line">  uint32_t count = 0u;// 为1的位的数目</span><br><span class="line">  for (uint32_t word = 0u; word &lt; word_end; word++) &#123;//先算前word_end个字中为1的位的数目，再算不满一个字的前partial_word_bits位中为1的位的数目</span><br><span class="line">    count += POPCOUNT(storage[word]);</span><br><span class="line">  &#125;</span><br><span class="line">  if (partial_word_bits != 0u) &#123;</span><br><span class="line">    count += POPCOUNT(storage[word_end] &amp; ~(0xffffffffu &lt;&lt; partial_word_bits));</span><br><span class="line">  &#125;</span><br><span class="line">  return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Bitmap的作用：</p>
+<ul>
+<li>Bitmaps are used to represent which methods are compiled.</li>
+<li>Each bit represents every method in the class ,starting with direct methods,then virtual methods.</li>
+<li>If bit it is set,the method is compiled.</li>
+</ul>
 <p>从OatClass中获取指定方法的native code时，返回的是OatMethod对象，源码如下：<br>/art/runtime/oat_file.cc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//method_index描述的是目标方法在类中的编号</span><br><span class="line">const OatFile::OatMethod OatFile::OatClass::GetOatMethod(uint32_t method_index) const &#123;</span><br><span class="line">  const OatMethodOffsets* oat_method_offsets = GetOatMethodOffsets(method_index);//获取方法偏移</span><br><span class="line">  if (oat_method_offsets == nullptr) &#123;</span><br><span class="line">    return OatMethod(nullptr, 0, 0);</span><br><span class="line">  &#125;</span><br><span class="line">  if (oat_file_-&gt;IsExecutable() ||</span><br><span class="line">      Runtime::Current() == nullptr ||        // This case applies for oatdump.</span><br><span class="line">      Runtime::Current()-&gt;IsCompiler()) &#123;</span><br><span class="line">    return OatMethod(</span><br><span class="line">        oat_file_-&gt;Begin(),</span><br><span class="line">        oat_method_offsets-&gt;code_offset_,</span><br><span class="line">        oat_method_offsets-&gt;gc_map_offset_);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // We aren&apos;t allowed to use the compiled code. We just force it down the interpreted version.</span><br><span class="line">    return OatMethod(oat_file_-&gt;Begin(), 0, 0);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/art/runtime/oat_file.h</span><br><span class="line">class OatMethod&#123;</span><br><span class="line">    public:</span><br><span class="line">    ...</span><br><span class="line">    OatMethod(</span><br><span class="line">        const byte* base,</span><br><span class="line">        const uint32_t code_offset,</span><br><span class="line">        const uint32_t gc_map_offset</span><br><span class="line">    );</span><br><span class="line">    OatMethod()&#123;&#125;</span><br><span class="line">    private:</span><br><span class="line">    ...</span><br><span class="line">    const byte* begin_; //oatdata段开始位置</span><br><span class="line">    uint32_t code_offset_;  //OatMethodOffsets-&gt;code_offset_</span><br><span class="line">    uint32_t native_gc_map_offset_;</span><br><span class="line">    friend class OatClass;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>然后就可以通过OatMethod来定位到方法的native code了（begin_+code_offset_）。</p>
@@ -858,7 +1354,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -871,7 +1367,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
