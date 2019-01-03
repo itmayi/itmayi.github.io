@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Android,dex2oat,">
+  <meta name="keywords" content="Android、dex2oat,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="dex2oat是将dex文件编译成Oat文件的工具。源码位置：/art/dex2oat/dex2oat.cc dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下。同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：    /data/dalvik-cache/arm/   /data/da">
-<meta name="keywords" content="Android,dex2oat">
+<meta name="description" content="dex2oat是将dex文件编译成Oat文件的工具，位于/system/bin/dex2oat dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下,同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：    /data/dalvik-cache/arm/   /data/dalvik-ca">
+<meta name="keywords" content="Android、dex2oat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="dex2oat源码分析">
+<meta property="og:title" content="Android-逐步认识ART系列三">
 <meta property="og:url" content="http://yoursite.com/2018/12/26/dex2oat源码分析/index.html">
 <meta property="og:site_name" content="Heinz Blog">
-<meta property="og:description" content="dex2oat是将dex文件编译成Oat文件的工具。源码位置：/art/dex2oat/dex2oat.cc dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下。同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：    /data/dalvik-cache/arm/   /data/da">
+<meta property="og:description" content="dex2oat是将dex文件编译成Oat文件的工具，位于/system/bin/dex2oat dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下,同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：    /data/dalvik-cache/arm/   /data/dalvik-ca">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-27T14:20:53.577Z">
+<meta property="og:updated_time" content="2019-01-02T02:54:16.395Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="dex2oat源码分析">
-<meta name="twitter:description" content="dex2oat是将dex文件编译成Oat文件的工具。源码位置：/art/dex2oat/dex2oat.cc dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下。同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：    /data/dalvik-cache/arm/   /data/da">
+<meta name="twitter:title" content="Android-逐步认识ART系列三">
+<meta name="twitter:description" content="dex2oat是将dex文件编译成Oat文件的工具，位于/system/bin/dex2oat dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下,同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：    /data/dalvik-cache/arm/   /data/dalvik-ca">
 
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <title>dex2oat源码分析 | Heinz Blog</title>
+  <title>Android-逐步认识ART系列三 | Heinz Blog</title>
   
 
 
@@ -280,7 +280,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">dex2oat源码分析</h2>
+          <h2 class="post-title" itemprop="name headline">Android-逐步认识ART系列三</h2>
         
 
         <div class="post-meta">
@@ -310,7 +310,7 @@
 
           
           
-             <span id="/2018/12/26/dex2oat源码分析/" class="leancloud_visitors" data-flag-title="dex2oat源码分析">
+             <span id="/2018/12/26/dex2oat源码分析/" class="leancloud_visitors" data-flag-title="Android-逐步认识ART系列三">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -341,41 +341,37 @@
       
 
       
-        <p>dex2oat是将dex文件编译成Oat文件的工具。<br>源码位置：/art/dex2oat/dex2oat.cc</p>
-<p>dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下。同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：  </p>
+        <p>dex2oat是将dex文件编译成Oat文件的工具，位于/system/bin/dex2oat</p>
+<p>dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下,同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：  </p>
 <ul>
 <li>/data/dalvik-cache/arm/  </li>
 <li>/data/dalvik-cache/arm64/</li>
 </ul>
-<h1 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h1><p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --zip-fd=6 --zip-location=/system/app/</span><br><span class="line">Email.apk --oat-fd=7 --oat-location=/data/dalvik-cache/</span><br><span class="line">system@app@Email.apk@classes.dex --profile-file=/data/</span><br><span class="line">dalvik-cache/profiles/com.android.email</span><br></pre></td></tr></table></figure></p>
-<p>参数说明：<br>–zip-fd=\<file-descriptor>:包含classes.dex文件的zip文件描述符。<br>–oat-fd=\<number>:通过此文件描述符指定输出的oat文件的路径。<br>–oat-location=\<oat-name>:指定一个与–oat-fd指定的文件描述符相对应的象征性名字。<br>–profile-file：引导dex2oat编译优化的配置文件。文件位置：/data/dalvik-cache/profiles/应用包名</oat-name></number></file-descriptor></p>
-<p>其他重要参数说明(参考android7.0.0源码)：<br>-j\<number>:指定进行编译优化时要用到的线程总数。默认根据硬件适配，例如：-j12<br>–dex-file=\<dex-file>:指定要编译的文件，后缀可以是.dex、.jar、.apk，例如：–dex-file=/system/framework/core.jar<br>–dex-location=\<dex-location>:dex文件路径,与–dex-file相对应，例如：–dex-file=/home/build//out/system/framework/core.jar;–dex-location=/system/framework/core.jar。<br>–zip-location=\<zip-location>:zip文件路径。例如：–zip-location=/system/app/Calculator.apk<br>–oat-file=\&lt;file.oat&gt;:输出的oat文件名。例如：–oat-file=/system/framework/boot.oat。<br>–oat-symbols=\&lt;file.oat&gt;:指定输出完整符号的oat路径。例如：–oat-symbols=/symbols/system/framework/boo.art。<br>–instruction-set=(arm|arm64|mips|mips64|x86|x86_64):指定指令集架构类型，默认为arm。<br>–compile-backend=(Quick|Optimizing):指定编译器后端。默认为Optimizing。<br>–compiler-filter=(verify-none|verify-at-runtime|verify-profile|interpret-only|time|space-profile|space|balanced|speed-profile|speed|everything-profile|everything):指定编译器过滤模式，默认为speed。</zip-location></dex-location></dex-file></number></p>
 <h1 id="dex2oat："><a href="#dex2oat：" class="headerlink" title="dex2oat："></a>dex2oat：</h1><ul>
 <li>Retrieve classes.dex from APK (从apk中检索classes.dex)</li>
 <li>verify each class（验证每个类）</li>
 <li>verify each method（验证每个方法）</li>
 <li>verify each dalvik instruction（验证每条dalvik指令）</li>
-<li>compile bytecode in all methods in each class into native code (except class initializers \<cinit>) （编译除了类初始化方法外的所有方法字节码为机器码）</cinit></li>
 </ul>
-<h1 id="boot-oat"><a href="#boot-oat" class="headerlink" title="boot.oat"></a>boot.oat</h1><ul>
-<li>system@<a href="mailto:framework@boot.oat" target="_blank" rel="noopener">framework@boot.oat</a></li>
-<li>Contains libs and    frameworks in boot    class    path<br>–    To    be    pre-loaded    in    all    apps（系统启动路径下的的需要预加载库和框架）    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --image=/data/dalvik-cache/system@framework@boot.art --runtime-arg</span><br><span class="line">-Xms64m --runtime-arg -Xmx64m --dex-file=/system/framework/core-libart.jar --dex-file=/</span><br><span class="line">system/framework/conscrypt.jar --dex-file=/system/framework/okhttp.jar --dex-file=/</span><br><span class="line">system/framework/core-junit.jar --dex-file=/system/framework/bouncycastle.jar --dexfile=/system/framework/ext.jar --dex-file=/system/framework/framework.jar --dex-file=/</span><br><span class="line">system/framework/framework2.jar --dex-file=/system/framework/telephony-common.jar --</span><br><span class="line">dex-file=/system/framework/voip-common.jar --dex-file=/system/framework/mms-common.jar</span><br><span class="line">--dex-file=/system/framework/android.policy.jar --dex-file=/system/framework/</span><br><span class="line">services.jar --dex-file=/system/framework/apache-xml.jar --dex-file=/system/framework/</span><br><span class="line">webviewchromium.jar --oat-file=/data/dalvik-cache/system@framework@boot.oat --runtimearg -implicit-checks:none --instruction-set=arm --instruction-set-features=default --</span><br><span class="line">base=0x70000000 --image-classes-zip=/system/framework/framework.jar</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>编译进boot.oat中的jar:<br>§ /system/framework/core-libart.jar<br>§ /system/framework/conscrypt.jar<br>§ /system/framework/okhQp.jar<br>§ /system/framework/core-junit.jar<br>§ /system/framework/bouncycastle.jar<br>§ /system/framework/ext.jar<br>§ /system/framework/framework.jar<br>§ /system/framework/framework2.jar<br>§ /system/framework/telephony-common.jar<br>§ /system/framework/voip-common.jar<br>§ /system/framework/mms-common.jar<br>§ /system/framework/android.policy.jar<br>§ /system/framework/services.jar<br>§ /system/framework/apache-xml.jar<br>§ /system/framework/webviewchromium.jar</p>
-<h1 id="boot-art-boot-image"><a href="#boot-art-boot-image" class="headerlink" title="boot.art(boot image)"></a>boot.art(boot image)</h1><ul>
-<li>system@<a href="mailto:framework@boot.art" target="_blank" rel="noopener">framework@boot.art</a></li>
-<li>contains absolute pointers for methods in boot.oat(以绝对地址指向boot.oat中的方法)</li>
-<li>boot.oat contain absolute pointers to methods in the boot image</li>
-<li>loaded by zygote along with boot.oat(zygote进程启动时加载boot.art到固定地址,且boot.oat紧跟着boot.art)</li>
-<li>boot.art和boot.oat的加载地址都是32位，在64位的系统上，高32位都是0</li>
-<li>boot.oat中如果要使用某个类、field、method,只要其在boot.art中有定义，就可以使用绝对地址直接访问。</li>
-</ul>
-<h1 id="compiler-backend"><a href="#compiler-backend" class="headerlink" title="compiler-backend"></a>compiler-backend</h1><ul>
+<h1 id="dex2oat编译过程"><a href="#dex2oat编译过程" class="headerlink" title="dex2oat编译过程"></a>dex2oat编译过程</h1><p>依次编译输入参数中的所有dex文件;  每个dex文件又按照单个class进行编译; 对于每个class，依次编译其除abstract函数、\<cinit>之外的所有函数，包括 native（jni）/static/及一般函数，进行生成native code，并存放在compiler中。</cinit></p>
+<p>当编译完成后，会从compiler中把native code， dex文件，以及必要的组织信息，写入到OAT文件中；如果指定了生成app-image，还会再生成一份 app-image文件。</p>
+<h1 id="dex2oat的触发时机"><a href="#dex2oat的触发时机" class="headerlink" title="dex2oat的触发时机"></a>dex2oat的触发时机</h1><p>dex2oat进程的启动，可以分为两大类：一类是 installd进程触发的dex2oat；另一类是由 app中直接调用的dex2oat。</p>
+<h2 id="installd中触发dex2oat有以下几个场景："><a href="#installd中触发dex2oat有以下几个场景：" class="headerlink" title="installd中触发dex2oat有以下几个场景："></a>installd中触发dex2oat有以下几个场景：</h2><pre><code>1. 应用安装，包括普通安装和通过shellCmd安装），安装一个app时，安装过程中需要编译dex文件，会通知installd来触发一个dex2oat进程。
+2. 开机扫描，开机过程中，PMS扫描已安装app过程，判断需要优化时，则会对install发出通知。
+3. BackgroundDexOptService，（空闲时段或者开机之后触发的Backgroud的 Job），会通知installd进行dex2oat
+4. OTADexoptService，好象是OAT过程中的触发的，这个场景没有进行过实际的验证
+</code></pre><h2 id="app中调用dex2oat"><a href="#app中调用dex2oat" class="headerlink" title="app中调用dex2oat"></a>app中调用dex2oat</h2><p>一般是App的进程fork出一个子进程，子进程用来执行dex2oat，编译相关的dex，而父进程进行 waitpid 等待，等待完成后再运行其他逻辑。<br>例如：  </p>
+<ol>
+<li>微信安装后的首次启动，是有dex2oat的调用</li>
+<li>淘宝安装后的首次搜索，也有dex2oat的调用</li>
+</ol>
+<p>这个也是其首次启动或者搜索的一个耗时点。</p>
+<p> 由系统触发的dex2oat，都是通过通知installd来进行编译业务。</p>
+<p> 由应用触发的dex2oat，一般都是自行构建参数，直接调用dex2oat。</p>
+<h1 id="compiler-backend-类型"><a href="#compiler-backend-类型" class="headerlink" title="compiler-backend 类型"></a>compiler-backend 类型</h1><ul>
 <li>Portable</li>
 <li>Quick</li>
-<li>Optimizing</li>
-</ul>
+<li><p>Optimizing</p>
 <h2 id="Quick-Backend"><a href="#Quick-Backend" class="headerlink" title="Quick Backend"></a>Quick Backend</h2><blockquote>
 <p>MIR -&gt; LIR -&gt; Native Code</p>
 </blockquote>
@@ -396,29 +392,37 @@
 <li>Optimizations using LLVM optimizer</li>
 <li>Code generation is done by LLVM backends</li>
 </ul>
-<h1 id="Profiling-引导dex2oat编译优化"><a href="#Profiling-引导dex2oat编译优化" class="headerlink" title="Profiling(引导dex2oat编译优化)"></a>Profiling(引导dex2oat编译优化)</h1><ul>
-<li>By default,ART compiles methods regardless of impact on performance(ART编译方法时，不会考虑对性能的影响)</li>
-<li>Profiling feature allows ART to be more selective on which methods to compile(profile能够控制dex2oat具体要对哪些方法进行编译优化)</li>
-<li>Profiling配置默认可能是关闭的。可以通过setprop手动打开<blockquote>
-<p>setprop dalvik.vm.profiler 1</p>
-</blockquote>
 </li>
-<li>No AOT compilation upon app install(在App安装时不会进行AOT优化，一方面时为了减少安装时间、另一方面时节省存储空间)</li>
-<li>Profiling data is collected while app is runing(在App运行期间，会收集profile数据)</li>
-<li>Profile files are placed in /data/dalvik-cache/profiles</li>
-<li>Profile file name is the package name</li>
-<li>Profile data is used to determine if AOT compilation will be done</li>
 </ul>
-<p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">42/2/352  </span><br><span class="line">android.database.Cursor com.android.email.provider.EmailProvider.uiAccounts(java.lang.String[])/1/128  </span><br><span class="line">void com.android.email.NotificationController.ensureHandlerExists()/1/37</span><br><span class="line">int com.android.email.provider.EmailProvider.getFolderTypeFromMailboxType(int)/2/56</span><br><span class="line">boolean com.android.mail.browse.ConversationCursor$ConversationProvider.onCreate()/1/49</span><br><span class="line">com.google.common.collect.ImmutableList com.google.common.collect.ImmutableList.of()/1/3</span><br><span class="line">&lt;snip&gt;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>First line is the summary inforamtion<br>-Samples count/Null methods count/Boot path methods count </li>
-<li>Subsequent lines are the profile data<br>-Methods name/Count/Size</li>
-</ul>
-<h2 id="编译优化条件和对象（没太搞明白的地方）"><a href="#编译优化条件和对象（没太搞明白的地方）" class="headerlink" title="编译优化条件和对象（没太搞明白的地方）"></a>编译优化条件和对象（没太搞明白的地方）</h2><h4 id="什么情况下App需要使用dex2oat进行编译优化"><a href="#什么情况下App需要使用dex2oat进行编译优化" class="headerlink" title="什么情况下App需要使用dex2oat进行编译优化?"></a>什么情况下App需要使用dex2oat进行编译优化?</h4><ul>
-<li>Number of methods comprising 90% of called methods has changed by &gt; 10%.(被调用方法的比例若大于10%，则会触发dex2oat编译优化)<h4 id="若要使用dex2oat-哪些方法会被dex2oat考虑进去？"><a href="#若要使用dex2oat-哪些方法会被dex2oat考虑进去？" class="headerlink" title="若要使用dex2oat,哪些方法会被dex2oat考虑进去？"></a>若要使用dex2oat,哪些方法会被dex2oat考虑进去？</h4></li>
+<h1 id="编译优化条件和对象（没太搞明白的地方）"><a href="#编译优化条件和对象（没太搞明白的地方）" class="headerlink" title="编译优化条件和对象（没太搞明白的地方）"></a>编译优化条件和对象（没太搞明白的地方）</h1><h2 id="什么情况下App需要使用dex2oat进行编译优化"><a href="#什么情况下App需要使用dex2oat进行编译优化" class="headerlink" title="什么情况下App需要使用dex2oat进行编译优化?"></a>什么情况下App需要使用dex2oat进行编译优化?</h2><ul>
+<li><p>Number of methods comprising 90% of called methods has changed by &gt; 10%.(被调用方法的比例若大于10%，则会触发dex2oat编译优化)</p>
+<h2 id="若要使用dex2oat-哪些方法会被dex2oat考虑进去？"><a href="#若要使用dex2oat-哪些方法会被dex2oat考虑进去？" class="headerlink" title="若要使用dex2oat,哪些方法会被dex2oat考虑进去？"></a>若要使用dex2oat,哪些方法会被dex2oat考虑进去？</h2></li>
 <li>Methods comprising 90% of called methods.()</li>
 </ul>
-
+<h1 id="dex2oat命令行参数"><a href="#dex2oat命令行参数" class="headerlink" title="dex2oat命令行参数"></a>dex2oat命令行参数</h1><p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --zip-fd=6 --zip-location=/system/app/</span><br><span class="line">Email.apk --oat-fd=7 --oat-location=/data/dalvik-cache/</span><br><span class="line">system@app@Email.apk@classes.dex --profile-file=/data/</span><br><span class="line">dalvik-cache/profiles/com.android.email</span><br></pre></td></tr></table></figure></p>
+<p>参数说明：<br>–zip-fd=\<file-descriptor>:包含classes.dex文件的zip文件描述符。<br>–oat-fd=\<number>:通过此文件描述符指定输出的oat文件的路径。<br>–oat-location=\<oat-name>:指定一个与–oat-fd指定的文件描述符相对应的象征性名字。<br>–profile-file：引导dex2oat编译优化的配置文件。文件位置：/data/dalvik-cache/profiles/应用包名</oat-name></number></file-descriptor></p>
+<p>其他重要参数说明(参考android7.0.0源码)：<br>-j\<number>:指定进行编译优化时要用到的线程总数。默认根据硬件适配，例如：-j12<br>–dex-file=\<dex-file>:指定要编译的文件，后缀可以是.dex、.jar、.apk，例如：–dex-file=/system/framework/core.jar<br>–dex-location=\<dex-location>:dex文件路径,与–dex-file相对应，例如：–dex-file=/home/build//out/system/framework/core.jar;–dex-location=/system/framework/core.jar。<br>–zip-location=\<zip-location>:zip文件路径。例如：–zip-location=/system/app/Calculator.apk<br>–oat-file=\&lt;file.oat&gt;:输出的oat文件名。例如：–oat-file=/system/framework/boot.oat。<br>–oat-symbols=\&lt;file.oat&gt;:指定输出完整符号的oat路径。例如：–oat-symbols=/symbols/system/framework/boo.art。<br>–instruction-set=(arm|arm64|mips|mips64|x86|x86_64):指定指令集架构类型，默认为arm。<br>–compile-backend=(Quick|Optimizing):指定编译器后端。默认为Optimizing。<br>–compiler-filter=(verify-none|verify-at-runtime|verify-profile|interpret-only|time|space-profile|space|balanced|speed-profile|speed|everything-profile|everything):指定编译器过滤模式，默认为speed。</zip-location></dex-location></dex-file></number></p>
+<h1 id="dex2oat主要流程"><a href="#dex2oat主要流程" class="headerlink" title="dex2oat主要流程"></a>dex2oat主要流程</h1><p>main函数入口：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char** argv) &#123;</span><br><span class="line">  int result = art::dex2oat(argc, argv);</span><br><span class="line">  // Everything was done, do an explicit exit here to avoid running Runtime destructors that take</span><br><span class="line">  // time (bug 10645725) unless we&apos;re a debug build or running on valgrind. Note: The Dex2Oat class</span><br><span class="line">  // should not destruct the runtime in this case.</span><br><span class="line">  if (!art::kIsDebugBuild &amp;&amp; (RUNNING_ON_MEMORY_TOOL == 0)) &#123;</span><br><span class="line">    exit(result);</span><br><span class="line">  &#125;</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>dex2oat函数入口：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">static int dex2oat(int argc, char** argv) &#123;</span><br><span class="line">  b13564922();</span><br><span class="line">    </span><br><span class="line">  TimingLogger timings(&quot;compiler&quot;, false, false);</span><br><span class="line"></span><br><span class="line">  // Allocate `dex2oat` on the heap instead of on the stack, as Clang</span><br><span class="line">  // might produce a stack frame too large for this function or for</span><br><span class="line">  // functions inlining it (such as main), that would not fit the</span><br><span class="line">  // requirements of the `-Wframe-larger-than` option.</span><br><span class="line">  std::unique_ptr&lt;Dex2Oat&gt; dex2oat = MakeUnique&lt;Dex2Oat&gt;(&amp;timings);</span><br><span class="line"></span><br><span class="line">  // Parse arguments. Argument mistakes will lead to exit(EXIT_FAILURE) in UsageError.</span><br><span class="line">  dex2oat-&gt;ParseArgs(argc, argv);</span><br><span class="line"></span><br><span class="line">  // If needed, process profile information for profile guided compilation.</span><br><span class="line">  // This operation involves I/O.</span><br><span class="line">  if (dex2oat-&gt;UseProfileGuidedCompilation()) &#123;</span><br><span class="line">    if (!dex2oat-&gt;LoadProfile()) &#123;</span><br><span class="line">      LOG(ERROR) &lt;&lt; &quot;Failed to process profile file&quot;;</span><br><span class="line">      return EXIT_FAILURE;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Check early that the result of compilation can be written</span><br><span class="line">  if (!dex2oat-&gt;OpenFile()) &#123;</span><br><span class="line">    return EXIT_FAILURE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Print the complete line when any of the following is true:</span><br><span class="line">  //   1) Debug build</span><br><span class="line">  //   2) Compiling an image</span><br><span class="line">  //   3) Compiling with --host</span><br><span class="line">  //   4) Compiling on the host (not a target build)</span><br><span class="line">  // Otherwise, print a stripped command line.</span><br><span class="line">  if (kIsDebugBuild || dex2oat-&gt;IsBootImage() || dex2oat-&gt;IsHost() || !kIsTargetBuild) &#123;</span><br><span class="line">    LOG(INFO) &lt;&lt; CommandLine();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    LOG(INFO) &lt;&lt; StrippedCommandLine();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if (!dex2oat-&gt;Setup()) &#123;</span><br><span class="line">    dex2oat-&gt;EraseOatFiles();</span><br><span class="line">    return EXIT_FAILURE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  bool result;</span><br><span class="line">  if (dex2oat-&gt;IsImage()) &#123;//App Image 或者Boot Image</span><br><span class="line">    result = CompileImage(*dex2oat);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    result = CompileApp(*dex2oat);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  dex2oat-&gt;Shutdown();</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>当使用profile-guide 编译app时，会先 LoadProfile(),进行解析出 class index 和 method index，放到 ProfileCompilationinfo 中;<br>如果当前的编译要生成 image时，走CompileImage流程，否则走CompileApp流程;</p>
+</blockquote>
+<p>不论是编译image还是App都会包含以下一个工作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dex2oat.Compile();//核心</span><br><span class="line"></span><br><span class="line">dex2oat.WriteOatFiles();//嵌入ELF</span><br><span class="line"></span><br><span class="line">dex2oat.FlushCloseOatFiles();</span><br><span class="line"></span><br><span class="line"> dex2oat.DumpTiming()</span><br></pre></td></tr></table></figure></p>
+<p>CompileApp和CompileImage的区别是：</p>
+<ol>
+<li>编译image时需要 LoadClassProfileDescriptors() 产生 image_classes_ 集合，和生成 image（HandleImage()）;</li>
+<li>在生成的app image中将会包含 image_classes_ 集合中类的对象，不在 image_classes_集合中的app的类的对象，将不会被生成到 app-image中。</li>
+<li>LoadClassProfileDescriptors（）在从 profile信息中获取 image_classes_集合时，将会把 app dex 中的类以外的类，都过滤掉，比如 classpath dex 对应的类将不会生成到 app-image;</li>
+</ol>
+<p>dex2oat工作流程总结：</p>
+<ol>
+<li>根据dex2oat接收到的参数，组织编译参数</li>
+<li>如果是 profile-guide 编译，则先进行 load app对应的 profile</li>
+<li>收集参数中包含的所有dex file，启动 Compiler 编译这些dex file（classpath中对应的dex file，即uses-library 引用的jar文件，不会被编译），编译生成的数据放在compiler-driver中</li>
+<li>使用 compiler-driver 中的数据，依据 oat文件设计的格式，组织成oat文件，嵌入到 ELF文件中</li>
+<li>如果指定需要生成 app-image，则使用 HandleImage()， 生成app-image， 即 ***.art 文件</li>
+</ol>
+<h2 id="编译流程"><a href="#编译流程" class="headerlink" title="编译流程"></a>编译流程</h2>
       
     </div>
     
@@ -435,7 +439,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Android-dex2oat/" rel="tag"># Android,dex2oat</a>
+            <a href="/tags/Android、dex2oat/" rel="tag"># Android、dex2oat</a>
           
         </div>
       
@@ -457,6 +461,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/27/Android-逐步认识ART系列一/" rel="prev" title="Android 逐步认识ART系列一">
+                Android 逐步认识ART系列一 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -535,12 +543,21 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             
@@ -548,7 +565,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -597,7 +614,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#命令行参数"><span class="nav-number">1.</span> <span class="nav-text">命令行参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dex2oat："><span class="nav-number">2.</span> <span class="nav-text">dex2oat：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#boot-oat"><span class="nav-number">3.</span> <span class="nav-text">boot.oat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#boot-art-boot-image"><span class="nav-number">4.</span> <span class="nav-text">boot.art(boot image)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compiler-backend"><span class="nav-number">5.</span> <span class="nav-text">compiler-backend</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Backend"><span class="nav-number">5.1.</span> <span class="nav-text">Quick Backend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optimizing-Backend"><span class="nav-number">5.2.</span> <span class="nav-text">Optimizing Backend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Portable-Backend"><span class="nav-number">5.3.</span> <span class="nav-text">Portable Backend</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Profiling-引导dex2oat编译优化"><span class="nav-number">6.</span> <span class="nav-text">Profiling(引导dex2oat编译优化)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译优化条件和对象（没太搞明白的地方）"><span class="nav-number">6.1.</span> <span class="nav-text">编译优化条件和对象（没太搞明白的地方）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么情况下App需要使用dex2oat进行编译优化"><span class="nav-number">6.1.0.1.</span> <span class="nav-text">什么情况下App需要使用dex2oat进行编译优化?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#若要使用dex2oat-哪些方法会被dex2oat考虑进去？"><span class="nav-number">6.1.0.2.</span> <span class="nav-text">若要使用dex2oat,哪些方法会被dex2oat考虑进去？</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dex2oat："><span class="nav-number">1.</span> <span class="nav-text">dex2oat：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dex2oat编译过程"><span class="nav-number">2.</span> <span class="nav-text">dex2oat编译过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dex2oat的触发时机"><span class="nav-number">3.</span> <span class="nav-text">dex2oat的触发时机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#installd中触发dex2oat有以下几个场景："><span class="nav-number">3.1.</span> <span class="nav-text">installd中触发dex2oat有以下几个场景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#app中调用dex2oat"><span class="nav-number">3.2.</span> <span class="nav-text">app中调用dex2oat</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compiler-backend-类型"><span class="nav-number">4.</span> <span class="nav-text">compiler-backend 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Backend"><span class="nav-number">4.1.</span> <span class="nav-text">Quick Backend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optimizing-Backend"><span class="nav-number">4.2.</span> <span class="nav-text">Optimizing Backend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Portable-Backend"><span class="nav-number">4.3.</span> <span class="nav-text">Portable Backend</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译优化条件和对象（没太搞明白的地方）"><span class="nav-number">5.</span> <span class="nav-text">编译优化条件和对象（没太搞明白的地方）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么情况下App需要使用dex2oat进行编译优化"><span class="nav-number">5.1.</span> <span class="nav-text">什么情况下App需要使用dex2oat进行编译优化?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#若要使用dex2oat-哪些方法会被dex2oat考虑进去？"><span class="nav-number">5.2.</span> <span class="nav-text">若要使用dex2oat,哪些方法会被dex2oat考虑进去？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dex2oat命令行参数"><span class="nav-number">6.</span> <span class="nav-text">dex2oat命令行参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dex2oat主要流程"><span class="nav-number">7.</span> <span class="nav-text">dex2oat主要流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译流程"><span class="nav-number">7.1.</span> <span class="nav-text">编译流程</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -617,7 +634,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Android，版本变化,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="主要关注安全方面 Android 6.0部分变更行为： Boring SSLAndroid 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让">
-<meta name="keywords" content="随笔">
+<meta name="description" content="主要关注安全方面 Android 6.0部分变更行为： 运行时权限  此版本引入了一种新的权限模式，如今，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，同时为应用开发者精简了安装和自动更新过程。用户可为所安装的各个应用分别授予或撤销权限。  低电耗模式和应用待机模式  此版本引入了针对空闲设备和应用的最新节能优化技术。  低电耗模式：如果用户拔下设备的电源插头，并在屏幕关">
+<meta name="keywords" content="Android，版本变化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android 部分系统版本变更行为">
 <meta property="og:url" content="http://yoursite.com/2018/12/26/Android-部分系统版本变更行为/index.html">
 <meta property="og:site_name" content="Heinz Blog">
-<meta property="og:description" content="主要关注安全方面 Android 6.0部分变更行为： Boring SSLAndroid 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让">
+<meta property="og:description" content="主要关注安全方面 Android 6.0部分变更行为： 运行时权限  此版本引入了一种新的权限模式，如今，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，同时为应用开发者精简了安装和自动更新过程。用户可为所安装的各个应用分别授予或撤销权限。  低电耗模式和应用待机模式  此版本引入了针对空闲设备和应用的最新节能优化技术。  低电耗模式：如果用户拔下设备的电源插头，并在屏幕关">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-26T09:43:52.587Z">
+<meta property="og:updated_time" content="2019-01-02T03:18:10.807Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 部分系统版本变更行为">
-<meta name="twitter:description" content="主要关注安全方面 Android 6.0部分变更行为： Boring SSLAndroid 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让">
+<meta name="twitter:description" content="主要关注安全方面 Android 6.0部分变更行为： 运行时权限  此版本引入了一种新的权限模式，如今，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，同时为应用开发者精简了安装和自动更新过程。用户可为所安装的各个应用分别授予或撤销权限。  低电耗模式和应用待机模式  此版本引入了针对空闲设备和应用的最新节能优化技术。  低电耗模式：如果用户拔下设备的电源插头，并在屏幕关">
 
 
 
@@ -343,24 +343,59 @@
       
         <p><strong>主要关注安全方面</strong></p>
 <h1 id="Android-6-0部分变更行为："><a href="#Android-6-0部分变更行为：" class="headerlink" title="Android 6.0部分变更行为："></a>Android 6.0部分变更行为：</h1><ul>
-<li>Boring SSL<br>Android 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让自己暴露在安全漏洞的风险之下。请改为修改原生代码，以通过 JNI 调用 Java 加密 API，或静态链接到您选择的加密库。</li>
-<li>运行时<br>ART 运行时环境现在可正确实现 newInstance() 方法的访问规则。此变更修正了之前版本中 Dalvik 无法正确检查访问规则的问题。如果您的应用使用 newInstance() 方法，并且您想重写访问检查，请调用 setAccessible() 方法（将输入参数设置为 true）。如果您的应用使用 v7 appcompat 库或 v7 recyclerview 库，则您必须更新应用以使用这些库的最新版本。否则，请务必更新从 XML 引用的任何自定义类，以便能够访问它们的类构造函数。</li>
+<li>运行时权限</li>
 </ul>
+<p>此版本引入了一种新的权限模式，如今，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，同时为应用开发者精简了安装和自动更新过程。用户可为所安装的各个应用分别授予或撤销权限。</p>
+<ul>
+<li>低电耗模式和应用待机模式</li>
+</ul>
+<p>此版本引入了针对空闲设备和应用的最新节能优化技术。</p>
+<ul>
+<li>低电耗模式：如果用户拔下设备的电源插头，并在屏幕关闭后的一段时间内使其保持不活动状态，设备会进入低电耗模式，在该模式下设备会尝试让系统保持休眠状态。在该模式下，设备会定期短时间恢复正常工作，以便进行应用同步，还可让系统执行任何挂起的操作。</li>
+<li>应用待机模式：应用待机模式允许系统判定应用在用户未主动使用它时处于空闲状态。当用户有一段时间未触摸应用时，系统便会作出此判定。如果拔下了设备电源插头，系统会为其视为空闲的应用停用网络访问以及暂停同步和作业。</li>
+</ul>
+<ul>
+<li>取消支持 Apache HTTP 客户端</li>
+</ul>
+<p>Android 6.0 版移除了对 Apache HTTP 客户端的支持。如果您的应用使用该客户端，并以 Android 2.3（API 级别 9）或更高版本为目标平台，请改用 HttpURLConnection 类。此 API 效率更高，因为它可以通过透明压缩和响应缓存减少网络使用，并可最大限度降低耗电量。要继续使用 Apache HTTP API，您必须先在 build.gradle 文件中声明以下编译时依赖项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    useLibrary &apos;org.apache.http.legacy&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Boring SSL</li>
+</ul>
+<p>Android 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让自己暴露在安全漏洞的风险之下。请改为修改原生代码，以通过 JNI 调用 Java 加密 API，或静态链接到您选择的加密库。</p>
+<ul>
+<li>运行时</li>
+</ul>
+<p>ART 运行时环境现在可正确实现 newInstance() 方法的访问规则。此变更修正了之前版本中 Dalvik 无法正确检查访问规则的问题。如果您的应用使用 newInstance() 方法，并且您想重写访问检查，请调用 setAccessible() 方法（将输入参数设置为 true）。如果您的应用使用 v7 appcompat 库或 v7 recyclerview 库，则您必须更新应用以使用这些库的最新版本。否则，请务必更新从 XML 引用的任何自定义类，以便能够访问它们的类构造函数。</p>
 <p>此版本更新了动态链接程序的行为。动态链接程序现在可以识别库的 soname 与其路径之间的差异（公开错误 6670），并且现在已实现了按 soname 搜索。之前包含错误的 DT_NEEDED 条目（通常是开发计算机文件系统上的绝对路径）却仍工作正常的应用，如今可能会出现加载失败。</p>
 <p>现已正确实现 dlopen(3) RTLD_LOCAL 标记。请注意，RTLD_LOCAL 是默认值，因此不显式使用 RTLD_LOCAL 的 dlopen(3) 调用将受到影响（除非您的应用显式使用 RTLD_GLOBAL）。使用 RTLD_LOCAL 时，在随后通过调用 dlopen(3) 加载的库中并不能使用这些符号（这与由 DT_NEEDED 条目引用的情况截然不同）。</p>
 <p>在之前版本的 Android 上，如果您的应用请求系统加载包含文本重定位信息的共享库，系统会显示警告，但仍允许加载共享库。从此版本开始，如果您的应用的目标 SDK 版本为 23 或更高，则系统会拒绝加载该库。为帮助您检测库是否加载失败，您的应用应该记录 dlopen(3) 失败日志，并在日志中加入 dlerror(3) 调用返回的问题描述文本。要详细了解如何处理文本重定位，请参阅此指南。</p>
 <ul>
-<li>APK验证<br>该平台现在执行的 APK 验证更为严格。如果在清单中声明的文件在 APK 中并不存在，该 APK 将被视为已损坏。移除任何内容后必须重新签署 APK。</li>
+<li>APK验证</li>
 </ul>
+<p>该平台现在执行的 APK 验证更为严格。如果在清单中声明的文件在 APK 中并不存在，该 APK 将被视为已损坏。移除任何内容后必须重新签署 APK。</p>
 <h1 id="Android-7-0部分变更行为："><a href="#Android-7-0部分变更行为：" class="headerlink" title="Android 7.0部分变更行为："></a>Android 7.0部分变更行为：</h1><ul>
-<li>配置文件指导的 JIT/AOT 编译<br>在 Android 7.0 中，我们添加了即时 (JIT) 编译器，对 ART 进行代码分析，让它可以在应用运行时持续提升 Android 应用的性能。JIT 编译器对 Android 运行组件当前的 Ahead of Time (AOT) 编译器进行了补充，有助于提升运行时性能，节省存储空间，加快应用更新和系统更新速度。</li>
+<li>配置文件指导的 JIT/AOT 编译</li>
 </ul>
+<p>在 Android 7.0 中，我们添加了即时 (JIT) 编译器，对 ART 进行代码分析，让它可以在应用运行时持续提升 Android 应用的性能。JIT 编译器对 Android 运行组件当前的 Ahead of Time (AOT) 编译器进行了补充，有助于提升运行时性能，节省存储空间，加快应用更新和系统更新速度。</p>
 <p>配置文件指导的编译让 Android 运行组件能够根据应用的实际使用以及设备上的情况管理每个应用的 AOT/JIT 编译。例如，Android 运行组件维护每个应用热方法的配置文件，并且可以预编译和缓存这些方法以实现最佳性能。对于应用的其他部分，在实际使用之前不会进行编译。</p>
 <p>除提升应用的关键部分的性能外，配置文件指导的编译还有助于减少整个 RAM 占用，包括关联的二进制文件。此功能对于低内存设备非常尤其重要。</p>
 <p>Android 运行组件在管理配置文件指导的编译时，可最大程度降低对设备电池的影响。仅当设备处于空闲状态和充电时才进行编译，从而可以通过提前执行该工作节约时间和省电。</p>
 <ul>
-<li>快速的应用安装路径<br>Android 运行组件的 JIT 编译器最实际的好处之一是应用安装和系统更新的速度。即使在 Android 6.0 中需要几分钟进行优化和安装的大型应用，现在只需几秒钟就可以完成安装。系统更新也变得更快，因为省去了优化步骤</li>
+<li>快速的应用安装路径</li>
 </ul>
+<p>Android 运行组件的 JIT 编译器最实际的好处之一是应用安装和系统更新的速度。即使在 Android 6.0 中需要几分钟进行优化和安装的大型应用，现在只需几秒钟就可以完成安装。系统更新也变得更快，因为省去了优化步骤</p>
+<p><strong>关于JIT的回归</strong></p>
+<p>在Android 5.0上，系统在安装APK时会直接将dex文件中的代码编译成机器码。编译一个应用就已经很耗时，若编译所有应用，等待时间将会使人难以忍受。</p>
+<p>例如：<br>应用程序编译生成的OAT文件会引用Framework中的代码。一旦系统发生升级，Framework中的实现发生变化，就需要重新修正所有应用程序的OAT文件，使得它们的引用是正确的，这就需要重新编译所有的应用。</p>
+<p>由此可以看到单纯的AOT编译会存在以下问题：</p>
+<ul>
+<li>应用安装时间过长。</li>
+<li>系统每次更新都要重新编译所有应用。</li>
+<li>编译生成的Oat文件中，既包含了原先的Dex文件，又包含了编译后的机器代码。而实际上，对于用户来说，并非会用到应用程序中的所有功能，因此很多时候编译生成的机器码是一直用不到的。一份数据存在两份结果（尽管它们的格式是不一样的）显然是一种存储空间的浪费。</li>
+</ul>
+<p>因此，为了解决上述问题，Android 7.0(代号Nougat,简称N)中添加了JIT编译器和配置文件引导型编译。JIT和AOT的配合，是取两者之长，避两者之短：在APK安装时，并不是一次性将所有代码全部编译成机器码。而是在实际运行过程中，对代码进行分析，将热点代码编译成机器码，让它可以在应用运行时持续提升 Android 应用的性能。</p>
+<p>JIT编译器补充了ART当前的预先AOT编译器的功能，有助于提高运行时性能，节省存储空间，以及加快应用及系统更新速度。相较于 AOT编译器，JIT编译器的优势也更为明显，因为它不会在应用自动更新期间或重新编译应用（在无线下载 OTA 更新期间）时拖慢系统速度。</p>
+<p>尽管JIT和AOT使用相同的编译器，它们所进行的一系列优化也较为相似，但它们生成的代码可能会有所不同。JIT会利用运行时类型信息，可以更高效地进行内联，并可让堆栈替换 OnStackReplacement 编译成为可能，而这一切都会使其生成的代码略有不同。</p>
 
       
     </div>
@@ -375,6 +410,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android，版本变化/" rel="tag"># Android，版本变化</a>
+          
+        </div>
       
 
       
@@ -395,8 +436,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/26/dex2oat源码分析/" rel="prev" title="dex2oat源码分析">
-                dex2oat源码分析 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/26/dex2oat源码分析/" rel="prev" title="Android-逐步认识ART系列三">
+                Android-逐步认识ART系列三 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -476,12 +517,21 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             
@@ -489,7 +539,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -558,7 +608,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

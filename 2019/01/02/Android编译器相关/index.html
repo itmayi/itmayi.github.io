@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Android、compiler,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="榆木的博客">
-<meta name="keywords" content="随笔">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+<meta name="description" content="MIR -&amp;gt; LIR -&amp;gt; native code SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。 在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。 接着就调用cu.cg-&amp;gt;Materialize()用来产生最终代码">
+<meta name="keywords" content="Android、compiler">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android编译器相关">
+<meta property="og:url" content="http://yoursite.com/2019/01/02/Android编译器相关/index.html">
 <meta property="og:site_name" content="Heinz Blog">
-<meta property="og:description" content="榆木的博客">
+<meta property="og:description" content="MIR -&amp;gt; LIR -&amp;gt; native code SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。 在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。 接着就调用cu.cg-&amp;gt;Materialize()用来产生最终代码">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-23T07:59:10.756Z">
+<meta property="og:updated_time" content="2019-01-02T02:18:30.800Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="categories">
-<meta name="twitter:description" content="榆木的博客">
+<meta name="twitter:title" content="Android编译器相关">
+<meta name="twitter:description" content="MIR -&amp;gt; LIR -&amp;gt; native code SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。 在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。 接着就调用cu.cg-&amp;gt;Materialize()用来产生最终代码">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/02/Android编译器相关/">
 
 
 
 
 
-  <title>categories | Heinz Blog</title>
+  <title>Android编译器相关 | Heinz Blog</title>
   
 
 
@@ -251,40 +251,164 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/02/Android编译器相关/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h2 class="post-title" itemprop="name headline">categories</h2>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
-                目前共计 1 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/密码学/">密码学</a><span class="category-list-count">1</span></li></ul>
-            </div>
-          </div>
+          <h2 class="post-title" itemprop="name headline">Android编译器相关</h2>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-02T10:17:43+08:00">
+                2019-01-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/02/Android编译器相关/" class="leancloud_visitors" data-flag-title="Android编译器相关">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p>MIR -&gt; LIR -&gt; native code</p>
+<p>SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。<br>之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。</p>
+<p>在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。</p>
+<p>接着就调用cu.cg-&gt;Materialize()用来产生最终代码，其中重要的两个调用就是MethodMIR2LIR()和AssembleLIR()。<br>通MethodMIR2LIR()将MIR转化为LIR，遍历每个BasicBlock，对每个基本块执行MethodBlockCodeGen，<br>本质上最后是执行了CompileDalvikInstruction。CompileDalvikInstruction也就是通过解析指令，然后根据opcode进行分支判断，<br>调用最终不同的指令生成函数，最后LIR之间也形成一个双向链表。最终将MIR转换为LIR。</p>
+<p>AssembleLIR()最终调用的是AssembleInstructions函数。程序中维护了一个编码指令表MipsMir2Lir::EncodingMap，<br>AssembleInstructions即是通过查找这个表来进行翻译，将LIR转化为了MIPS指令，<br>并将所翻译的指令存储到CodeBufferMir2Lir::code_buffer_之中。<br>这样就完成了一次编译的完整流程。</p>
+<p>总结：<br>MIR为对dalvik指令进行SSA变换之后的指令形态。<br>LIR为对MIR形态的指令进行解析生成的另一种形态的指令。<br>native code为通过查找编码指令表将LIR形态的指令翻译为对应不同平台的汇编指令。</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android、compiler/" rel="tag"># Android、compiler</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/28/Android-逐步认识ART系列二/" rel="next" title="Android 逐步认识ART系列二">
+                <i class="fa fa-chevron-left"></i> Android 逐步认识ART系列二
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/03/古典密码学基础/" rel="prev" title="古典密码学基础">
+                古典密码学基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -293,6 +417,10 @@
 
 
           
+
+  
+
+
 
         </div>
         

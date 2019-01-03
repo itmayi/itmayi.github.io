@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Android,">
+  <meta name="keywords" content="ART，OAT，JIT,">
 
 
 
@@ -79,21 +79,18 @@
 
 
 
-<meta name="description" content="Android 信息中心：https://developer.android.com/about/dashboards/?hl=zh-cn Android各个系统版本市场占有率表：Android各个系统版本市场占有率图： 总结，由上表和上图可知：  Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。 单个系统版本市场占有率最高的为An">
-<meta name="keywords" content="Android">
+<meta name="description" content="参考资料：原文：https://blog.csdn.net/hl09083253cy/article/details/78418809原文：https://paul.pub/android-art-vm/#id-art-vs-dalvikAndroid Source：https://source.android.com.devices/tech/dalvik/configure   JIT我们知道">
+<meta name="keywords" content="ART，OAT，JIT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android系统版本分布">
-<meta property="og:url" content="http://yoursite.com/2018/12/26/Android系统版本分布/index.html">
+<meta property="og:title" content="Android 逐步认识ART系列一">
+<meta property="og:url" content="http://yoursite.com/2018/12/27/Android-逐步认识ART系列一/index.html">
 <meta property="og:site_name" content="Heinz Blog">
-<meta property="og:description" content="Android 信息中心：https://developer.android.com/about/dashboards/?hl=zh-cn Android各个系统版本市场占有率表：Android各个系统版本市场占有率图： 总结，由上表和上图可知：  Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。 单个系统版本市场占有率最高的为An">
+<meta property="og:description" content="参考资料：原文：https://blog.csdn.net/hl09083253cy/article/details/78418809原文：https://paul.pub/android-art-vm/#id-art-vs-dalvikAndroid Source：https://source.android.com.devices/tech/dalvik/configure   JIT我们知道">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&shareKey=288a168344f4c3da4e4930c699d19ee2">
-<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB75a72b0c1a2257ce5215bc18bb38a8d4?method=download&shareKey=cc627bcace397474e82ad2ad8355057c">
-<meta property="og:updated_time" content="2019-01-02T03:09:37.432Z">
+<meta property="og:updated_time" content="2018-12-28T08:14:12.761Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android系统版本分布">
-<meta name="twitter:description" content="Android 信息中心：https://developer.android.com/about/dashboards/?hl=zh-cn Android各个系统版本市场占有率表：Android各个系统版本市场占有率图： 总结，由上表和上图可知：  Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。 单个系统版本市场占有率最高的为An">
-<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&shareKey=288a168344f4c3da4e4930c699d19ee2">
+<meta name="twitter:title" content="Android 逐步认识ART系列一">
+<meta name="twitter:description" content="参考资料：原文：https://blog.csdn.net/hl09083253cy/article/details/78418809原文：https://paul.pub/android-art-vm/#id-art-vs-dalvikAndroid Source：https://source.android.com.devices/tech/dalvik/configure   JIT我们知道">
 
 
 
@@ -123,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/26/Android系统版本分布/">
+  <link rel="canonical" href="http://yoursite.com/2018/12/27/Android-逐步认识ART系列一/">
 
 
 
 
 
-  <title>Android系统版本分布 | Heinz Blog</title>
+  <title>Android 逐步认识ART系列一 | Heinz Blog</title>
   
 
 
@@ -266,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Android系统版本分布/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/27/Android-逐步认识ART系列一/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Heinz">
@@ -283,7 +280,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Android系统版本分布</h2>
+          <h2 class="post-title" itemprop="name headline">Android 逐步认识ART系列一</h2>
         
 
         <div class="post-meta">
@@ -295,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T15:56:56+08:00">
-                2018-12-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-27T22:52:11+08:00">
+                2018-12-27
               </time>
             
 
@@ -313,7 +310,7 @@
 
           
           
-             <span id="/2018/12/26/Android系统版本分布/" class="leancloud_visitors" data-flag-title="Android系统版本分布">
+             <span id="/2018/12/27/Android-逐步认识ART系列一/" class="leancloud_visitors" data-flag-title="Android 逐步认识ART系列一">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -344,15 +341,67 @@
       
 
       
-        <p>Android 信息中心：<a href="https://developer.android.com/about/dashboards/?hl=zh-cn" target="_blank" rel="noopener">https://developer.android.com/about/dashboards/?hl=zh-cn</a></p>
-<p>Android各个系统版本市场占有率表：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&amp;shareKey=288a168344f4c3da4e4930c699d19ee2" alt="image"><br>Android各个系统版本市场占有率图：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB75a72b0c1a2257ce5215bc18bb38a8d4?method=download&amp;shareKey=cc627bcace397474e82ad2ad8355057c" alt="image"></p>
-<p>总结，由上表和上图可知：</p>
+        <p>参考资料：<br>原文：<a href="https://blog.csdn.net/hl09083253cy/article/details/78418809" target="_blank" rel="noopener">https://blog.csdn.net/hl09083253cy/article/details/78418809</a><br>原文：<a href="https://paul.pub/android-art-vm/#id-art-vs-dalvik" target="_blank" rel="noopener">https://paul.pub/android-art-vm/#id-art-vs-dalvik</a><br>Android Source：<a href="https://source.android.com.devices/tech/dalvik/configure" target="_blank" rel="noopener">https://source.android.com.devices/tech/dalvik/configure</a>  </p>
+<h1 id="JIT"><a href="#JIT" class="headerlink" title="JIT"></a>JIT</h1><p>我们知道，C/C++的效率要比 Java好，因为C/C++会被直接编译成汇编指令，CPU可以直接读取运行；而Java却是需要虚拟机一步一步的解释每一条 java bytecode。</p>
+<p>而Dalvik 中使用了一个技术，叫做JIT，会在解释执行一个java方法或者一个java代码段时，进行trace，并在不断的执行过程中找到 hotspot，</p>
+<p>然后将相应的方法或者代码片段编译为对应的汇编指令，下次再执行到该方法时，会直接执行其对应的汇编指令，依次来提升部分效率。</p>
+<p>可以理解为：运行时追踪，并对hotspot进行编译生成高效的可执行指令。</p>
+<p>JIT的运行流程</p>
+<ol>
+<li>用户运行应用，而这随后就会触发 ART 加载 .dex 文件。<ol>
+<li>如果有 .oat 文件（即 .dex 文件的 AOT 二进制文件），则 ART 会直接使用该文件。虽然 .oat 文件会定期生成，但文件中不一定会包含经过编译的代码（即 AOT 二进制文件）。</li>
+<li>如果没有 .oat 文件，则 ART 会通过 JIT 或解释器执行 .dex 文件。如果有 .oat 文件，ART 将一律使用这类文件。否则，它将在内存中使用并解压 APK 文件，从而得到 .dex 文件，但是这会导致消耗大量内存（相当于 dex 文件的大小）。</li>
+</ol>
+</li>
+<li>针对任何未根据speed编译过滤器编译（见下文）的应用启用JIT（也就是说，要尽可能多地编译应用中的代码）。</li>
+<li>将 JIT 配置文件数据转存到只限应用访问的系统目录内的文件中。</li>
+<li>AOT 编译 dex2oat 守护进程通过解析该文件来推进其编译。</li>
+</ol>
+<p>要开启 JIT 日志记录，请运行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell setprop dalvik.vm.extra-opts -verbose:jit</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
+<p>要停用 JIT，请运行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell setprop dalvik.vm.usejit false</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
+<h1 id="AOT"><a href="#AOT" class="headerlink" title="AOT"></a>AOT</h1><p>Ahead-of-time（AOT）是相对于Just-in-time（JIT）而言的。JIT是在运行时进行字节码到本地机器码的编译，这也是为什么Java普遍被认为效率比C++差的原因。无论是解释器的解释还是运行过程中即时编译，都比C++编译出的本地机器码执行多了一个耗费时间的过程。而AOT就是向C++编译过程靠拢的一项技术：当APK在安装的时候，系统会通过一个名称为dex2oat的工具将APK中的dex文件编译成包含本地机器码的oat文件存放下来。这样做之后，在程序执行的时候，就可以直接使用已经编译好的机器码以加快效率。</p>
+<h1 id="单纯的JIT存在的问题"><a href="#单纯的JIT存在的问题" class="headerlink" title="单纯的JIT存在的问题"></a>单纯的JIT存在的问题</h1><ol>
+<li>执行效率差</li>
+</ol>
+<h1 id="单纯的AOT存在的问题"><a href="#单纯的AOT存在的问题" class="headerlink" title="单纯的AOT存在的问题"></a>单纯的AOT存在的问题</h1><ol>
+<li>应用安装时间长</li>
+<li>系统更新后，要重新编译所有应用</li>
+<li>浪费存储空间（为所有方法执行编译）</li>
+</ol>
+<h1 id="AOT-JIT"><a href="#AOT-JIT" class="headerlink" title="AOT+JIT"></a>AOT+JIT</h1><p>从Android 7.0（代号Nougat,简称N）开始，ART组合使用了AOT、JIT和配置文件引导型编译。所有这些编译模式的组合均可配置。例如，在Pixel设备上，相应的配置如下：</p>
+<ol>
+<li>最初在安装应用程序的时候不执行任何AOT编译。应用程序运行的前几次都将使用解释模式，<strong>并且经常执行的方法将被JIT编译</strong>。</li>
+<li><strong>当设备处于空闲状态并正在充电时</strong>，编译守护进程会根据第一次运行期间生成的Profile文件对<strong>常用代码</strong>运行AOT编译。</li>
+<li>应用程序的<strong>下一次重新启动将使用Profile文件引导的代码</strong>，并<strong>避免在运行时为已编译的方法进行JIT编译</strong>。在<strong>新运行期间得到JIT编译的方法将被添加到Profile文件中</strong>，然后被编译守护进程使用。</li>
+</ol>
+<p>ART包含一个编译器（dex2oat工具）和一个为启动zygote而加载的运行时（libart.so）。在应用程序安装时，APK文件会传递给dex2oat工具，该工具会为根据APK文件生成一个或多个编译产物，这些产物文件名和扩展名可能会在不同版本之间发生变化，但从Android 8.0版本开始，生成的文件是：</p>
 <ul>
-<li>Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。</li>
-<li>单个系统版本市场占有率最高的为Android 6.0，即API 23 </li>
-<li>复合系统版本市场占有率最高的为Android 7.0系列，其中7.0为18.1%，7.1为10.1%</li>
-<li></li>
+<li>.vdex：包含APK的未压缩Dex代码，以及一些额外的元数据用来加速验证。</li>
+<li>.odex：包含APK中方法的AOT编译代码。（注意，虽然Dalvik虚拟机时代也会生成odex文件，但和这里的odex文件仅仅是后缀一样，文件内容已经完全不同了）</li>
+<li>.art（可选）：包含APK中列出的一些字符串和类的ART内部表示，用于加速应用程序的启动    </li>
 </ul>
+<h1 id="编译选项"><a href="#编译选项" class="headerlink" title="编译选项"></a>编译选项</h1><p>ART的编译选项分为以下两个类别：</p>
+<ol>
+<li>系统ROM配置：编译系统映像时，会对哪些代码进行AOT编译。</li>
+<li>运行时配置：ART如何在设备上编译和运行应用。</li>
+</ol>
+<p>用于配置这两个类别的一个核心ART选项就是”编译过滤器“，编译过滤器可控制ART如何编译DEX代码，是一个传递给dex2oat工具的选项。从Android 8.0开始，有四个官方支持的过滤器：</p>
+<ol>
+<li>verify：只运行DEX代码验证</li>
+<li>quicken：运行DEX代码验证，并优化一些DEX指令，以获得更好的解释器性能。</li>
+<li>speed：运行DEX代码验证，并对所有方法进行AOT编译。</li>
+<li><p>speed-profile：运行DEX代码验证，并对配置文件中列出的方法进行AOT编译</p>
+<h2 id="系统ROM配置"><a href="#系统ROM配置" class="headerlink" title="系统ROM配置"></a>系统ROM配置</h2><p>有一些编译选项可用于配置系统ROM，如何配置这些选项取决于/system的可用存储空间以及预先安装的应用数量。编译到系统AROM中的JAR/APK可以分为以下四个类别：</p>
+<ol>
+<li>启动类路径代码：默认使用speed编译过滤器进行编译 </li>
+<li>系统服务代码：默认使用speed编译过滤器进行编译</li>
+<li>产品专属的核心应用：默认使用speed编译过滤器进行编译</li>
+<li>所有其他应用：默认使用quicken编译过滤器进行编译</li>
+</ol>
+</li>
+</ol>
 
       
     </div>
@@ -370,7 +419,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Android/" rel="tag"># Android</a>
+            <a href="/tags/ART，OAT，JIT/" rel="tag"># ART，OAT，JIT</a>
           
         </div>
       
@@ -383,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/26/Java-打印堆栈信息/" rel="next" title="Java 打印堆栈信息">
-                <i class="fa fa-chevron-left"></i> Java 打印堆栈信息
+              <a href="/2018/12/26/dex2oat源码分析/" rel="next" title="Android-逐步认识ART系列三">
+                <i class="fa fa-chevron-left"></i> Android-逐步认识ART系列三
               </a>
             
           </div>
@@ -393,8 +442,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/26/Android-部分系统版本变更行为/" rel="prev" title="Android 部分系统版本变更行为">
-                Android 部分系统版本变更行为 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/28/Android-逐步认识ART系列二/" rel="prev" title="Android 逐步认识ART系列二">
+                Android 逐步认识ART系列二 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -447,8 +496,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -526,6 +584,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JIT"><span class="nav-number">1.</span> <span class="nav-text">JIT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AOT"><span class="nav-number">2.</span> <span class="nav-text">AOT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单纯的JIT存在的问题"><span class="nav-number">3.</span> <span class="nav-text">单纯的JIT存在的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单纯的AOT存在的问题"><span class="nav-number">4.</span> <span class="nav-text">单纯的AOT存在的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AOT-JIT"><span class="nav-number">5.</span> <span class="nav-text">AOT+JIT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译选项"><span class="nav-number">6.</span> <span class="nav-text">编译选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统ROM配置"><span class="nav-number">6.1.</span> <span class="nav-text">系统ROM配置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

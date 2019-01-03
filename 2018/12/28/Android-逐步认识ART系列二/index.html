@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Android,">
+  <meta name="keywords" content="ART、boot.oat、boot.art、Profile,">
 
 
 
@@ -79,21 +79,18 @@
 
 
 
-<meta name="description" content="Android 信息中心：https://developer.android.com/about/dashboards/?hl=zh-cn Android各个系统版本市场占有率表：Android各个系统版本市场占有率图： 总结，由上表和上图可知：  Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。 单个系统版本市场占有率最高的为An">
-<meta name="keywords" content="Android">
+<meta name="description" content="boot.oat Contains libs and frameworks in boot class path  – To be pre-loaded in all apps（系统启动路径下的的需要预加载库和框架）  任何应用程序都不是孤立存在的，几乎所有应用程序都会依赖Android Framework中提供的基础类，例如Activity，Intent，Parcel等类。所以在应用程序的代码中">
+<meta name="keywords" content="ART、boot.oat、boot.art、Profile">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android系统版本分布">
-<meta property="og:url" content="http://yoursite.com/2018/12/26/Android系统版本分布/index.html">
+<meta property="og:title" content="Android 逐步认识ART系列二">
+<meta property="og:url" content="http://yoursite.com/2018/12/28/Android-逐步认识ART系列二/index.html">
 <meta property="og:site_name" content="Heinz Blog">
-<meta property="og:description" content="Android 信息中心：https://developer.android.com/about/dashboards/?hl=zh-cn Android各个系统版本市场占有率表：Android各个系统版本市场占有率图： 总结，由上表和上图可知：  Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。 单个系统版本市场占有率最高的为An">
+<meta property="og:description" content="boot.oat Contains libs and frameworks in boot class path  – To be pre-loaded in all apps（系统启动路径下的的需要预加载库和框架）  任何应用程序都不是孤立存在的，几乎所有应用程序都会依赖Android Framework中提供的基础类，例如Activity，Intent，Parcel等类。所以在应用程序的代码中">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&shareKey=288a168344f4c3da4e4930c699d19ee2">
-<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB75a72b0c1a2257ce5215bc18bb38a8d4?method=download&shareKey=cc627bcace397474e82ad2ad8355057c">
-<meta property="og:updated_time" content="2019-01-02T03:09:37.432Z">
+<meta property="og:updated_time" content="2018-12-28T04:16:23.703Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android系统版本分布">
-<meta name="twitter:description" content="Android 信息中心：https://developer.android.com/about/dashboards/?hl=zh-cn Android各个系统版本市场占有率表：Android各个系统版本市场占有率图： 总结，由上表和上图可知：  Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。 单个系统版本市场占有率最高的为An">
-<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&shareKey=288a168344f4c3da4e4930c699d19ee2">
+<meta name="twitter:title" content="Android 逐步认识ART系列二">
+<meta name="twitter:description" content="boot.oat Contains libs and frameworks in boot class path  – To be pre-loaded in all apps（系统启动路径下的的需要预加载库和框架）  任何应用程序都不是孤立存在的，几乎所有应用程序都会依赖Android Framework中提供的基础类，例如Activity，Intent，Parcel等类。所以在应用程序的代码中">
 
 
 
@@ -123,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/26/Android系统版本分布/">
+  <link rel="canonical" href="http://yoursite.com/2018/12/28/Android-逐步认识ART系列二/">
 
 
 
 
 
-  <title>Android系统版本分布 | Heinz Blog</title>
+  <title>Android 逐步认识ART系列二 | Heinz Blog</title>
   
 
 
@@ -266,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Android系统版本分布/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/28/Android-逐步认识ART系列二/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Heinz">
@@ -283,7 +280,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Android系统版本分布</h2>
+          <h2 class="post-title" itemprop="name headline">Android 逐步认识ART系列二</h2>
         
 
         <div class="post-meta">
@@ -295,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T15:56:56+08:00">
-                2018-12-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-28T11:33:34+08:00">
+                2018-12-28
               </time>
             
 
@@ -313,7 +310,7 @@
 
           
           
-             <span id="/2018/12/26/Android系统版本分布/" class="leancloud_visitors" data-flag-title="Android系统版本分布">
+             <span id="/2018/12/28/Android-逐步认识ART系列二/" class="leancloud_visitors" data-flag-title="Android 逐步认识ART系列二">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -344,15 +341,67 @@
       
 
       
-        <p>Android 信息中心：<a href="https://developer.android.com/about/dashboards/?hl=zh-cn" target="_blank" rel="noopener">https://developer.android.com/about/dashboards/?hl=zh-cn</a></p>
-<p>Android各个系统版本市场占有率表：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&amp;shareKey=288a168344f4c3da4e4930c699d19ee2" alt="image"><br>Android各个系统版本市场占有率图：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB75a72b0c1a2257ce5215bc18bb38a8d4?method=download&amp;shareKey=cc627bcace397474e82ad2ad8355057c" alt="image"></p>
-<p>总结，由上表和上图可知：</p>
-<ul>
-<li>Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。</li>
-<li>单个系统版本市场占有率最高的为Android 6.0，即API 23 </li>
-<li>复合系统版本市场占有率最高的为Android 7.0系列，其中7.0为18.1%，7.1为10.1%</li>
-<li></li>
+        <h1 id="boot-oat"><a href="#boot-oat" class="headerlink" title="boot.oat"></a>boot.oat</h1><ul>
+<li>Contains libs and frameworks in boot class path<br>  – To be pre-loaded in all apps（系统启动路径下的的需要预加载库和框架）</li>
 </ul>
+<p>任何应用程序都不是孤立存在的，几乎所有应用程序都会依赖Android Framework中提供的基础类，例如Activity，Intent，Parcel等类。所以在应用程序的代码中，自然少不了对于这些类的引用.</p>
+<p>考虑到几乎所有应用都存在这种引用关系，在运行时都会依赖于Framework中的类，因此系统如何处理这部分逻辑就是非常重要的了，因为这个处理的方法将影响到所有应用程序。</p>
+<p>在AOSP编译时，会将所有这些公共类放到专门的一个Oat文件中，这个文件就是：boot.oat。与之配合的还有一个boot.art文件。</p>
+<p>boot.oat可以在两个地方找到：</p>
+<ol>
+<li><p>/system/framework/[platform]/boot.oat</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/system/framework/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     50767704 2014-11-20 19:07 boot.oat</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/data/dalvik-cache/[platform]/system@<a href="mailto:framework@boot.oat" target="_blank" rel="noopener">framework@boot.oat</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/data/dalvik-cache/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     51003824 1970-05-29 01:45 system@framework@boot.oat</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --image=/data/dalvik-cache/system@framework@boot.art --runtime-arg</span><br><span class="line">-Xms64m --runtime-arg -Xmx64m --dex-file=/system/framework/core-libart.jar --dex-file=/</span><br><span class="line">system/framework/conscrypt.jar --dex-file=/system/framework/okhttp.jar --dex-file=/</span><br><span class="line">system/framework/core-junit.jar --dex-file=/system/framework/bouncycastle.jar --dexfile=/system/framework/ext.jar --dex-file=/system/framework/framework.jar --dex-file=/</span><br><span class="line">system/framework/framework2.jar --dex-file=/system/framework/telephony-common.jar --</span><br><span class="line">dex-file=/system/framework/voip-common.jar --dex-file=/system/framework/mms-common.jar</span><br><span class="line">--dex-file=/system/framework/android.policy.jar --dex-file=/system/framework/</span><br><span class="line">services.jar --dex-file=/system/framework/apache-xml.jar --dex-file=/system/framework/</span><br><span class="line">webviewchromium.jar --oat-file=/data/dalvik-cache/system@framework@boot.oat --runtimearg -implicit-checks:none --instruction-set=arm --instruction-set-features=default --</span><br><span class="line">base=0x70000000 --image-classes-zip=/system/framework/framework.jar</span><br></pre></td></tr></table></figure>
+<p><strong>上面命令编译进boot.oat中的jar:</strong><br>/system/framework/core-libart.jar<br>/system/framework/conscrypt.jar<br>/system/framework/okhQp.jar<br>/system/framework/core-junit.jar<br>/system/framework/bouncycastle.jar<br>/system/framework/ext.jar<br>/system/framework/framework.jar<br>/system/framework/framework2.jar<br>/system/framework/telephony-common.jar<br>/system/framework/voip-common.jar<br>/system/framework/mms-common.jar<br>/system/framework/android.policy.jar<br>/system/framework/services.jar<br>/system/framework/apache-xml.jar<br>/system/framework/webviewchromium.jar  </p>
+<h1 id="boot-art-boot-image"><a href="#boot-art-boot-image" class="headerlink" title="boot.art(boot image)"></a>boot.art(boot image)</h1><ul>
+<li>contains absolute pointers for methods in boot.oat(以绝对地址指向boot.oat中的方法)</li>
+<li>boot.art和boot.oat的加载地址都是32位，在64位的系统上，高32位都是0</li>
+</ul>
+<p>boot.art中包含了指向boot.oat中方法代码的指针，它被称之为启动镜像（Boot Image），并且被加载的位置是固定的。boot.oat被加载的地址紧随着boot.art。</p>
+<p>boot.art可以在两个地方找到：</p>
+<ol>
+<li><p>/system/framework/[platform]/boot.art</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/system/framework/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     11829248 2014-11-20 19:07 boot.art</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/data/dalvik-cache/[platform]/system@<a href="mailto:framework@boot.art" target="_blank" rel="noopener">framework@boot.art</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/data/dalvik-cache/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     11829248 1970-05-29 01:45 system@framework@boot.art</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="Profiling"><a href="#Profiling" class="headerlink" title="Profiling"></a>Profiling</h1><ul>
+<li>By default,ART compiles methods regardless of impact on performance(ART编译方法时，不会考虑对性能的影响)</li>
+<li>Profiling feature allows ART to be more selective on which methods to compile(profile能够控制dex2oat具体要对哪些方法进行编译优化)</li>
+<li>Profiling配置默认可能是关闭的。可以通过setprop手动打开</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setprop dalvik.vm.profiler 1</span><br></pre></td></tr></table></figure>
+<p>- No AOT compilation upon app install(在App安装时不会进行AOT优化，一方面时为了减少安装时间、另一方面时节省存储空间)</p>
+<ul>
+<li>Profiling data is collected while app is runing(在App运行期间，会收集profile数据)</li>
+<li>Profile files are placed in /data/dalvik-cache/profiles</li>
+<li>Profile file name is the package name</li>
+<li>Profile data is used to determine if AOT compilation will be done</li>
+</ul>
+<p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">42/2/352  </span><br><span class="line">android.database.Cursor com.android.email.provider.EmailProvider.uiAccounts(java.lang.String[])/1/128  </span><br><span class="line">void com.android.email.NotificationController.ensureHandlerExists()/1/37</span><br><span class="line">int com.android.email.provider.EmailProvider.getFolderTypeFromMailboxType(int)/2/56</span><br><span class="line">boolean com.android.mail.browse.ConversationCursor$ConversationProvider.onCreate()/1/49</span><br><span class="line">com.google.common.collect.ImmutableList com.google.common.collect.ImmutableList.of()/1/3</span><br><span class="line">&lt;snip&gt;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>First line is the summary inforamtion<blockquote>
+<p>count/Null methods count/Boot path methods count</p>
+</blockquote>
+</li>
+<li>Subsequent lines are the profile data<blockquote>
+<p>Methods name/Count/Size</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="App-Image"><a href="#App-Image" class="headerlink" title="App Image"></a>App Image</h1><ul>
+<li>/data/app/xxx/oat/arm/base.art</li>
+<li>/data/app/xxx/oat/rm/base.odex</li>
+</ul>
+<p>base.art 就是对应的App image文件。主要记录已经编译好的类的具体信息以及函数在oat文件的位置，相当于缓存，在app运行的时候会加载到虚拟机，可以加快启动速度。</p>
+<p><strong>在Android7.0上，dex2oat的参数 compiler-filter被指定为profile类型的几个compiler-filter之一时，dex2oat还会生成app-image文件。</strong></p>
 
       
     </div>
@@ -370,7 +419,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Android/" rel="tag"># Android</a>
+            <a href="/tags/ART、boot-oat、boot-art、Profile/" rel="tag"># ART、boot.oat、boot.art、Profile</a>
           
         </div>
       
@@ -383,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/26/Java-打印堆栈信息/" rel="next" title="Java 打印堆栈信息">
-                <i class="fa fa-chevron-left"></i> Java 打印堆栈信息
+              <a href="/2018/12/27/Android-逐步认识ART系列一/" rel="next" title="Android 逐步认识ART系列一">
+                <i class="fa fa-chevron-left"></i> Android 逐步认识ART系列一
               </a>
             
           </div>
@@ -393,8 +442,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/26/Android-部分系统版本变更行为/" rel="prev" title="Android 部分系统版本变更行为">
-                Android 部分系统版本变更行为 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/02/Android编译器相关/" rel="prev" title="Android编译器相关">
+                Android编译器相关 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -447,8 +496,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -526,6 +584,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#boot-oat"><span class="nav-number">1.</span> <span class="nav-text">boot.oat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#boot-art-boot-image"><span class="nav-number">2.</span> <span class="nav-text">boot.art(boot image)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Profiling"><span class="nav-number">3.</span> <span class="nav-text">Profiling</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#App-Image"><span class="nav-number">4.</span> <span class="nav-text">App Image</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
