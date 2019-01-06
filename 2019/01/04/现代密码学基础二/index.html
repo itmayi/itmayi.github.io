@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="现代密码学,块密码,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="块密码概述所谓块加密就是每次加密一块明文，常见的加密算法有  IDEA 加密 DES 加密 AES 加密  块加密也是对称加密。 其实，我们也可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有复杂的加解密算法来加解密明密文。 而与此同时，明文往往可能很长也可能很短，因此在块加密时往往需要">
+<meta name="keywords" content="现代密码学,块密码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代密码学基础二">
+<meta property="og:url" content="http://yoursite.com/2019/01/04/现代密码学基础二/index.html">
+<meta property="og:site_name" content="Heinz Blog">
+<meta property="og:description" content="块密码概述所谓块加密就是每次加密一块明文，常见的加密算法有  IDEA 加密 DES 加密 AES 加密  块加密也是对称加密。 其实，我们也可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有复杂的加解密算法来加解密明密文。 而与此同时，明文往往可能很长也可能很短，因此在块加密时往往需要">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/figure/iterated_cipher.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_encryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_decryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_bad_linux.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cbc_encryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cbc_decryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/pcbc_encryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/pcbc_decryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cfb_encryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cfb_decryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ofb_encryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ofb_decryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ctr_encryption.png">
+<meta property="og:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ctr_encryption.png">
+<meta property="og:updated_time" content="2019-01-05T05:14:18.407Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="现代密码学基础二">
+<meta name="twitter:description" content="块密码概述所谓块加密就是每次加密一块明文，常见的加密算法有  IDEA 加密 DES 加密 AES 加密  块加密也是对称加密。 其实，我们也可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有复杂的加解密算法来加解密明密文。 而与此同时，明文往往可能很长也可能很短，因此在块加密时往往需要">
+<meta name="twitter:image" content="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/figure/iterated_cipher.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/04/现代密码学基础二/">
+
+
+
+
+
+  <title>现代密码学基础二 | Heinz Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heinz Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">记录每一段岁月的美好！</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/04/现代密码学基础二/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">现代密码学基础二</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T11:50:21+08:00">
+                2019-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/04/现代密码学基础二/" class="leancloud_visitors" data-flag-title="现代密码学基础二">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="块密码"><a href="#块密码" class="headerlink" title="块密码"></a>块密码</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>所谓块加密就是每次加密一块明文，常见的加密算法有</p>
+<ul>
+<li>IDEA 加密</li>
+<li>DES 加密</li>
+<li>AES 加密</li>
+</ul>
+<p>块加密也是对称加密。</p>
+<p>其实，我们也可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有<strong>复杂</strong>的加解密算法来加解密明密文。</p>
+<p>而与此同时，明文往往可能很长也可能很短，因此在块加密时往往需要两个辅助</p>
+<ul>
+<li>padding，即 padding 到指定分组长度</li>
+<li>分组加密模式，即明文分组加密的方式。</li>
+</ul>
+<h3 id="基本策略"><a href="#基本策略" class="headerlink" title="基本策略"></a>基本策略</h3><p>在分组密码设计时，充分使用了 Shannon 提出的两大策略：混淆与扩散两大策略。</p>
+<h4 id="混淆"><a href="#混淆" class="headerlink" title="混淆"></a>混淆</h4><p>混淆，Confusion，将密文与密钥之间的统计关系变得尽可能复杂，使得攻击者即使获取了密文的一些统计特性，也无法推测密钥。一般使用复杂的非线性变换可以得到很好的混淆效果，常见的方法如下</p>
+<ul>
+<li>S 盒</li>
+<li>乘法</li>
+</ul>
+<h4 id="扩散"><a href="#扩散" class="headerlink" title="扩散"></a>扩散</h4><p>扩散，Diffusion，使得明文中的每一位影响密文中的许多位。常见的方法有</p>
+<ul>
+<li>线性变换</li>
+<li>置换</li>
+<li>移位，循环移位</li>
+</ul>
+<h3 id="常见加解密结构"><a href="#常见加解密结构" class="headerlink" title="常见加解密结构"></a>常见加解密结构</h3><p>目前块加密中主要使用的是结构是</p>
+<ul>
+<li>迭代结构，这是因为迭代结构便于设计与实现，同时方便安全性评估。</li>
+</ul>
+<h4 id="迭代结构"><a href="#迭代结构" class="headerlink" title="迭代结构"></a>迭代结构</h4><h5 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h5><p>迭代结构基本如下，一般包括三个部分</p>
+<ul>
+<li>密钥置换</li>
+<li>轮加密函数</li>
+<li>轮解密函数</li>
+</ul>
+<p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/figure/iterated_cipher.png" alt="image"></p>
+<h5 id="轮函数"><a href="#轮函数" class="headerlink" title="轮函数"></a>轮函数</h5><p>目前来说，轮函数主要有主要有以下设计方法</p>
+<ul>
+<li>Feistel Network，由 Horst Feistel 发明，DES 设计者之一。<ul>
+<li>DES</li>
+</ul>
+</li>
+<li>Substitution-Permutation Network(SPN)<ul>
+<li>AES</li>
+</ul>
+</li>
+<li>其他方案</li>
+</ul>
+<p>注：费思妥密码（英语：Feistel cipher）是用于构造分组密码的对称结构，以德国出生的物理学家和密码学家霍斯特·费斯妥（Horst Feistel）命名，他在美国IBM工作期间完成了此项开拓性研究。通常也称为费斯妥网络（Feistel network）。大部分分组密码使用该方案，包括数据加密标准（DES）。费斯妥结构的优点在于加密和解密操作非常相似，在某些情况下甚至是相同的，只需要逆转密钥编排。因此，实现这种密码所需的代码或电路大小能几乎减半。费斯妥网络是一种迭代密码，其中的内部函数称为轮函数。</p>
+<p>注：代换-置换网络是一系列被应用于分组密码中相关的数学运算，代换（Substitution）和置换（Permutation）分别被称作S盒（替換盒，英语：S-boxes）和P盒（排列盒，英语：P-boxes）。这种加密网络使用明文和密钥作为输入，并通过交错的若干“轮”（或“层”）代换操作和置换操作产生密文。</p>
+<h5 id="密钥扩展"><a href="#密钥扩展" class="headerlink" title="密钥扩展"></a>密钥扩展</h5><p>目前，密钥扩展的方法有很多，没有见到什么完美的密钥扩展方法，基本原则是使得密钥的每一个比特尽可能影响多轮的轮密钥。</p>
+<h3 id="常见块加密算法"><a href="#常见块加密算法" class="headerlink" title="常见块加密算法"></a>常见块加密算法</h3><p>//TODO(ARX/DES/IDEA/AES/Simon and Speck)</p>
+<h3 id="分组模式"><a href="#分组模式" class="headerlink" title="分组模式"></a>分组模式</h3><p>分组加密会将明文消息划分为固定大小的块，每块明文分别在密钥控制下加密为密文。当然并不是每个消息都是相应块大小的整数倍，所以我们可能需要进行填充。</p>
+<h4 id="填充规则"><a href="#填充规则" class="headerlink" title="填充规则"></a>填充规则</h4><p>正如我们之前所说，在分组加密中，明文的长度往往并不满足要求，需要进行 padding，而如何 padding 目前也已经有了不少的规定。</p>
+<p>常见的 填充规则 如下。需要注意的是，即使消息的长度是块大小的整数倍，仍然需要填充。</p>
+<p>一般来说，如果在解密之后发现 Padding 不正确，则往往会抛出异常。我们也因此可以知道 Paddig 是否正确。</p>
+<p>Pad with bytes all of the same value as the number of padding bytes (PKCS5 padding)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6F 72 05 05 05 05 05</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = FD 29 85 C9 E8 DF 41 40</span><br></pre></td></tr></table></figure>
+<p>Pad with 0x80 followed by zero bytes (OneAndZeroes Padding)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6F 72 80 00 00 00 00</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = BE 62 5D 9F F3 C6 C8 40</span><br></pre></td></tr></table></figure></p>
+<p>这里其实就是和 md5 和 sha1 的 padding 差不多。</p>
+<p>Pad with zeroes except make the last byte equal to the number of padding bytes<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6f 72 00 00 00 00 05</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = 91 19 2C 64 B5 5C 5D B8</span><br></pre></td></tr></table></figure></p>
+<p>Pad with zero (null) characters<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6f 72 00 00 00 00 00</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = 9E 14 FB 96 C5 FE EB 75</span><br></pre></td></tr></table></figure></p>
+<p>Pad with spaces<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6f 72 20 20 20 20 20</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = E3 FF EC E5 21 1F 35 25</span><br></pre></td></tr></table></figure></p>
+<h4 id="ECB模式"><a href="#ECB模式" class="headerlink" title="ECB模式"></a>ECB模式</h4><p>ECB 模式全称为电子密码本模式（Electronic codebook）。</p>
+<h5 id="加密"><a href="#加密" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_encryption.png" alt="image"></p>
+<h5 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_decryption.png" alt="image"></p>
+<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>实现简单。</li>
+<li>不同明文分组的加密可以并行计算，速度很快。</li>
+</ul>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><ul>
+<li>同样的明文块会被加密成相同的密文块，不会隐藏明文分组的统计规律。正如下图所示<br><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_bad_linux.png" alt="image"></li>
+</ul>
+<p>为了解决统一明文产生相同密文的问题，提出了其它的加密模式。</p>
+<h5 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h5><ul>
+<li>用于随机数的加密保护。</li>
+<li>用于单分组明文的加密。</li>
+</ul>
+<h4 id="CBC模式"><a href="#CBC模式" class="headerlink" title="CBC模式"></a>CBC模式</h4><p>CBC 全称为密码分组链接（Cipher-block chaining） 模式，这里</p>
+<ul>
+<li>IV 不要求保密</li>
+<li>IV 必须是不可预测的，而且要保证完整性。</li>
+</ul>
+<h5 id="加密-1"><a href="#加密-1" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cbc_encryption.png" alt="image"></p>
+<h5 id="解密-1"><a href="#解密-1" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cbc_decryption.png" alt="image"></p>
+<h5 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>密文块不仅和当前密文块相关，而且和前一个密文块或 IV 相关，隐藏了明文的统计特性。</li>
+<li>具有有限的两步错误传播特性，即密文块中的一位变化只会影响当前密文块和下一密文块。</li>
+<li>具有自同步特性，即第 k 块起密文正确，则第 k+1 块就能正常解密。<h5 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h5></li>
+<li>加密不能并行，解密可以并行。</li>
+</ul>
+<h5 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h5><ul>
+<li>常见的数据加密和 TLS 加密。</li>
+<li>完整性认证和身份认证。</li>
+</ul>
+<h5 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h5><ul>
+<li>字节反转攻击<ul>
+<li>IV 向量，影响第一个明文分组</li>
+<li>第 n 个密文分组，影响第 n + 1 个明文分组</li>
+</ul>
+</li>
+<li>Padding Oracle Attack，具体参见下面介绍</li>
+</ul>
+<h4 id="PCBC模式"><a href="#PCBC模式" class="headerlink" title="PCBC模式"></a>PCBC模式</h4><p>PCBC 的全称为明文密码块链接（Plaintext cipher-block chaining）。也称为填充密码块链接（Propagating cipher-block chaining）。</p>
+<h5 id="加密-2"><a href="#加密-2" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/pcbc_encryption.png" alt="image"></p>
+<h5 id="解密-2"><a href="#解密-2" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/pcbc_decryption.png" alt="image"></p>
+<h5 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h5><ul>
+<li>解密过程难以并行化</li>
+<li>互换邻接的密文块不会对后面的密文块造成影响</li>
+</ul>
+<h4 id="CFB模式"><a href="#CFB模式" class="headerlink" title="CFB模式"></a>CFB模式</h4><p>CFB 全称为密文反馈模式（Cipher feedback）。</p>
+<h5 id="加密-3"><a href="#加密-3" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cfb_encryption.png" alt="image"></p>
+<h5 id="解密-3"><a href="#解密-3" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cfb_decryption.png" alt="image"></p>
+<h5 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>适应于不同数据格式的要求</li>
+<li>有限错误传播</li>
+<li>自同步<h5 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a>缺点</h5></li>
+<li>加密不能并行化，解密不能并行</li>
+</ul>
+<h5 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h5><p>该模式适应于数据库加密，无线通信加密等对数据格式有特殊要求的加密环境。</p>
+<h4 id="OFB模式"><a href="#OFB模式" class="headerlink" title="OFB模式"></a>OFB模式</h4><p>OFB 全称为输出反馈模式（Output feedback），其反馈内容是分组加密后的内容而不是密文。</p>
+<h5 id="加密-4"><a href="#加密-4" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ofb_encryption.png" alt="image"></p>
+<h5 id="解密-4"><a href="#解密-4" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ofb_decryption.png" alt="image"></p>
+<h5 id="优点-3"><a href="#优点-3" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>不具有错误传播特性。<h5 id="缺点-3"><a href="#缺点-3" class="headerlink" title="缺点"></a>缺点</h5></li>
+<li>IV 无需保密，但是对每个消息必须选择不同的 IV。</li>
+<li>不具有自同步能力。</li>
+</ul>
+<h5 id="应用-3"><a href="#应用-3" class="headerlink" title="应用"></a>应用</h5><p>适用于一些明文冗余度比较大的场景，如图像加密和语音加密。</p>
+<h4 id="CTR模式"><a href="#CTR模式" class="headerlink" title="CTR模式"></a>CTR模式</h4><p>CTR 全称为计数器模式（Counter mode），该模式由 Diffe 和 Hellman 设计。</p>
+<h5 id="加密-5"><a href="#加密-5" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ctr_encryption.png" alt="image"></p>
+<h5 id="解密-5"><a href="#解密-5" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ctr_encryption.png" alt="image"></p>
+<h4 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h4><p>Padding Oracle Attack 攻击一般需要满足以下几个条件</p>
+<ul>
+<li>加密算法<ul>
+<li>采用 PKCS5 Padding 的加密算法。 当然，非对称加密中 OAEP 的填充方式也有可能会受到影响。</li>
+<li>分组模式为 CBC 模式。</li>
+</ul>
+</li>
+<li>攻击者能力<ul>
+<li>攻击者可以拦截上述加密算法加密的消息。</li>
+<li>攻击者可以和 padding oracle（即服务器） 进行交互：客户端向服务器端发送密文，服务器端会以某种返回信息告知客户端 padding 是否正常。</li>
+</ul>
+</li>
+</ul>
+<p>Padding Oracle Attack 攻击可以达到的效果如下</p>
+<ul>
+<li>在不清楚 key 和 IV 的前提下解密任意给定的密文。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/现代密码学/" rel="tag"># 现代密码学</a>
+          
+            <a href="/tags/块密码/" rel="tag"># 块密码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/04/现代密码学基础一/" rel="next" title="现代密码学基础一">
+                <i class="fa fa-chevron-left"></i> 现代密码学基础一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/05/现代密码学基础三/" rel="prev" title="现代密码学基础三">
+                现代密码学基础三 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Heinz">
+            
+              <p class="site-author-name" itemprop="name">Heinz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/itmayi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:799902881@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#块密码"><span class="nav-number">1.</span> <span class="nav-text">块密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本策略"><span class="nav-number">1.2.</span> <span class="nav-text">基本策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#混淆"><span class="nav-number">1.2.1.</span> <span class="nav-text">混淆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#扩散"><span class="nav-number">1.2.2.</span> <span class="nav-text">扩散</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见加解密结构"><span class="nav-number">1.3.</span> <span class="nav-text">常见加解密结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#迭代结构"><span class="nav-number">1.3.1.</span> <span class="nav-text">迭代结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#概述-1"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#轮函数"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">轮函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#密钥扩展"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">密钥扩展</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见块加密算法"><span class="nav-number">1.4.</span> <span class="nav-text">常见块加密算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组模式"><span class="nav-number">1.5.</span> <span class="nav-text">分组模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#填充规则"><span class="nav-number">1.5.1.</span> <span class="nav-text">填充规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ECB模式"><span class="nav-number">1.5.2.</span> <span class="nav-text">ECB模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加密"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解密"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优点"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点"><span class="nav-number">1.5.2.4.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#应用"><span class="nav-number">1.5.2.5.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CBC模式"><span class="nav-number">1.5.3.</span> <span class="nav-text">CBC模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加密-1"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解密-1"><span class="nav-number">1.5.3.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优点-1"><span class="nav-number">1.5.3.3.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点-1"><span class="nav-number">1.5.3.4.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#应用-1"><span class="nav-number">1.5.3.5.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#攻击"><span class="nav-number">1.5.3.6.</span> <span class="nav-text">攻击</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PCBC模式"><span class="nav-number">1.5.4.</span> <span class="nav-text">PCBC模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加密-2"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解密-2"><span class="nav-number">1.5.4.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#特点"><span class="nav-number">1.5.4.3.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CFB模式"><span class="nav-number">1.5.5.</span> <span class="nav-text">CFB模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加密-3"><span class="nav-number">1.5.5.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解密-3"><span class="nav-number">1.5.5.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优点-2"><span class="nav-number">1.5.5.3.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点-2"><span class="nav-number">1.5.5.4.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#应用-2"><span class="nav-number">1.5.5.5.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OFB模式"><span class="nav-number">1.5.6.</span> <span class="nav-text">OFB模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加密-4"><span class="nav-number">1.5.6.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解密-4"><span class="nav-number">1.5.6.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优点-3"><span class="nav-number">1.5.6.3.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点-3"><span class="nav-number">1.5.6.4.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#应用-3"><span class="nav-number">1.5.6.5.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CTR模式"><span class="nav-number">1.5.7.</span> <span class="nav-text">CTR模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加密-5"><span class="nav-number">1.5.7.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解密-5"><span class="nav-number">1.5.7.2.</span> <span class="nav-text">解密</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Padding-Oracle-Attack"><span class="nav-number">1.5.8.</span> <span class="nav-text">Padding Oracle Attack</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Heinz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("jypPJXy89LBDsg88boqicDg9-gzGzoHsz", "7z1xPLru7WIRw9p0A6SE779N");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
