@@ -263,6 +263,1063 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/08/TLS-SSL协议/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/08/TLS-SSL协议/" itemprop="url">TLS/SSL协议</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-08T10:27:24+08:00">
+                2019-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/08/TLS-SSL协议/" class="leancloud_visitors" data-flag-title="TLS/SSL协议">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什么是SSL、TLS、HTTPS"><a href="#什么是SSL、TLS、HTTPS" class="headerlink" title="什么是SSL、TLS、HTTPS"></a>什么是SSL、TLS、HTTPS</h1><p>SSL:Secure Sockets Layer（安全套接层）最初由Netscape开发，早在1995年以SSL2.0的方式发布（SSL1.0从未对公众发布）。在一些漏洞被发现后，版本2.0在1996年被版本3.0取代。</p>
+<p>TLS:Transport Layer Security（安全传输层）以SSL3.0为基础在1999年作为SSL的新版本推出。同时SSL3.0在2015年被IEFT组织废弃。TLS1.0通常被标识为SSL3.1，TLS1.1为SSL3.2，TLS 1.2为SSL3.3。</p>
+<p>HTTPS：HTTP OVER TLS（建立在TLS之上的HTTP协议）。</p>
+<h1 id="HTTP与HTTPS的区别"><a href="#HTTP与HTTPS的区别" class="headerlink" title="HTTP与HTTPS的区别"></a>HTTP与HTTPS的区别</h1><p>HTTP连接方式简单，无状态，使用80端口，HTTPS由SSL+HTTP构建的可实现身份认证和安全传输的网络协议，使用443端口。</p>
+<p>HTTPS能够提供：</p>
+<ul>
+<li><p>数据完整性：内容传输经过完整性校验</p>
+</li>
+<li><p>数据隐私性：内容经过对称加密，每个连接生成一个唯一的加密密钥</p>
+</li>
+<li><p>身份认证：第三方无法伪造服务端(客户端)身份</p>
+</li>
+</ul>
+<p>其中，数据完整性和隐私性由TLS Record Protocol保证，身份认证由TLS Handshaking Protocols实现。</p>
+<p>完整的HTTPS连接建立大概需要以下几步：  </p>
+<ol>
+<li>DNS查询，获取IP地址</li>
+<li>TCP握手，建立连接</li>
+<li>TLS握手，确定加密方式和密钥</li>
+<li>建立HTTP连接，交换数据</li>
+</ol>
+<h1 id="证书"><a href="#证书" class="headerlink" title="证书"></a>证书</h1><p>证书包含的信息：</p>
+<ol>
+<li>证书信息：序列号，过期日期</li>
+<li>所有者信息：姓名等</li>
+<li>所有者公钥</li>
+</ol>
+<p>为什么需要服务端发送证书给客户端？</p>
+<p>互联网有太多的服务需要使用证书来验证身份，以至于客户端(操作系统或浏览器等)无法内置所有证书，需要通过服务端将证书发送给客户端。</p>
+<p>客户端为什么需要验证接收到的证书？</p>
+<p>为了防止中间人攻击。攻击者拦截服务端响应，将伪造证书发送给客户端，客户端若未验证地使用证书中的公钥加密传输数据，就会被攻击者通过私钥解密得到明文数据。</p>
+<p>客户端如何验证接收到的证书？  </p>
+<p>通过数字签名(将一段数据通过哈希和私钥加密后生成数字签名)。消息发送方通过将一段文本和数字签名一起发送给消息接收方，接收方接收到数据后，将文本通过哈希得到散列值，同时使用公钥解密数字签名得到原散列值，通过比对计算得到的散列值和原散列值判断接收到的文本是否为对应的消息发送方发出的。</p>
+<p>该验证的前提是，消息接收方知道消息发送方的公钥。公钥和消息本身一样，不能直接通过不安全的网络发送给消息接收方。</p>
+<p>此时就需要证书颁发机构（Certifate Authority，简称CA），客户端内置了所有受信任CA的证书，CA对服务端的公钥(和其他信息)数字签名后生成证书。</p>
+<p>服务端将证书发送给客户端后，客户端使用证书公钥验证证书签名。</p>
+<p>客户端信任CA，CA信任服务端，客户端信任服务端，从而形成信任链（chain of trust）。</p>
+<p>事实上，客户端内置的是CA的根证书(Root Certificate)，HTTPS协议中服务器会发送证书链(Certificate Chain)给客户端。</p>
+<h1 id="HTTPS基本原理"><a href="#HTTPS基本原理" class="headerlink" title="HTTPS基本原理"></a>HTTPS基本原理</h1><p><img src="https://www.wosign.com/info/info_images/20170606135810.png" alt="image"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/数据传输协议框架/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/07/数据传输协议框架/" itemprop="url">数据传输协议框架</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T22:11:39+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/数据传输协议框架/" class="leancloud_visitors" data-flag-title="数据传输协议框架">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Protocol-Buffer"><a href="#Protocol-Buffer" class="headerlink" title="Protocol Buffer"></a>Protocol Buffer</h1><p>Google Protocol Buffer( 简称 Protobuf) 是 Google 公司内部的混合语言数据标准。Protocol Buffers 是一种轻便高效的结构化数据存储格式，可以用于结构化数据串行化，或者说序列化。它很适合做数据存储或 RPC 数据交换格式。可用于通讯协议、数据存储等领域的语言无关、平台无关、可扩展的序列化结构数据格式。支持python、Java、c++等语言。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="定义-proto文件"><a href="#定义-proto文件" class="headerlink" title="定义.proto文件"></a>定义.proto文件</h3><p>.proto文件中定义着一系列协议中的实体结构：</p>
+<ul>
+<li><p>message关键字表示一个实体结构，由多个字段组成</p>
+<p>  例如：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto2&quot;;</span><br><span class="line"></span><br><span class="line">package tutorial;</span><br><span class="line"></span><br><span class="line">option java_package = &quot;com.example.tutorial&quot;;</span><br><span class="line">option java_outer_classname = &quot;AddressBookProtos&quot;;</span><br><span class="line"></span><br><span class="line">message Person &#123;</span><br><span class="line">    required string name = 1;</span><br><span class="line">    required int32 id = 2;</span><br><span class="line">    optional string email = 3;</span><br><span class="line"></span><br><span class="line">    enum PhoneType &#123;</span><br><span class="line">        MOBILE = 0;</span><br><span class="line">        HOME = 1;</span><br><span class="line">        WORK = 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    message PhoneNumber &#123;</span><br><span class="line">        required string number = 1;</span><br><span class="line">        optional PhoneType type = 2 [default = HOME];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    repeated PhoneNumber phones = 4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message AddressBook &#123;</span><br><span class="line">    repeated Person people = 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字段包含修饰符、数据类型、唯一标识、初始值。</p>
+<p>  三种修饰符：required、optional、repeated</p>
+<p>  支持的数据类型：<br>  <img src="https://note.youdao.com/yws/api/personal/file/WEBd038acafb6eb2ec0003778c5413c963b?method=download&amp;shareKey=d4cdfcbeba2aaf600b311182eb01e5fb" alt="image"></p>
+</li>
+</ul>
+<h3 id="编译-proto"><a href="#编译-proto" class="headerlink" title="编译.proto"></a>编译.proto</h3><p>使用protocol buffer的编译器将.proto文件编译为目标语言。</p>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc -I=$SRC_DIR --java_out=$DST_DIR $SRC_DIR/xxx.proto</span><br></pre></td></tr></table></figure></p>
+<p>-I 指定源路径，–java_out 选项指定生成java文件，编译完成会在目标路径下生成.java文件。</p>
+<h3 id="Protocol-Buffer-API"><a href="#Protocol-Buffer-API" class="headerlink" title="Protocol Buffer API"></a>Protocol Buffer API</h3><p>.java 文件部分内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// required string name = 1;</span><br><span class="line">public boolean hasName();</span><br><span class="line">public String getName();</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">// optional string email = 3;</span><br><span class="line">public boolean hasEmail();</span><br><span class="line">public String getEmail();</span><br></pre></td></tr></table></figure></p>
+<p>Person.Builder类中也为每个字段生成getter和setter方法,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// required string name = 1;</span><br><span class="line">public boolean hasName();</span><br><span class="line">public java.lang.String getName();</span><br><span class="line">public Builder setName(String value);</span><br><span class="line">public Builder clearName();</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>创建Person实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person john =</span><br><span class="line">  Person.newBuilder()</span><br><span class="line">    .setName(&quot;John Doe&quot;)</span><br><span class="line">    .setAge(15)</span><br><span class="line">    .setEmail(&quot;jdoe@example.com&quot;)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure></p>
+<p>message类和Builder类中内建的其他方法：</p>
+<ul>
+<li>isInitialized(): checks if all the required fields have been set.</li>
+<li>toString(): returns a human-readable representation of the message, particularly useful for debugging</li>
+<li>mergeFrom(Message other): (builder only) merges the contents of other into this message, overwriting singular scalar fields, merging composite fields, and concatenating repeated fields.</li>
+<li>clear(): (builder only) clears all the fields back to the empty state.</li>
+</ul>
+<h3 id="解析和序列化"><a href="#解析和序列化" class="headerlink" title="解析和序列化"></a>解析和序列化</h3><ul>
+<li>byte[] toByteArray();: serializes the message and returns a byte array containing its raw bytes</li>
+<li>static Person parseFrom(byte[] data);: parses a message from the given byte array</li>
+<li>void writeTo(OutputStream output);: serializes the message and writes it to an OutputStream</li>
+<li>static Person parseFrom(InputStream input);: reads and parses a message from an InputStream</li>
+</ul>
+<h2 id="完整实例"><a href="#完整实例" class="headerlink" title="完整实例"></a>完整实例</h2><h3 id="write-a-message"><a href="#write-a-message" class="headerlink" title="write a message"></a>write a message</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">import com.example.tutorial.AddressBookProtos.AddressBook;</span><br><span class="line">import com.example.tutorial.AddressBookProtos.Person;</span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileNotFoundException;</span><br><span class="line">import java.io.FileOutputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.PrintStream;</span><br><span class="line"></span><br><span class="line">class AddPerson &#123;</span><br><span class="line">  // This function fills in a Person message based on user input.</span><br><span class="line">  static Person PromptForAddress(BufferedReader stdin,</span><br><span class="line">                                 PrintStream stdout) throws IOException &#123;</span><br><span class="line">    Person.Builder person = Person.newBuilder();</span><br><span class="line"></span><br><span class="line">    stdout.print(&quot;Enter person ID: &quot;);</span><br><span class="line">    person.setId(Integer.valueOf(stdin.readLine()));</span><br><span class="line"></span><br><span class="line">    stdout.print(&quot;Enter name: &quot;);</span><br><span class="line">    person.setName(stdin.readLine());</span><br><span class="line"></span><br><span class="line">    stdout.print(&quot;Enter email address (blank for none): &quot;);</span><br><span class="line">    String email = stdin.readLine();</span><br><span class="line">    if (email.length() &gt; 0) &#123;</span><br><span class="line">      person.setEmail(email);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    while (true) &#123;</span><br><span class="line">      stdout.print(&quot;Enter a phone number (or leave blank to finish): &quot;);</span><br><span class="line">      String number = stdin.readLine();</span><br><span class="line">      if (number.length() == 0) &#123;</span><br><span class="line">        break;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      Person.PhoneNumber.Builder phoneNumber =</span><br><span class="line">        Person.PhoneNumber.newBuilder().setNumber(number);</span><br><span class="line"></span><br><span class="line">      stdout.print(&quot;Is this a mobile, home, or work phone? &quot;);</span><br><span class="line">      String type = stdin.readLine();</span><br><span class="line">      if (type.equals(&quot;mobile&quot;)) &#123;</span><br><span class="line">        phoneNumber.setType(Person.PhoneType.MOBILE);</span><br><span class="line">      &#125; else if (type.equals(&quot;home&quot;)) &#123;</span><br><span class="line">        phoneNumber.setType(Person.PhoneType.HOME);</span><br><span class="line">      &#125; else if (type.equals(&quot;work&quot;)) &#123;</span><br><span class="line">        phoneNumber.setType(Person.PhoneType.WORK);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        stdout.println(&quot;Unknown phone type.  Using default.&quot;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      person.addPhones(phoneNumber);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return person.build();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Main function:  Reads the entire address book from a file,</span><br><span class="line">  //   adds one person based on user input, then writes it back out to the same</span><br><span class="line">  //   file.</span><br><span class="line">  public static void main(String[] args) throws Exception &#123;</span><br><span class="line">    if (args.length != 1) &#123;</span><br><span class="line">      System.err.println(&quot;Usage:  AddPerson ADDRESS_BOOK_FILE&quot;);</span><br><span class="line">      System.exit(-1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    AddressBook.Builder addressBook = AddressBook.newBuilder();</span><br><span class="line"></span><br><span class="line">    // Read the existing address book.</span><br><span class="line">    try &#123;</span><br><span class="line">      addressBook.mergeFrom(new FileInputStream(args[0]));</span><br><span class="line">    &#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">      System.out.println(args[0] + &quot;: File not found.  Creating a new file.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Add an address.</span><br><span class="line">    addressBook.addPeople(</span><br><span class="line">      PromptForAddress(new BufferedReader(new InputStreamReader(System.in)),</span><br><span class="line">                       System.out));</span><br><span class="line"></span><br><span class="line">    // Write the new address book back to disk.</span><br><span class="line">    FileOutputStream output = new FileOutputStream(args[0]);</span><br><span class="line">    addressBook.build().writeTo(output);</span><br><span class="line">    output.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="read-a-message"><a href="#read-a-message" class="headerlink" title="read a message"></a>read a message</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">import com.example.tutorial.AddressBookProtos.AddressBook;</span><br><span class="line">import com.example.tutorial.AddressBookProtos.Person;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.PrintStream;</span><br><span class="line"></span><br><span class="line">class ListPeople &#123;</span><br><span class="line">  // Iterates though all people in the AddressBook and prints info about them.</span><br><span class="line">  static void Print(AddressBook addressBook) &#123;</span><br><span class="line">    for (Person person: addressBook.getPeopleList()) &#123;</span><br><span class="line">      System.out.println(&quot;Person ID: &quot; + person.getId());</span><br><span class="line">      System.out.println(&quot;  Name: &quot; + person.getName());</span><br><span class="line">      if (person.hasEmail()) &#123;</span><br><span class="line">        System.out.println(&quot;  E-mail address: &quot; + person.getEmail());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      for (Person.PhoneNumber phoneNumber : person.getPhonesList()) &#123;</span><br><span class="line">        switch (phoneNumber.getType()) &#123;</span><br><span class="line">          case MOBILE:</span><br><span class="line">            System.out.print(&quot;  Mobile phone #: &quot;);</span><br><span class="line">            break;</span><br><span class="line">          case HOME:</span><br><span class="line">            System.out.print(&quot;  Home phone #: &quot;);</span><br><span class="line">            break;</span><br><span class="line">          case WORK:</span><br><span class="line">            System.out.print(&quot;  Work phone #: &quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(phoneNumber.getNumber());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Main function:  Reads the entire address book from a file and prints all</span><br><span class="line">  //   the information inside.</span><br><span class="line">  public static void main(String[] args) throws Exception &#123;</span><br><span class="line">    if (args.length != 1) &#123;</span><br><span class="line">      System.err.println(&quot;Usage:  ListPeople ADDRESS_BOOK_FILE&quot;);</span><br><span class="line">      System.exit(-1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Read the existing address book.</span><br><span class="line">    AddressBook addressBook =</span><br><span class="line">      AddressBook.parseFrom(new FileInputStream(args[0]));</span><br><span class="line"></span><br><span class="line">    Print(addressBook);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Flat-Buffer"><a href="#Flat-Buffer" class="headerlink" title="Flat Buffer"></a>Flat Buffer</h1><p>FlatBuffers是一个跨平台的序列化库，旨在实现最高的内存效率。实现了与 Protocol Buffers，Thrift，Apache Avro，SBE 和 Cap’n Proto 类似的序列化格式。它允许我们直接访问序列化数据，而无需先解析/解压缩，同时仍具有良好的向前/向后兼容性。其最初为 Android 游戏和注重性能的应用而开发了FlatBuffers。</p>
+<p>FlatBuffers 的主要目标是避免反序列化。这是通过定义二进制数据协议来实现的，一种将定义好的将数据转换为二进制数据的方法。由该协议创建的二进制结构可以 wire 发送，并且无需进一步处理即可读取。相比较而言，在传输 JSON 时，我们需要将数据转换为字符串，通过 wire 发送，解析字符串，并将其转换为本地对象。Flatbuffers 不需要这些操作。你用二进制装入数据，发送相同的二进制文件，并直接从二进制文件读取。</p>
+<p>尽管 FlatBuffers 有自己的接口定义语言来定义要与之序列化的数据，但它也支持 Protocol Buffers 中的 .proto格式。</p>
+<p>在 schema 中定义对象类型，然后可以将它们编译为 C++ 或 Java 等各种主流语言，以实现零开销读写。FlatBuffers 还支持将 JSON 数据动态地分析到 buffer 中。</p>
+<p>除了解析效率以外，二进制格式还带来了另一个优势，数据的二进制表示通常更具有效率。我们可以使用 4 字节的 UInt 而不是 10 个字符来存储 10 位数字的整数。</p>
+<p>FlatBuffers 与 Protocol Buffers 确实比较相似，主要的区别在于 FlatBuffers 在访问数据之前不需要解析/解包。两者代码也是一个数量级的。但是 Protocol Buffers 既没有可选的文本导入/导出功能，也没有 union 这个语言特性，这两点 FlatBuffers 都有。</p>
+<p>FlatBuffers 专注于移动硬件（内存大小和内存带宽比桌面端硬件更受限制），以及具有最高性能需求的应用程序：游戏。</p>
+<h2 id="支持设备"><a href="#支持设备" class="headerlink" title="支持设备"></a>支持设备</h2><p>Windows、mmacOS、Linux、Android等</p>
+<h2 id="支持语言"><a href="#支持语言" class="headerlink" title="支持语言"></a>支持语言</h2><p>Python、Java、c++等</p>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><h3 id="编写想要序列化的数据结构的schema（IDL-接口定义）文件"><a href="#编写想要序列化的数据结构的schema（IDL-接口定义）文件" class="headerlink" title="编写想要序列化的数据结构的schema（IDL,接口定义）文件"></a>编写想要序列化的数据结构的schema（IDL,接口定义）文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// example IDL file</span><br><span class="line"></span><br><span class="line">namespace MyGame;</span><br><span class="line"></span><br><span class="line">attribute &quot;priority&quot;;</span><br><span class="line"></span><br><span class="line">enum Color : byte &#123; Red = 1, Green, Blue &#125;</span><br><span class="line"></span><br><span class="line">union Any &#123; Monster, Weapon, Pickup &#125;</span><br><span class="line"></span><br><span class="line">struct Vec3 &#123;</span><br><span class="line">  x:float;</span><br><span class="line">  y:float;</span><br><span class="line">  z:float;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">table Monster &#123;</span><br><span class="line">  pos:Vec3;</span><br><span class="line">  mana:short = 150;</span><br><span class="line">  hp:short = 100;</span><br><span class="line">  name:string;</span><br><span class="line">  friendly:bool = false (deprecated, priority: 1);</span><br><span class="line">  inventory:[ubyte];</span><br><span class="line">  color:Color = Blue;</span><br><span class="line">  test:Any;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">root_type Monster;</span><br></pre></td></tr></table></figure>
+<p>在上述的schema文件中有两个重要的概念，struct和table。</p>
+<h4 id="table"><a href="#table" class="headerlink" title="table"></a>table</h4><p>Table 是在 FlatBuffers 中定义对象的主要方式，由一个名称（这里是 Monster）和一个字段列表组成。每个字段都有一个名称，一个类型和一个可选的默认值（如果省略，它默认为 0 / NULL）。</p>
+<p>Table 中每个字段都是可选 optional 的：它不必出现在 wire 表示中，并且可以选择省略每个单独对象的字段。这种设计也是 FlatBuffer 的前向和后向兼容机制。</p>
+<p>假设当前schema是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:int; b:int; &#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="添加字段"><a href="#添加字段" class="headerlink" title="添加字段"></a>添加字段</h5><p>只能在表定义的末尾添加新的字段。旧数据仍会正确读取，并在读取时为您提供默认值。旧代码将简单地忽略新字段。如果希望灵活地使用 schema 中字段的任何顺序，您可以手动分配ids。<br>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:int; b:int; c:int; &#125;</span><br><span class="line">或者</span><br><span class="line">table &#123; c:int (id: 2); a:int (id: 0); b:int (id: 1); &#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="删除字段"><a href="#删除字段" class="headerlink" title="删除字段"></a>删除字段</h5><p>不能从 schema 中删除不再使用的字段，但可以简单地停止将它们写入数据中。此外，可以将它们标记为 deprecated，如上例所示，被标记的字段不会再生成 C ++ 的访问器，从而强制该字段不再被使用。</p>
+<h5 id="更改字段"><a href="#更改字段" class="headerlink" title="更改字段"></a>更改字段</h5><p>可以更改字段名称和 table 名称。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:uint; b:uint; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>直接修改字段的类型，这样做可能可行，也有情况不行。只有在类型改变是相同大小的情况下，是可行的。如果旧数据不包含任何负数，这将是安全的，如果包含了负数，这样改变会出现问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:int = 1; b:int = 2; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样修改不可行。任何写入数值为 0 的旧数据都不会再写入 buffer，并依赖于重新创建的默认值。现在这些值将显示为1和2。有些情况下可能不会出错，但必须小心。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; aa:int; bb:int; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面这种修改方法，修改原来的变量名以后，可能会出现问题。由于已经重命名了字段，这将破坏所有使用此版本 schema 的代码（和 JSON 文件），这与实际的二进制缓冲区不兼容。</p>
+<p>table 是 FlatBuffers 的基石，因为对于大多数需要序列化应用来说，数据结构改变是必不可少的。通常情况下，处理数据结构的变更在大多数序列化解决方案的解析过程中可以透明地完成的。但是一个 FlatBuffer 在被访问之前不会被分析。</p>
+<p>为了解决数据结构变更的问题，table 通过 vtable 间接访问字段。每个 table 都带有一个 vtable（可以在具有相同布局的多个 table 之间共享），并且包含存储此特定类型 vtable 实例的字段的信息。vtable 还可能表明该字段不存在（因为此 FlatBuffer 是使用旧版本的软件编写的，仅仅因为信息对于此实例不是必需的，或者被视为已弃用），在这种情况下会返回默认值。</p>
+<p>table 的内存开销很小（因为 vtables 很小并且共享）访问成本也很小（间接访问），但是提供了很大的灵活性。table 甚至可能比等价的 struct 花费更少的内存，因为字段在等于默认值时不需要存储在 buffer 中。</p>
+<h4 id="structs"><a href="#structs" class="headerlink" title="structs"></a>structs</h4><p>tructs 和 table 非常相似，只是 structs 没有任何字段是可选的（所以也没有默认值），字段可能不会被添加或被弃用。结构可能只包含标量或其他结构。如果确定以后不会进行任何更改。structs 使用的内存少于 table，并且访问速度更快（它们总是以串联方式存储在其父对象中，并且不使用虚拟表）。  </p>
+<p>structs 不提供前向/后向兼容性，但占用内存更小。对于不太可能改变的非常小的对象（例如坐标对或RGBA颜色）存成 struct 是非常有用的。</p>
+<h4 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h4><p>FlatBuffers 支持的 标量 类型有以下几种：</p>
+<ul>
+<li>8 bit: byte (int8), ubyte (uint8), bool</li>
+<li>16 bit: short (int16), ushort (uint16)</li>
+<li>32 bit: int (int32), uint (uint32), float (float32)</li>
+<li>64 bit: long (int64), ulong (uint64), double (float64)</li>
+</ul>
+<p>括号里面的名字对应的是类型的别名。</p>
+<p>FlatBuffers 支持的 非标量 类型有以下几种：</p>
+<ul>
+<li>任何类型的数组。不过不支持嵌套数组，可以用 table 内定义数组的方式来取代嵌套数组。</li>
+<li>UTF-8 和 7-bit ASCII 的字符串。其他格式的编码字符串或者二进制数据，需要用 [byte] 或者 [ubyte] 来替代。</li>
+<li>table、structs、enums、unions</li>
+</ul>
+<p>标量类型的字段有默认值，非标量的字段(string/vector/table)如果没有值的话，默认值为 NULL。</p>
+<p>一旦一个类型声明了，尽量不要改变它的类型，一旦改变了，很可能就会出现错误。上面也提到过了，如果把 int 改成 uint，数据如果有负数，那么就会出错。</p>
+<h4 id="Enums"><a href="#Enums" class="headerlink" title="Enums"></a>Enums</h4><p>定义一系列命名常量，每个命名常量可以分别给一个定值，也可以默认的从前一个值增加一。默认的第一个值是 0。正如在上面例子中看到的枚举声明，使用:(上面例子中是 byte 字节）指定枚举的基本整型，然后确定用这个枚举类型声明的每个字段的类型。</p>
+<p>通常，只应添加枚举值，不要去删除枚举值（对枚举不存在弃用一说）。这需要开发者代码通过处理未知的枚举值来自行处理向前兼容性的问题</p>
+<h4 id="Unions"><a href="#Unions" class="headerlink" title="Unions"></a>Unions</h4><p>这个是 Protocol buffers 中还不支持的类型。</p>
+<p>union 是 C 语言中的概念，一个 union 中可以放置多种类型，共同使用一个内存区域。</p>
+<p>但是在 FlatBuffers 中，Unions 可以像 Enums 一样共享许多属性，但不是常量的新名称，而是使用 table 的名称。可以声明一个 Unions 字段，该字段可以包含对这些类型中的任何一个的引用，即这块内存区域只能由其中一种类型使用。另外还会生成一个带有后缀 _type 的隐藏字段，该字段包含相应的枚举值，从而可以在运行时知道要将哪些类型转换为类型。</p>
+<p>union 跟 enum 比较类似，但是 union 包含的是 table，enum 包含的是 scalar或者 struct。</p>
+<p>Unions 是一种能够在一个 FlatBuffer 中发送多种消息类型的好方法。请注意，因为union 字段实际上是两个字段(有一个隐藏字段)，所以它必须始终是表的一部分，它本身不能作为 FlatBuffer 的 root。</p>
+<h3 id="使用flatc编译"><a href="#使用flatc编译" class="headerlink" title="使用flatc编译"></a>使用flatc编译</h3><p>使用FlatBuffer编译器flatc生成数据结构源代码（C++头文件或者Java类）</p>
+<h3 id="使用相关接口读取或写入flat-buffer"><a href="#使用相关接口读取或写入flat-buffer" class="headerlink" title="使用相关接口读取或写入flat buffer"></a>使用相关接口读取或写入flat buffer</h3><p><a href="https://github.com/google/flatbuffers/blob/master/tests/JavaTest.java" target="_blank" rel="noopener">https://github.com/google/flatbuffers/blob/master/tests/JavaTest.java</a></p>
+<h1 id="Protocol-Buffer-与-Flat-Buffer"><a href="#Protocol-Buffer-与-Flat-Buffer" class="headerlink" title="Protocol Buffer 与 Flat Buffer"></a>Protocol Buffer 与 Flat Buffer</h1><ul>
+<li>弃用的字段，不用手动分配字段的 ID。在 .proto 中扩展一个对象，需要在数字中寻找一个空闲的空位（因为 protocol buffers 有更紧凑的表示方式，所以必须选择更小的数字）。除了这点不方便之外，它还使得删除字段成为问题：如果保留它们，从语意表达上不是很明显的表达出这个字段不能读写了，保留它们，还会生成访问器。如果删除它们，就会有出现严重 bug 的风险，因为当有人重用了这些 ID，会导致读取到旧的数据，这样数据会发生错乱。</li>
+<li>FlatBuffers 区分 table 和 struct。所有 table 字段都是可选的，并且所有 struct 字段都是必需的。</li>
+<li>FlatBuffers 具有原生数组类型而不是 repeated。这给你一个长度，而不必收集所有项目，并且在标量的情况下提供更紧凑的表示，并且确保相邻性。</li>
+<li>FlatBuffers 具有 union 类型，这个也是 protocol buffers 没有的。一个 union 可以替代很多个 optional 字段，这样也可以节约每个字段都要一一检查的时间。</li>
+<li>FlatBuffers 能够为所有标量定义默认值，而不必在每次访问时处理它们的 optional，并且默认值不存在 buffer 中，也不用担心空间的问题。</li>
+<li>可以统一处理模式和数据定义（并且和 JSON 兼容）的解析器。protocol buffers 不兼容 JSON。FlatBuffers 的 flatc 编译器可带的参数也更加强大，具体可带参数列表见此文档</li>
+<li>schema 扩展了一些 protocol buffers 没有的 Attributes</li>
+</ul>
+<p>除去功能上的不同，再就是一些 schema 语法上的细微不同：</p>
+<ul>
+<li>定义对象，protocol buffers 是 message，FlatBuffers 是 table</li>
+<li>ID，protocol buffers 默认是从 1 开始标号，FlatBuffers 默认从 0 开始</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/wireshark数据包分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/07/wireshark数据包分析/" itemprop="url">wireshark数据包分析</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T10:19:43+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/wireshark数据包分析/" class="leancloud_visitors" data-flag-title="wireshark数据包分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="TCP报文"><a href="#TCP报文" class="headerlink" title="TCP报文"></a>TCP报文</h2><p>TCP：（TCP是面向连接的通信协议，通过三次握手建立连接，通讯完成时要拆除连接，由于TCP 是面向连接的所以只能用于点对点的通讯）源IP地址：发送包的IP地址；目的IP地址：接收包的IP地址；源端口：源系统上的连接的端口；目的端口：目的系统上的连接的端口。  TCP是因特网中的传输层协议，使用三次握手协议建立连接。当主动方发出SYN连接请求后，等待对方回答SYN，ACK。这种建立连接的方法可以防止产生错误的连接，TCP使用的流量控制协议是可变大小的滑动窗口协议。第一次握手：建立连接时，客户端发送SYN包(SEQ=x)到服务器，并进入SYN_SEND状态，等待服务器确认。第二次握手：服务器收到SYN包，必须确认客户的SYN(ACK=x+1),同时自己也送一个SYN包(SEQ=y),即SYN+ACK包，此时服务器进入SYN_RECV状态。第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ACK=y+1),此包发送完毕，客户端和服务器进入Established状态，完成三次握手</p>
+<h3 id="封包详细信息"><a href="#封包详细信息" class="headerlink" title="封包详细信息"></a>封包详细信息</h3><p><img src="https://img-blog.csdn.net/20170114092218164" alt="image"><br>A. 第一行，帧Frame 36838 指的是要发送的数据块，其中，所抓帧的序号为36838，捕获字节数等于传送字节数：70字节；</p>
+<p>B. 第二行，以太网，有线局域网技术，是数据链路层。源Mac地址为88:5d:90:00:00:25；目标Mac地址为00:25:22:b5:b9:92；</p>
+<p>C. 第三行，IPV4协议，也称网际协议，是网络层；源IP地址为192.168.21.175；目标IP地址为192.168.21.156；</p>
+<p>D. 第四行，TCP协议，也称传输控制协议，是传输层；源端口(10086)；目标端口(50132)；序列号(1361)；ACK是TCP数据包首部中的确认标志，对已接收到的TCP报文进行确认，值为1表示确认号有效；长度为16；</p>
+<p>E. 第五行，数据共有16字节</p>
+<h4 id="Frame信息分析"><a href="#Frame信息分析" class="headerlink" title="Frame信息分析"></a>Frame信息分析</h4><p><img src="https://img-blog.csdn.net/20170114104835215" alt="image"><br>A. Arrival Time：到达时间，值为Jan 14, 2017 08:52:56.239204000</p>
+<p>B. EPoch Time：信息出现时间，值为1484355176.239204000秒</p>
+<p>C. [ Time delta from previous captured frame: 0.001472000 seconds] ：与之前捕获的数据帧时间差：0.001472000秒；</p>
+<pre><code>[Time delta from previous displayed frame: 0.001472000 seconds]：与之前显示的帧时间差： 0.001472000秒；
+
+[Time since reference or first frame: 1278.276505000 seconds]：距参考帧或第一帧的时间差：1278.276505000秒；
+</code></pre><p>D. Frame Number: 36838，帧编号为36838；</p>
+<p>E. Frame Length: 70 bytes (560 bits)，帧长度为70字节；</p>
+<pre><code>Capture Length: 70 bytes (560 bits)，捕获到的长度为70字节；
+</code></pre><p>F. [Frame is marked: False]，帧标记：无；</p>
+<pre><code>[Frame is ignored: False]，帧被忽略：无；
+</code></pre><p>G. [Protocols in frame: eth:ip:tcp:data]，协议帧：eth(以太网)、IP、tcp、data</p>
+<p>H. [Coloring Rule Name: TCP]，色彩规则名称：TCP；</p>
+<pre><code>[Coloring Rule String: tcp]，色彩规则字符串：TCP；
+</code></pre><h4 id="Ethernet-II信息分析"><a href="#Ethernet-II信息分析" class="headerlink" title="Ethernet II信息分析"></a>Ethernet II信息分析</h4><p><img src="https://img-blog.csdn.net/20170114111317125" alt="iamge"><br>A. Destination: AsrockIn_b5:b9:92 (00:25:22:b5:b9:92)，目标Mac地址为00:25:22:b5:b9:92</p>
+<p>B. Source: 88:5d:90:00:00:25 (88:5d:90:00:00:25)，源Mac地址为88:5d:90:00:00:25</p>
+<p>C. Type: IP (0x0800)，类型是IP数据包</p>
+<h4 id="Ipv4协议信息分析"><a href="#Ipv4协议信息分析" class="headerlink" title="Ipv4协议信息分析"></a>Ipv4协议信息分析</h4><p><img src="https://img-blog.csdn.net/20170114112410438" alt="image"></p>
+<p>A. Version: 4，IP协议版本为IPv4；</p>
+<pre><code>Header length: 20 bytes，头部数据长度为20字节；
+</code></pre><p>B. Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))，区分的服务领域：0x00 (默认的是DSCP：0x00)；</p>
+<p>C. Flags: 0x02 (Don’t Fragment)，不支持分组；</p>
+<pre><code>Fragment offset: 0，分组偏移量为0； 
+</code></pre><p>D. Time to live: 64，TTL，生存时间为64，TTL通常表示包在被丢弃前最多能经过的路由器个数，当数据包传输到一个路由器之后，TTL就自动减1，如果减到0了还没有传送到目标主机，那么就自动丢失。</p>
+<p>E. Header checksum: 0xcebd [correct]，头部校验和</p>
+<p>F. Source: 192.168.21.175 (192.168.21.175)，源IP地址为192.168.21.175；</p>
+<pre><code>Destination: 192.168.21.156 (192.168.21.156)，目标IP地址为192.168.21.156
+</code></pre><h4 id="Trasmission-Control-Protocol信息分析"><a href="#Trasmission-Control-Protocol信息分析" class="headerlink" title="Trasmission Control Protocol信息分析"></a>Trasmission Control Protocol信息分析</h4><p>其中，对应的TCP首部的数据信息<br><img src="https://img-blog.csdn.net/20170114093029919" alt="image"></p>
+<p>A. 端口号，数据传输的16位源端口号和16位目标端口号(用于寻找发端和收端应用进程)；</p>
+<p>B. 相对序列号，该数据包的相对序列号为1361(此序列号用来确定传送数据的正确位置，且序列号用来侦测丢失的包)；下一个数据包的序列号是1377；</p>
+<p>C. Acknowledgment number是32位确认序列号，值等于1表示数据包收到，确认有效；</p>
+<p>D. 手动的数据包的头字节长度是20字节；</p>
+<p>E. Flags，含6种标志；ACK：确认序号有效；SYN：同步序号用来发起一个连接；FIN：发端完成发送任务；RST：重新连接；PSH：接收方应该尽快将这个报文段交给应用层；URG：紧急指针(urgentpointer)有效；</p>
+<p>F. window，TCP的流量控制由连接的每一端通过声明的窗口大小来提供。窗口大小为字节数，起始于确认序号字段指明的值，这个值是接收端正期望接收的字节。窗口大小是一个16bit字段，因而窗口大小最大为65536字节，上面显示窗口大小为1825字节；</p>
+<p>G. Checksum，16位校验和，检验和覆盖了整个的TCP报文段，由发端计算和存储，并由收端进行验证</p>
+<h4 id="Data信息分析"><a href="#Data信息分析" class="headerlink" title="Data信息分析"></a>Data信息分析</h4><p><img src="https://img-blog.csdn.net/20170114114030332" alt="image"></p>
+<p>A.  TCP 报文段中的数据(该部分是可选的)，长度为16字节；</p>
+<h2 id="Http报文"><a href="#Http报文" class="headerlink" title="Http报文"></a>Http报文</h2><p>链路层的信息上是以帧的形式进行传输的，帧封装了应用层、传输层、网络层的数据。而Wireshark抓到的就是链路层的一帧；</p>
+<h3 id="封装包详细信息"><a href="#封装包详细信息" class="headerlink" title="封装包详细信息"></a>封装包详细信息</h3><p><img src="https://img-blog.csdn.net/20170114120559104" alt="image"></p>
+<p>A. 第一行，帧Frame 12411 指的是要发送的数据块，其中，所抓帧的序号为12411，捕获字节数等于传送字节数：233字节；</p>
+<p>B. 第二行，以太网，有线局域网技术，是数据链路层。源Mac地址为24:69:68:6b:78:96；目标Mac地址为00:25:22:b5:b9:92；</p>
+<p>C. 第三行，IPV4协议，也称网际协议，是网络层；源IP地址为220.181.57.234；目标IP地址为192.168.21.156；</p>
+<p>D. 第四行，TCP协议，也称传输控制协议，是传输层；源端口(80)；目标端口(53985)；序列号(1)；ACK是TCP数据包首部中的确认标志，对已接收到的TCP报文进行确认，值为1表示确认号有效；长度为179；</p>
+<p>E. 第五行，Http协议，也称超文本传输协议，是应用层</p>
+<h4 id="Http请求报文分析"><a href="#Http请求报文分析" class="headerlink" title="Http请求报文分析"></a>Http请求报文分析</h4><p><img src="https://img-blog.csdn.net/20170114135028036" alt="image"></p>
+<p>报文分析：<br><img src="https://img-blog.csdn.net/20170114135154140" alt="image"></p>
+<p>在抓包分析过程中还发现了另外一些http请求报文中所特有的首部字段名，比如下面http请求报文中橙黄色首部字段名：</p>
+<p><img src="https://img-blog.csdn.net/20170114135419581" alt="image"></p>
+<h4 id="Http响应报文信息"><a href="#Http响应报文信息" class="headerlink" title="Http响应报文信息"></a>Http响应报文信息</h4><p><img src="https://img-blog.csdn.net/20170114134516128" alt="image"></p>
+<p>报文分析：  </p>
+<p><img src="https://img-blog.csdn.net/20170114134622379" alt="image"></p>
+<h2 id="DNS报文"><a href="#DNS报文" class="headerlink" title="DNS报文"></a>DNS报文</h2><h3 id="封包详细信息-1"><a href="#封包详细信息-1" class="headerlink" title="封包详细信息"></a>封包详细信息</h3><p><img src="https://img-blog.csdn.net/20170114140200794" alt="image"></p>
+<p>A. 第一行，帧Frame 12237 指的是要发送的数据块，其中，所抓帧的序号为12237，捕获字节数等于传送字节数：133字节；</p>
+<p>B. 第二行，以太网，有线局域网技术，是数据链路层。源Mac地址为24:69:68:6b:78:96；目标Mac地址为00:25:22:b5:b9:92；</p>
+<p>C. 第三行，IPV4协议，也称网际协议，是网络层；源IP地址为192.168.211.254；目标IP地址为192.168.211.84；</p>
+<p>D. 第四行，UDP协议，是传输层；源端口domain(53)；目标端口(65219)；</p>
+<p>E. 第五行，DNS协议，是应用层。</p>
+<h4 id="DNS查询报文"><a href="#DNS查询报文" class="headerlink" title="DNS查询报文"></a>DNS查询报文</h4><p><img src="https://img-blog.csdn.net/20170114141159062" alt="iamge"></p>
+<p>报文分析：<br><img src="https://img-blog.csdn.net/20170114141447421" alt="image"></p>
+<h4 id="DNS响应报文"><a href="#DNS响应报文" class="headerlink" title="DNS响应报文"></a>DNS响应报文</h4><p><img src="https://img-blog.csdn.net/20170114141637002" alt="iamge"></p>
+<p>报文分析：  </p>
+<p><img src="https://img-blog.csdn.net/20170114142315693" alt="image"></p>
+<h2 id="Ping"><a href="#Ping" class="headerlink" title="Ping"></a>Ping</h2><p><img src="https://img-blog.csdn.net/20170118162817190" alt="image"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/数据包分析基础/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/07/数据包分析基础/" itemprop="url">数据包分析基础</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T09:21:38+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析基础/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/数据包分析基础/" class="leancloud_visitors" data-flag-title="数据包分析基础">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="http2协议"><a href="#http2协议" class="headerlink" title="http2协议"></a>http2协议</h2><p>http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。</p>
+<p>http/2源于SPDY，但仍有不同的地方，主要是以下两点：</p>
+<ul>
+<li>HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS</li>
+<li>HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT</li>
+</ul>
+<p>注：spdy是Google开发的基于TCP的应用层协议，用以最小化网络延迟，提升网络速度，优化用户的网络使用体验。SPDY并不是一种用于替代HTTP的协议，而是对HTTP协议的增强。新协议的功能包括数据流的多路复用、请求优先级以及HTTP报头压缩。互联网工程任务组（IETF）对谷歌提出的SPDY协议进行了标准化，于2015年5推出了类似于SPDY协议的 HTTP 2.0 协议标准（简称HTTP/2）。谷歌因此宣布放弃对SPDY协议的支持，转而支持HTTP/2。此外，著名的开源HTTP服务器软件 Nginx 也于2015年9月移除了对SPDY的支持，转而支持HTTP/2。</p>
+<h2 id="二进制格式"><a href="#二进制格式" class="headerlink" title="二进制格式"></a>二进制格式</h2><p>HTTP/1 的请求和响应报文，都是由起始行、首部和实体正文（可选）组成，各部分之间以文本换行符分隔。<br>HTTP/2 将请求和响应数据分割为更小的帧，并对它们采用二进制编码。<br>帧（Frame）：HTTP/2 数据通信的最小单位。<br>消息（Message）：指 HTTP/2 中逻辑上的 HTTP 消息。例如请求和响应等，消息由一个或多个帧组成<br>流（Stream）：存在于连接中的一个虚拟通道。流可以承载双向消息，每个流都有一个唯一的整数 ID。</p>
+<p>HTTP/2 中，同域名下所有通信都在单个连接上完成，这个连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装。</p>
+<p>Frame 是 HTTP/2 二进制格式的基础，Frame 的基本格式如下</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&amp;shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f" alt="image"></p>
+<h2 id="http2的影响"><a href="#http2的影响" class="headerlink" title="http2的影响"></a>http2的影响</h2><p>现在http2还没被大范围部署使用，我们也无法确定到底会发生什么变化，但至少可以参考SPDY的例子和曾经做过的实验来进行大概估计。</p>
+<p>http2减少了网络往返传输的数量，并且用多路复用和快速丢弃不需要的流的办法来完全避免了head of line blocking的困扰。</p>
+<p>它也支持大量并行流，所以即使网站的数据分发在各处也不是问题。</p>
+<p>合理利用流的优先级，可以让客户端尽可能优先收到更重要的数据。</p>
+<p>所有这些加起来，我认为页面载入时间和站点相应的速度都会更快。简而言之：更好的web体验。</p>
+<p>但到底能变得多快，到底提升有多大呢？我认为目前很难说清楚。毕竟这些技术依然在早期，我们还没法看见客户端和服务器实现这些并真正受益于新协议所提供的强大功能。</p>
+<h2 id="集线器、交换机、路由器"><a href="#集线器、交换机、路由器" class="headerlink" title="集线器、交换机、路由器"></a>集线器、交换机、路由器</h2><h3 id="集线器"><a href="#集线器" class="headerlink" title="集线器"></a>集线器</h3><p>集线器(Hub)工作在最底层(物理层)，没有相匹配的软件系统，是纯硬件设备,集线器主要用来连接计算机等网络终端。</p>
+<p>集线器为<strong>共享式带宽</strong>，连接在集线器上的任何一个设备发送数据时，其他所有设备必须等待，此设备享有全部带宽，通讯完毕，再由其他设备使用带宽。正因此，集线器连接了一个冲突域的网络。所有设备相互交替使用，就好象大家一起过一根独木桥一样。</p>
+<p>集线器<strong>不能判断数据包的目的地和类型</strong>，所以如果是广播数据包也依然转发，而且所有设备发出数据以广播方式发送到每个接口，这样集线器也连接了一个广播域的网络。</p>
+<h3 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h3><p>交换机工作在数据链接层(第二层)，和集线器一样主要用于连接计算机等网络终端设备。允许连接在交换机上的设备并行通讯，好比高速公路上的汽车并行行使一般，设备间通讯不会再发生冲突，因此交换机打破了冲突域，交换机每个接口是一个冲突域，不会与其他接口发生通讯冲突。</p>
+<p>有系统的交换机可以记录MAC地址表，发送的数据不会再以广播方式发送到每个接口，而是直接到达目的接口，节省了接口带宽。但是交换机和集线器一样不能判断广播数据包，会把广播发送到全部接口，所以交换机和集线器一样连接了一个广播域网络。</p>
+<p>高端一点的交换机不仅可以记录MAC地址表，还可以划分VLAN（虚拟局域网）来隔离广播，但是VLAN间也同样不能通讯。要使VLAN间能够通讯，必须有三层设备介入。</p>
+<h3 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h3><p>路由器工作在网络层(第三层)，主要用来进行网络与网络的连接，所有路由器都有自己的操作系统。路由器把数据从一个网络发送到另一个网络，这个过程就叫路由。路由器不仅能像交换机一样隔离冲突域，而且还能检测广播数据包，并丢弃广播包来隔离广播域，有效的扩大了网络的规模。</p>
+<p>在路由器中记录着路由表，路由器以此来转发数据，以实现网络间的通讯。路由器的介入可以使交换机划分的VLAN实现互相通讯。</p>
+<h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><table>
+<thead>
+<tr>
+<th>name</th>
+<th>complete connection</th>
+<th>stateful</th>
+<th>selected replay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>TCPReplay|No Required|No|No<br>Tomahawk|Required|Yes|No<br>Mokey|No Required|Yes|No<br>Avalanche|Required|Yes|No<br>SocketReplay|No Required|Yes|Yes</p>
+<h3 id="TcpReplay"><a href="#TcpReplay" class="headerlink" title="TcpReplay"></a>TcpReplay</h3><p>Tcpreplay是一个工具套件，用来测试各种网络设备，包括：交换机、路由器、防火墙、NIDS和IPS等。它使用嗅探工具抓取的数据包，允许你拆分客户端和服务端流量，重写2、3、4层头信息，最终将流量回放到网络中。3.4 版本包括以下部分：</p>
+<ul>
+<li><p>Tcpprep:将流量拆分为客户端和服务端两个方向，并存放为缓存文件</p>
+</li>
+<li><p>Tcprewrite:重写pcap文件的TCP/IP层和数据链路层的头信息</p>
+</li>
+<li><p>Tcpreplay:以可控的速度将pcap文件回放到网络中</p>
+</li>
+<li><p>Tcpreplay-edit:在tcpreplay基础上增加编辑功能</p>
+</li>
+<li><p>Tcpbirdge:桥接两个不同网段</p>
+</li>
+<li><p>Tcpcapinfo:pcap 文件解码器和编译器</p>
+</li>
+</ul>
+<p>原文链接：<a href="https://www.cnblogs.com/jiayy/p/3447027.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiayy/p/3447027.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/http-http2协议/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/07/http-http2协议/" itemprop="url">数据包分析基础</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T09:21:38+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/http-http2协议/" class="leancloud_visitors" data-flag-title="数据包分析基础">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="http2协议"><a href="#http2协议" class="headerlink" title="http2协议"></a>http2协议</h2><p>http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。</p>
+<p>http/2源于SPDY，但仍有不同的地方，主要是以下两点：</p>
+<ul>
+<li>HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS</li>
+<li>HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT</li>
+</ul>
+<p>注：spdy是Google开发的基于TCP的应用层协议，用以最小化网络延迟，提升网络速度，优化用户的网络使用体验。SPDY并不是一种用于替代HTTP的协议，而是对HTTP协议的增强。新协议的功能包括数据流的多路复用、请求优先级以及HTTP报头压缩。互联网工程任务组（IETF）对谷歌提出的SPDY协议进行了标准化，于2015年5推出了类似于SPDY协议的 HTTP 2.0 协议标准（简称HTTP/2）。谷歌因此宣布放弃对SPDY协议的支持，转而支持HTTP/2。此外，著名的开源HTTP服务器软件 Nginx 也于2015年9月移除了对SPDY的支持，转而支持HTTP/2。</p>
+<h2 id="二进制格式"><a href="#二进制格式" class="headerlink" title="二进制格式"></a>二进制格式</h2><p>HTTP/1 的请求和响应报文，都是由起始行、首部和实体正文（可选）组成，各部分之间以文本换行符分隔。<br>HTTP/2 将请求和响应数据分割为更小的帧，并对它们采用二进制编码。<br>帧（Frame）：HTTP/2 数据通信的最小单位。<br>消息（Message）：指 HTTP/2 中逻辑上的 HTTP 消息。例如请求和响应等，消息由一个或多个帧组成<br>流（Stream）：存在于连接中的一个虚拟通道。流可以承载双向消息，每个流都有一个唯一的整数 ID。</p>
+<p>HTTP/2 中，同域名下所有通信都在单个连接上完成，这个连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装。</p>
+<p>Frame 是 HTTP/2 二进制格式的基础，Frame 的基本格式如下</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&amp;shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f" alt="image"></p>
+<h2 id="http2的影响"><a href="#http2的影响" class="headerlink" title="http2的影响"></a>http2的影响</h2><p>现在http2还没被大范围部署使用，我们也无法确定到底会发生什么变化，但至少可以参考SPDY的例子和曾经做过的实验来进行大概估计。</p>
+<p>http2减少了网络往返传输的数量，并且用多路复用和快速丢弃不需要的流的办法来完全避免了head of line blocking的困扰。</p>
+<p>它也支持大量并行流，所以即使网站的数据分发在各处也不是问题。</p>
+<p>合理利用流的优先级，可以让客户端尽可能优先收到更重要的数据。</p>
+<p>所有这些加起来，我认为页面载入时间和站点相应的速度都会更快。简而言之：更好的web体验。</p>
+<p>但到底能变得多快，到底提升有多大呢？我认为目前很难说清楚。毕竟这些技术依然在早期，我们还没法看见客户端和服务器实现这些并真正受益于新协议所提供的强大功能。</p>
+<h2 id="集线器、交换机、路由器"><a href="#集线器、交换机、路由器" class="headerlink" title="集线器、交换机、路由器"></a>集线器、交换机、路由器</h2><h3 id="集线器"><a href="#集线器" class="headerlink" title="集线器"></a>集线器</h3><p>集线器(Hub)工作在最底层(物理层)，没有相匹配的软件系统，是纯硬件设备,集线器主要用来连接计算机等网络终端。</p>
+<p>集线器为<strong>共享式带宽</strong>，连接在集线器上的任何一个设备发送数据时，其他所有设备必须等待，此设备享有全部带宽，通讯完毕，再由其他设备使用带宽。正因此，集线器连接了一个冲突域的网络。所有设备相互交替使用，就好象大家一起过一根独木桥一样。</p>
+<p>集线器<strong>不能判断数据包的目的地和类型</strong>，所以如果是广播数据包也依然转发，而且所有设备发出数据以广播方式发送到每个接口，这样集线器也连接了一个广播域的网络。</p>
+<h3 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h3><p>交换机工作在数据链接层(第二层)，和集线器一样主要用于连接计算机等网络终端设备。允许连接在交换机上的设备并行通讯，好比高速公路上的汽车并行行使一般，设备间通讯不会再发生冲突，因此交换机打破了冲突域，交换机每个接口是一个冲突域，不会与其他接口发生通讯冲突。</p>
+<p>有系统的交换机可以记录MAC地址表，发送的数据不会再以广播方式发送到每个接口，而是直接到达目的接口，节省了接口带宽。但是交换机和集线器一样不能判断广播数据包，会把广播发送到全部接口，所以交换机和集线器一样连接了一个广播域网络。</p>
+<p>高端一点的交换机不仅可以记录MAC地址表，还可以划分VLAN（虚拟局域网）来隔离广播，但是VLAN间也同样不能通讯。要使VLAN间能够通讯，必须有三层设备介入。</p>
+<h3 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h3><p>路由器工作在网络层(第三层)，主要用来进行网络与网络的连接，所有路由器都有自己的操作系统。路由器把数据从一个网络发送到另一个网络，这个过程就叫路由。路由器不仅能像交换机一样隔离冲突域，而且还能检测广播数据包，并丢弃广播包来隔离广播域，有效的扩大了网络的规模。</p>
+<p>在路由器中记录着路由表，路由器以此来转发数据，以实现网络间的通讯。路由器的介入可以使交换机划分的VLAN实现互相通讯。</p>
+<h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><table>
+<thead>
+<tr>
+<th>name</th>
+<th>complete connection</th>
+<th>stateful</th>
+<th>selected replay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>TCPReplay|No Required|No|No<br>Tomahawk|Required|Yes|No<br>Mokey|No Required|Yes|No<br>Avalanche|Required|Yes|No<br>SocketReplay|No Required|Yes|Yes</p>
+<h3 id="TcpReplay"><a href="#TcpReplay" class="headerlink" title="TcpReplay"></a>TcpReplay</h3><p>Tcpreplay是一个工具套件，用来测试各种网络设备，包括：交换机、路由器、防火墙、NIDS和IPS等。它使用嗅探工具抓取的数据包，允许你拆分客户端和服务端流量，重写2、3、4层头信息，最终将流量回放到网络中。3.4 版本包括以下部分：</p>
+<ul>
+<li><p>Tcpprep:将流量拆分为客户端和服务端两个方向，并存放为缓存文件</p>
+</li>
+<li><p>Tcprewrite:重写pcap文件的TCP/IP层和数据链路层的头信息</p>
+</li>
+<li><p>Tcpreplay:以可控的速度将pcap文件回放到网络中</p>
+</li>
+<li><p>Tcpreplay-edit:在tcpreplay基础上增加编辑功能</p>
+</li>
+<li><p>Tcpbirdge:桥接两个不同网段</p>
+</li>
+<li><p>Tcpcapinfo:pcap 文件解码器和编译器</p>
+</li>
+</ul>
+<p>原文链接：<a href="https://www.cnblogs.com/jiayy/p/3447027.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiayy/p/3447027.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/现代密码学基础六/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1292,1034 +2349,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/04/现代密码学基础一/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/04/现代密码学基础一/" itemprop="url">现代密码学基础一</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T09:30:20+08:00">
-                2019-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/04/现代密码学基础一/" class="leancloud_visitors" data-flag-title="现代密码学基础一">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="流密码"><a href="#流密码" class="headerlink" title="流密码"></a>流密码</h2><p>流密码一般逐字节或者逐比特处理信息。一般来说：</p>
-<ul>
-<li>流密码的密钥长度会与明文的长度相同。</li>
-<li>流密码的密钥派生自一个较短的密钥，派生算法通常为一个伪随机数生成算法。</li>
-</ul>
-<p>需要注意的是，流加密目前来说都是对称加密。</p>
-<p>伪随机数生成算法生成的序列的随机性越强，明文中的统计特征被覆盖的更好。</p>
-<p>流密码加解密非常简单，在已知明文的情况下，可以非常容易地获取密钥流。</p>
-<p>流密码的关键在于设计好的伪随机数生成器。一般来说，伪随机数生成器的基本构造模块为反馈移位寄存器。当然，也有一些特殊设计的流密码，比如 RC4。</p>
-<h3 id="伪随机数生成器"><a href="#伪随机数生成器" class="headerlink" title="伪随机数生成器"></a>伪随机数生成器</h3><p>伪随机数生成器（pseudorandom number generator，PRNG），又称为确定性随机位生成器（deterministic random bit generator，DRBG），是用来生成接近于绝对随机数序列的数字序列的算法。一般来说，PRNG 会依赖于一个初始值，也称为种子，来生成对应的伪随机数序列。只要种子确定了，PRNG 所生成的随机数就是完全确定的，因此其生成的随机数序列并不是真正随机的。</p>
-<p>就目前而言，PRNG 在众多应用都发挥着重要的作用，比如模拟（蒙特卡洛方法），电子竞技，密码应用。</p>
-<h4 id="随机性的严格性"><a href="#随机性的严格性" class="headerlink" title="随机性的严格性"></a>随机性的严格性</h4><ul>
-<li>随机性：随机数应该不存在统计学偏差，是完全杂乱的数列。</li>
-<li>不可预测性：不能从过去的序列推测出下一个出现的数。</li>
-<li>不可重现性：除非数列保存下来，否则不能重现相同的数列。</li>
-</ul>
-<p>这三个性质的严格性依次递增。</p>
-<p>一般来说，随机数可以分为三类</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>随机性</th>
-<th>不可预测性</th>
-<th>不可重现性</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>弱伪随机数</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>强伪随机数</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>真随机数</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-</tbody>
-</table>
-<p>一般来说，密码学中使用的随机数是第二种。</p>
-<h4 id="周期"><a href="#周期" class="headerlink" title="周期"></a>周期</h4><p>正如我们之前所说，一旦 PRNG 所依赖的种子确定了，那么 PRNG 生成的随机数序列基本也就确定了。这里定义 PRNG 的周期如下：对于一个 PRNG 的所有可能起始状态，不重复序列的最长长度。显然，对于一个 PRNG 来说，其周期不会大于其所有可能的状态。但是，需要注意的是，并不是当我们遇到重复的输出时，就可以认为是 PRNG 的周期，因为 PRNG 的状态一般都是大于输出的位数的(一般性限制条件)。</p>
-<h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><p>目前通用的伪随机数生成器主要有：</p>
-<ul>
-<li>线性同余生成器，LCG</li>
-<li>线性回归发生器</li>
-<li>线性反馈移位寄存器（Linear feedback shift register，LFSR）</li>
-<li>Mersenne Twister</li>
-<li>xorshift generators</li>
-<li>WELL family of generators</li>
-</ul>
-<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p>通常来说，伪随机数生成器可能会有以下问题：  </p>
-<ul>
-<li>在某些种子的情况下，其生成的随机数序列的周期会比较小。</li>
-<li>生成大数时，分配的不均匀。</li>
-<li>连续值之间关联密切，知道后续值，可以知道之前的值。</li>
-<li>输出序列的值的大小很不均匀。</li>
-</ul>
-<h3 id="密码安全伪随机数数生成器"><a href="#密码安全伪随机数数生成器" class="headerlink" title="密码安全伪随机数数生成器"></a>密码安全伪随机数数生成器</h3><p>密码学安全伪随机数生成器（cryptographically secure pseudo-random number generator，CSPRNG），也称为密码学伪随机数生成器（cryptographic pseudo-random number generator，CPRNG)，是一种特殊的伪随机数生成器。它需要满足满足一些必要的特性，以便于适合于密码学应用。</p>
-<p>密码学的很多方面都需要随机数：</p>
-<ul>
-<li>密钥生成</li>
-<li>生成初始化向量，IV，用于分组密码的 CBC，CFB，OFB 模式</li>
-<li>nonce，用于防止重放攻击以及分组密码的 CTR 模式等、</li>
-<li>one-time pads</li>
-<li>某些签名方案中的盐，如 ECDSA， RSASSA-PSS</li>
-</ul>
-<p>注：在资讯安全中，Nonce是一个在加密通信只能使用一次的数字。在认证协议中，它往往是一个随机或伪随机数，以避免重放攻击。Nonce也用于流密码以确保安全。如果需要使用相同的密钥加密一个以上的消息，就需要Nonce来确保不同的消息与该密钥加密的密钥流不同。</p>
-<h4 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h4><p>毫无疑问，密码学安全伪随机数生成器的要求肯定比一般的伪随机数生成器要高。一般而言，CSPRNG 的要求可以分为两类</p>
-<ul>
-<li>通过统计随机性测试。CSPRNG 必须通过 next-bit test，也就是说，知道了一个序列的前 k 个比特，攻击者不可能在多项式时间内以大于 50% 的概率预测出来下一个比特位。这里特别提及一点，姚期智曾在 1982 年证明，如果一个生成器可以通过 next-bit test，那么它也可以通过所有其他的多项式时间统计测试。</li>
-<li>必须能够抵抗足够强的攻击，比如当生成器的部分初始状态或者运行时的状态被攻击者获知时，攻击者仍然不能够获取泄漏状态之前的生成的随机数。</li>
-</ul>
-<h4 id="分类-1"><a href="#分类-1" class="headerlink" title="分类"></a>分类</h4><p>就目前而看， CSPRNG 的设计可以分为以下三类</p>
-<ul>
-<li>基于密码学算法，如密文或者哈希值。</li>
-<li>基于数学难题</li>
-<li>某些特殊目的的设计</li>
-</ul>
-<h3 id="反馈移位寄存器"><a href="#反馈移位寄存器" class="headerlink" title="反馈移位寄存器"></a>反馈移位寄存器</h3><p>一般的，一个 n 级反馈移位寄存器如下图所示</p>
-<p><img src="https://note.youdao.com/yws/api/personal/file/WEBc234f54efe1a0af70602bf1974c14605?method=download&amp;shareKey=415fcf56b93e427f2b1df0417a1add43" alt="image"></p>
-<ul>
-<li>$a_0$,$a_1$,…,$a_{n-1}$为初态。</li>
-<li>F为反馈函数或者反馈逻辑。如果 F 为线性函数，那么我们称其为线性反馈移位寄存器（LFSR），否则我们称其为非线性反馈移位寄存器（NFSR）。</li>
-<li>$a_{i+n}$=F($a_i$,$a_{i+1}$,…,$a_{i+n-1}$)</li>
-</ul>
-<p>一般来说，反馈移位寄存器都会定义在某个有限域上，从而避免数字太大和太小的问题。因此，我们可以将其视为同一个空间中的变换，即</p>
-<p>($a_i$,$a_{i+1}$,…,$a_{i+n-1}$) -&gt; ($a_{i+1}$,..,$a_{i+n-1}$,$a_{i+n}$),对于一个序列来说，我们一般定义其生成函数为其序列对应的幂级数的和。</p>
-<h4 id="非线性反馈寄存器"><a href="#非线性反馈寄存器" class="headerlink" title="非线性反馈寄存器"></a>非线性反馈寄存器</h4><p>//TODO</p>
-<h3 id="特殊流密码-RC4"><a href="#特殊流密码-RC4" class="headerlink" title="特殊流密码-RC4"></a>特殊流密码-RC4</h3><p>RSA 由 Ron Rivest 设计，最初隶属于 RSA 安全公司，是一个专利密码产品。它是面向字节的流密码，密钥长度可变，非常简单，但也很有效果。RC4 算法广泛应用于 SSL/TLS 协议和 WEP/WPA 协议。</p>
-<p>RC4 主要包含三个流程：  </p>
-<ul>
-<li>初始化 S 和 T 数组。</li>
-<li>初始化置换 S。</li>
-<li>生成密钥流。</li>
-</ul>
-<h4 id="初始化-S-和-T-数组"><a href="#初始化-S-和-T-数组" class="headerlink" title="初始化 S 和 T 数组"></a>初始化 S 和 T 数组</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for i = 0 to 255 do</span><br><span class="line">    S[i] = i</span><br><span class="line">    T[i] = K[i mod keylen])</span><br></pre></td></tr></table></figure>
-<p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/streamcipher/special/figure/rc4_s_t.png" alt="image"></p>
-<h4 id="初始化置换-S"><a href="#初始化置换-S" class="headerlink" title="初始化置换 S"></a>初始化置换 S</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">j = 0</span><br><span class="line">for i = 0 to 255 do </span><br><span class="line">    j = (j + S[i] + T[i]) (mod 256) </span><br><span class="line">    swap (S[i], S[j])</span><br></pre></td></tr></table></figure>
-<p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/streamcipher/special/figure/rc4_s.png" alt="image"></p>
-<h4 id="生成流密钥"><a href="#生成流密钥" class="headerlink" title="生成流密钥"></a>生成流密钥</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">i = j = 0 </span><br><span class="line">for each message byte b</span><br><span class="line">    i = (i + 1) (mod 256)</span><br><span class="line">    j = (j + S[i]) (mod 256)</span><br><span class="line">    swap(S[i], S[j])</span><br><span class="line">    t = (S[i] + S[j]) (mod 256) </span><br><span class="line">    print S[t]</span><br></pre></td></tr></table></figure>
-<p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/streamcipher/special/figure/rc4_key.png" alt="image"></p>
-<p>我们一般称前两部分为 KSA ，最后一部分是 PRGA。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/古典密码学基础三/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/03/古典密码学基础三/" itemprop="url">古典密码学基础三</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T15:59:21+08:00">
-                2019-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/03/古典密码学基础三/" class="leancloud_visitors" data-flag-title="古典密码学基础三">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="培根密码"><a href="#培根密码" class="headerlink" title="培根密码"></a>培根密码</h3><p>培根密码使用两种不同的字体，代表 A 和 B，结合加密表进行加解密。<br><img src="https://note.youdao.com/yws/api/personal/file/WEB614471942b2a382c57f0cf2346e379a8?method=download&amp;shareKey=3ce1ae584d6f0c4aaa50ad70471ac721" alt="image"><br>上面的是常用的加密表。还有另外的一种加密表，可认为是将 26 个字母从 0 到 25 排序，以二进制表示，A 代表 0，B 代表 1。</p>
-<p>下面这一段内容就是明文 steganography 使用<br>To encode a message each letter of the plaintext is replaced by a group of five of the letters ‘A’ or ‘B’.<br>加密后的内容，大写为A，小写为B。<br>|明文|s|t|e|g|a|n|o|g|r|a|p|h|y|<br>|-|-|-|-|-|-|-|-|-|-|-|-|-|-|<br>|转换表|baaab|baaba|aabaa|aabba|aaaaa|abbaa|abbab|aabba|baaaa|aaaaa|abbba|aabbb|babba|<br>|密文|tOENc|oDEaM|ESsAG|EEacH|LETTE|RofTH|EplAi|NTexT|iSREP|LACED|ByagR|OUpof|fIveL|</p>
-<p>可以看到，培根密码主要有以下特点：</p>
-<ul>
-<li>只有两种字符（大小写，粗/正常题，斜/正常体等）</li>
-<li>每一段的长度为5</li>
-<li>加密内容会有特殊的字体之分，亦或大小写之分</li>
-</ul>
-<p>工具：<a href="http://rumkin.com/tools/cipher/baconian.php" target="_blank" rel="noopener">http://rumkin.com/tools/cipher/baconian.php</a></p>
-<h3 id="栅栏密码"><a href="#栅栏密码" class="headerlink" title="栅栏密码"></a>栅栏密码</h3><p>栅栏密码把要加密的明文分成 N 个一组，然后把每组的第 1 个字连起来，形成一段无规律的话。这里给出一个例子：<br>明文：THERE IS A CIPHER</p>
-<p>去掉空格后变为</p>
-<blockquote>
-<p>THEREISACIPHER</p>
-</blockquote>
-<p>分成两栏，两个一组得到</p>
-<blockquote>
-<p>TH ER EI SA CI PH ER</p>
-</blockquote>
-<p>先取出第一个字母，再取出第二个字母</p>
-<blockquote>
-<p>TEESCPE<br>HRIAIHR</p>
-</blockquote>
-<p>连在一起就是</p>
-<blockquote>
-<p>TEESCPEHRIAIHR</p>
-</blockquote>
-<p>上述明文也可以分为 2 栏。</p>
-<blockquote>
-<p>THEREIS ACIPHER</p>
-</blockquote>
-<p>组合得到密文</p>
-<blockquote>
-<p>TAHCEIRPEHIESR</p>
-</blockquote>
-<p>工具：<a href="http://ctf.ssleye.com/railfence.html" target="_blank" rel="noopener">http://ctf.ssleye.com/railfence.html</a></p>
-<h3 id="曲路密码"><a href="#曲路密码" class="headerlink" title="曲路密码"></a>曲路密码</h3><p>曲路密码（Curve Cipher）是一种换位密码，需要事先双方约定密钥（也就是曲路路径）。下面给出一个例子：  </p>
-<blockquote>
-<p>明文：The quick brown fox<br>jumps over the lazy dog</p>
-</blockquote>
-<p>填入 5 行 7 列表（事先约定填充的行列数）<br><img src="https://note.youdao.com/yws/api/personal/file/WEBaab90fd8528f744a4b6e3ed6c78df86e?method=download&amp;shareKey=cb2988f0247bbc4a64bb037340e21266" alt="image"><br>加密的回路线（事先约定填充的行列数）<br><img src="https://note.youdao.com/yws/api/personal/file/WEB135692c80f25a4ec2cd7bf21aeecbdc9?method=download&amp;shareKey=c983704ab96d9ddaadcfa3d7cf67ab6d" alt="image"><br>密文：gesfc inpho dtmwu qoury zejre hbxva lookT</p>
-<h3 id="01248密码"><a href="#01248密码" class="headerlink" title="01248密码"></a>01248密码</h3><p>该密码又称为云影密码，使用 0，1，2，4，8 四个数字，其中 0 用来表示间隔，其他数字以加法可以表示出 如：28=10，124=7，18=9，再用 1-&gt;26 表示 A-&gt;Z。</p>
-<p>可以看出该密码有以下特点：</p>
-<ul>
-<li>只有 0，1，2，4，8</li>
-</ul>
-<p>例如：8842101220480224404014224202480122</p>
-<p>按照0来分割：<br>|内容|数字|字符|<br>|-|-|-|<br>|88421|8+8+4+2+1=23|W|<br>|122|1+2+2=5|E|<br>|48|4+8=12|L|<br>|2244|2+2+4+4=12|L|<br>|4|4|D|<br>|142242|1+4+2+2+4+2=15|0|<br>|248|2+4+8=14|N|<br>|122|1+2+2=5|E|<br>明文：WELLDONE</p>
-<h3 id="JSFuck"><a href="#JSFuck" class="headerlink" title="JSFuck"></a>JSFuck</h3><p>JSFuck 可以只用 6 个字符 <a href=""></a>!+ 来编写 JavaScript 程序。比如我们想用 JSFuck 来实现 alert(1) 代码如下：  </p>
-<blockquote>
-<p>[][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]][([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]]]+([][[]]+[])[+[[+!+[]]]]+(![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[+!+[]]]]+([][[]]+[])[+[[+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]]]+(!![]+[])[+[<a href="(![]+[]">+!+[]]]]</a>[+[[+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]+(!![]+[])[+[[+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[+!+[]]]+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+[+!+[]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[+!+[]]]+[[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]]])()</p>
-</blockquote>
-<p>其他一些基本的表达：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">false       =&gt;  ![]</span><br><span class="line">true        =&gt;  !![]</span><br><span class="line">undefined   =&gt;  [][[]]</span><br><span class="line">NaN         =&gt;  +[![]]</span><br><span class="line">0           =&gt;  +[]</span><br><span class="line">1           =&gt;  +!+[]</span><br><span class="line">2           =&gt;  !+[]+!+[]</span><br><span class="line">10          =&gt;  [+!+[]]+[+[]]</span><br><span class="line">Array       =&gt;  []</span><br><span class="line">Number      =&gt;  +[]</span><br><span class="line">String      =&gt;  []+[]</span><br><span class="line">Boolean     =&gt;  ![]</span><br><span class="line">Function    =&gt;  [][&quot;filter&quot;]</span><br><span class="line">eval        =&gt;  [][&quot;filter&quot;][&quot;constructor&quot;]( CODE )()</span><br><span class="line">window      =&gt;  [][&quot;filter&quot;][&quot;constructor&quot;](&quot;return this&quot;)()</span><br></pre></td></tr></table></figure></p>
-<p>工具：<a href="http://www.jsfuck.com" target="_blank" rel="noopener">http://www.jsfuck.com</a></p>
-<h3 id="BrainFuck"><a href="#BrainFuck" class="headerlink" title="BrainFuck"></a>BrainFuck</h3><p>Brainfuck，是一种极小化的计算机语言，它是由 Urban Müller 在 1993 年创建的。我们举一个例子，如果我们想要一个在屏幕上打印 Hello World！，那么对应的程序如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">++++++++++[&gt;+++++++&gt;++++++++++&gt;+++&gt;+&lt;&lt;&lt;&lt;-]</span><br><span class="line">&gt;++.&gt;+.+++++++..+++.&gt;++.&lt;&lt;+++++++++++++++.</span><br><span class="line">&gt;.+++.------.--------.&gt;+.&gt;.</span><br></pre></td></tr></table></figure></p>
-<p>与其对应的还有 ook。</p>
-<p>工具：<a href="https://www.splitbrain.org/services/ook" target="_blank" rel="noopener">https://www.splitbrain.org/services/ook</a></p>
-<h3 id="猪圈密码"><a href="#猪圈密码" class="headerlink" title="猪圈密码"></a>猪圈密码</h3><p>猪圈密码是一种以格子为基础的简单替代式密码，格子如下：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB76a78a8b102de070a7fcdc8824660b2b?method=download&amp;shareKey=71bed2948c5cec3dc77b6ce43c5967c0" alt="image"><br>例如：明文为 X marks the spot ，那么密文如下：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB542ffbb69121a02be44c46268eae3bac?method=download&amp;shareKey=188f938bab6d2ebea01940a2c755e75d" alt="image"></p>
-<p>工具：<a href="http://www.simonsingh.net/The_Black_Chamber/pigpen.html" target="_blank" rel="noopener">http://www.simonsingh.net/The_Black_Chamber/pigpen.html</a></p>
-<h3 id="舞动的小人密码"><a href="#舞动的小人密码" class="headerlink" title="舞动的小人密码"></a>舞动的小人密码</h3><p>这种密码出自于福尔摩斯探案集。每一个跳舞的小人实际上对应的是英文二十六个字母中的一个，而小人手中的旗子则表明该字母是单词的最后一个字母，如果仅仅是一个单词而不是句子，或者是句子中最后的一个单词，则单词中最后一个字母不必举旗。<br><img src="https://note.youdao.com/yws/api/personal/file/WEB0d432b9016f9d7f01d93260b1c0124d3?method=download&amp;shareKey=dad1725328f62432fc4eb1f48d10f5bb" alt="image"></p>
-<h3 id="键盘密码"><a href="#键盘密码" class="headerlink" title="键盘密码"></a>键盘密码</h3><p>所谓键盘密码，就是采用手机键盘或者电脑键盘进行加密。</p>
-<h4 id="手机键盘密码"><a href="#手机键盘密码" class="headerlink" title="手机键盘密码"></a>手机键盘密码</h4><p>手机键盘加密方式，是每个数字键上有 3-4 个字母，用两位数字来表示字母，例如：ru 用手机键盘表示就是：7382，那么这里就可以知道了，手机键盘加密方式不可能用 1 开头，第二位数字不可能超过 4，解密的时候参考此。<br><img src="https://note.youdao.com/yws/api/personal/file/WEB35c2548fd5300110899752984fa99371?method=download&amp;shareKey=4008d4855211fc73f4597b224067d0b6" alt="image"><br>关于手机键盘加密还有另一种方式，就是「音的」式（这一点可能根据手机的不同会有所不同），具体参照手机键盘来打，例如：「数字」表示出来就是：748 94。在手机键盘上面按下这几个数，就会出：「数字」的拼音。</p>
-<h4 id="电脑键盘棋盘密码"><a href="#电脑键盘棋盘密码" class="headerlink" title="电脑键盘棋盘密码"></a>电脑键盘棋盘密码</h4><p>电脑键盘棋盘加密，利用了电脑的棋盘方阵。<br><img src="https://note.youdao.com/yws/api/personal/file/WEB2e33ea38af7f4baf490ff9f39d715c9f?method=download&amp;shareKey=3648b73f7f64573b1a572be93c70e8fb" alt="iamge"></p>
-<h4 id="电脑键盘坐标密码"><a href="#电脑键盘坐标密码" class="headerlink" title="电脑键盘坐标密码"></a>电脑键盘坐标密码</h4><p>电脑键盘坐标加密，利用键盘上面的字母行和数字行来加密，例：bye 用电脑键盘 XY 表示就是：351613</p>
-<p><img src="https://note.youdao.com/yws/api/personal/file/WEBe0e36122c77aa2b4f9082895a8d6082b?method=download&amp;shareKey=714cffcaddd3a713461ba4e51c85d471" alt="image"></p>
-<h4 id="电脑键盘QWE"><a href="#电脑键盘QWE" class="headerlink" title="电脑键盘QWE"></a>电脑键盘QWE</h4><p>电脑键盘 QWE 加密法，就是用字母表替换键盘上面的排列顺序。</p>
-<p><img src="https://note.youdao.com/yws/api/personal/file/WEBd5d37d656e0d67ee4d6abf87233c61d0?method=download&amp;shareKey=5f547f51c40690833c88da1a7f3e0077" alt="image"></p>
-<h3 id="CTF案例"><a href="#CTF案例" class="headerlink" title="CTF案例"></a>CTF案例</h3><ol>
-<li>0CTF 2014 classic<blockquote>
-<p>小丁丁发现自己置身于一个诡异的房间，面前只有一扇刻着奇怪字符的门。 他发现门边上还有一道密码锁，似乎要输入密码才能开门。。4esxcft5 rdcvgt 6tfc78uhg 098ukmnb</p>
-</blockquote>
-</li>
-</ol>
-<p>发现这么乱，还同时包括数字和字母猜想可能是键盘密码，试着在键盘上按照字母顺序描绘一下，可得到 0ops 字样，猜测就是 flag 了。</p>
-<ol start="2">
-<li>2017 年 xman 选拔赛——一二三，木头人 <blockquote>
-<p>我数 123 木头人，再不行动就要被扣分。</p>
-<p>23731263111628163518122316391715262121</p>
-<p>密码格式 xman{flag}<br>题目中有很明显的提示 123，那么就自然需要联想到键盘密码中电脑键盘坐标密码，可以发现前几个数字第二个数字都是 1-3 范围内的，也验证了我们的猜测。于是：<br>23-x</p>
-<p>73-m</p>
-<p>12-a</p>
-<p>63-n</p>
-<p>11-q</p>
-</blockquote>
-</li>
-</ol>
-<p>不对呀，密码格式是 xman{，第四个字符是 {，于是看了看 { 的位置，其并没有对应的横坐标，但是如果我们手动把它视为 11 的话，那么 111 就是 {。然后依次往后推，发现确实可行，，最后再把 121 视为 } 即可得到 flag.</p>
-<blockquote>
-<p>xman{hintisenough}</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/古典密码学基础二/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/03/古典密码学基础二/" itemprop="url">古典密码学基础二</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T15:56:14+08:00">
-                2019-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/03/古典密码学基础二/" class="leancloud_visitors" data-flag-title="古典密码学基础二">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="多表代换密码"><a href="#多表代换密码" class="headerlink" title="多表代换密码"></a>多表代换密码</h3><p>对于多表替换加密来说，加密后的字母几乎不再保持原来的频率，所以我们一般只能通过寻找算法实现对应的弱点进行破解。</p>
-<h4 id="维吉尼亚密码"><a href="#维吉尼亚密码" class="headerlink" title="维吉尼亚密码"></a>维吉尼亚密码</h4><p>维吉尼亚密码是广为人知的多表替换式密码，也称为多字母替换式密码。</p>
-<p>在一个凯撒密码中，字母表中的每一字母都会作一定的偏移，例如偏移量为3时，A就转换为了D、B转换为了E……而维吉尼亚密码则是由一些偏移量不同的恺撒密码组成。</p>
-<p>为了生成密码，需要使用表格法。这一表格包括了26行字母表，每一行都由前一行向左偏移一位得到。具体使用哪一行字母表进行编译是基于密钥进行的，在过程中会不断地变换。</p>
-<p>例如：</p>
-<p>假设明文是ATTACKATDAWN，选择某一关键词并重复而得到密钥，如关键词为LEMON时，密钥为：LEMONLEMONLE</p>
-<p>对于明文的第一个字母A，对应密钥的第一个字母L，于是使用表格中L行字母表进行加密，得到密文第一个字母L。类似地，明文第二个字母为T，在表格中使用对应的E行进行加密，得到密文第二个字母X。以此类推，可以得到：</p>
-<p>明文：ATTACKATDAWN<br>密钥：LEMONLEMONLE<br>密文：LXFOPVEFRNHR</p>
-<p>解密的过程则与加密相反。例如：根据密钥第一个字母L所对应的L行字母表，发现密文第一个字母L位于A列，因而明文第一个字母为A。密钥第二个字母E对应E行字母表，而密文第二个字母X位于此行T列，因而明文第二个字母为T。以此类推便可得到明文。</p>
-<p>用数字0-25代替字母A-Z，维吉尼亚密码的加密文法可以写成同余的形式：</p>
-<p>$C_i$=$P_i$+$K_i(mod\ 26)$</p>
-<p>解密方法则能写成：</p>
-<p>$P_i$=$C_i$-$K_i(mod\ 26)$</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/古典密码学基础/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/03/古典密码学基础/" itemprop="url">古典密码学基础一</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T09:28:25+08:00">
-                2019-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/03/古典密码学基础/" class="leancloud_visitors" data-flag-title="古典密码学基础一">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>古典密码学是密码学中的其中一个类型，其大部分加密方式都是利用替换式密码或移项式密码，或者两者的混合。其与历史中经常使用，但现代已经很少使用，大部分已经不再使用。在古典密码学中，设计者主要考虑消息的保密性，使得只有相关密钥的人才可以解密密文获得消息的内容，对于消息的完整性和不可否认性则并没有进行太多的考虑。<br>。</p>
-<h2 id="密码分类"><a href="#密码分类" class="headerlink" title="密码分类"></a>密码分类</h2><h3 id="单表代换密码"><a href="#单表代换密码" class="headerlink" title="单表代换密码"></a>单表代换密码</h3><p>对字母做系统的替换，直到讯息被替换为难以理解的字。</p>
-<h4 id="凯撒密码"><a href="#凯撒密码" class="headerlink" title="凯撒密码"></a>凯撒密码</h4><p>凯撒密码是广为人知的单表式替换密码，它只使用一个密码字母集。</p>
-<p>为了使用凯撒密码加密讯息，每个密码字母集中字母将会被其位置的后三个字母替代。因此字母A將会被字母D替代、字母B將会被字母E替代、字母C將会被字母F替代等，最后，X、Y和Z將分別的被替代成A、B和C。例如，”WIKIPEDIA”將被加密成”ZLNLSHGLD”。凱撒把字母向后移”3”位，但其他数字也是类似。</p>
-<p>根据偏移量的不同，还存在若干特定的恺撒密码名称：</p>
-<ul>
-<li>偏移量为 10：Avocat （A→K）</li>
-<li>偏移量为 13：ROT13</li>
-<li>偏移量为 -5：Cassis （K 6）</li>
-<li>偏移量为 -6：Cassette （K 7）</li>
-</ul>
-<p>另一种替换式密码是使用关键字（等同于密钥），你可以选择一个字母或片段并去除所有的空格和重复字母，接着把它当做密码字母集的开头，把去除密钥后的其他字母接续排序。例如，如果关键字是cipher，则密码字母表会是下面的情况：</p>
-<p>一般密码字母集: a b c d e f g h i j k l m n o p q r s t u v w x y z</p>
-<p>密钥密码字母集: c i p h e r s t u v w x y z a b d f g j k l m n o q</p>
-<p>还有一种基于密钥的凯撒密码，其基本原理是利用一个密钥，将密钥的每一位转换为数字（一般转化为字母表对应顺序的数字），分别以这一数字为密钥加密明文的每一位字母。例如：<br>密文：s0a6u3u1s0bv1a<br>密钥：guangtou<br>偏移：6,20,0,13,6,19,14,20<br>明文：y0u6u3h1y0uj1u  </p>
-<p>对于不带密钥的凯撒密码来说，破解方式有两种：  </p>
-<ul>
-<li>遍历 26 个偏移量，适用于普遍情况。</li>
-<li>在密文长度足够长的时候，使用词频分析<a href="https://quipqiup.com/" target="_blank" rel="noopener">https://quipqiup.com/</a></li>
-</ul>
-<p>其中，第一种方式肯定可以得到明文，而第二种方式则不一定可以得到正确的明文。</p>
-<p>而对于基于密钥的凯撒密码来说，一般来说必须知道对应的密钥。</p>
-<p>工具：<br>一般我们有如下的工具，其中 JPK 比较通用。</p>
-<ul>
-<li>JPK，可解带密钥与不带密钥</li>
-<li><a href="http://planetcalc.com/1434/" target="_blank" rel="noopener">http://planetcalc.com/1434/</a></li>
-<li><a href="http://www.qqxiuzi.cn/bianma/ROT5-13-18-47.php" target="_blank" rel="noopener">http://www.qqxiuzi.cn/bianma/ROT5-13-18-47.php</a></li>
-</ul>
-<h4 id="简单替换密码"><a href="#简单替换密码" class="headerlink" title="简单替换密码"></a>简单替换密码</h4><p>简单替换密码（Simple Substitution Cipher）加密时，将每个明文字母替换为与之唯一对应且不同的字母。它与恺撒密码之间的区别是其密码字母表的字母不是简单的移位，而是完全是混乱的，这也使得其破解难度要高于凯撒密码。 比如：<br>明文字母 : abcdefghijklmnopqrstuvwxyz<br>密钥字母 : phqgiumeaylnofdxjkrcvstzwb<br>a 对应 p，d 对应 h，以此类推。<br>明文：the quick brown fox jumps over the lazy dog<br>密文：cei jvaql hkdtf udz yvoxr dsik cei npbw gdm<br>而解密时，我们一般是知道了每一个字母的对应规则，才可以正常解密。</p>
-<p>由于这种加密方式导致其所有的密钥个数是26!，所以几乎上不可能使用暴力的解决方式。所以我们 一般采用词频分析。</p>
-<p>工具：<a href="http://quipqiup.com/" target="_blank" rel="noopener">http://quipqiup.com/</a></p>
-<h3 id="移位式密码"><a href="#移位式密码" class="headerlink" title="移位式密码"></a>移位式密码</h3><p>与凯撒密码类似，区别在于移位密码不仅会处理字母，还会处理数字和特殊字符，常用 ASCII 码表进行移位。其破解方法也是遍历所有的可能性来得到可能的结果。</p>
-<h4 id="纵线式移位密码"><a href="#纵线式移位密码" class="headerlink" title="纵线式移位密码"></a>纵线式移位密码</h4><p>一个移位式密码的具体例子就是纵线式移位密码。先选择一个关键字，把原来的讯息由左向右、由上到下依照关键字长度转写成长方形。接着把关键字的字母依照字母集顺序编号，例如a就是1，b就是2，c就是3等。例如：关键字是CAT，明文是THE SKY IS BLUE，则讯息应该被转换成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C A T  </span><br><span class="line">3 1 20  </span><br><span class="line">T H E  </span><br><span class="line">S K Y  </span><br><span class="line">I S B  </span><br><span class="line">L U E</span><br></pre></td></tr></table></figure></p>
-<p> 最后把讯息以行为单位，依照编号大小调换位置，呈现的应该是 A为第一行，C为第二行，T为第三行。然后就可以把讯息转换成HKSUTSILEYBE</p>
-<h4 id="中国式密码"><a href="#中国式密码" class="headerlink" title="中国式密码"></a>中国式密码</h4><p> 另外一种移位式密码是中国式密码，移位的方法是将讯息的字母加密成由右向左、上下交替的不规则的字母。例如，如果明文是THE DOG RAN FAR，则中国式密码看起来像这样：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">R  R   G   T</span><br><span class="line">A  A   O   H</span><br><span class="line">F  N   D   E</span><br></pre></td></tr></table></figure></p>
-<p> 密文将被是：RRGT AAOH FNDE</p>
-<h4 id="艾特巴什码"><a href="#艾特巴什码" class="headerlink" title="艾特巴什码"></a>艾特巴什码</h4><p>埃特巴什码（Atbash Cipher）其实可以视为下面要介绍的简单替换密码的特例，它使用字母表中的最后一个字母代表第一个字母，倒数第二个字母代表第二个字母。在罗马字母表中，它是这样出现的：<br>明文：A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br>密文：Z Y X W V U T S R Q P O N M L K J I H G F E D C B A<br>下面给出一个例子：<br>明文：the quick brown fox jumps over the lazy dog<br>密文：gsv jfrxp yildm ulc qfnkh levi gsv ozab wlt</p>
-<p>可以看出其密钥空间足够短，同时当密文足够长时，仍然可以采用词频分析的方法解决。</p>
-<p>工具：<a href="http://www.practicalcryptography.com/ciphers/classical-era/atbash-cipher/" target="_blank" rel="noopener">http://www.practicalcryptography.com/ciphers/classical-era/atbash-cipher/</a></p>
-<h3 id="仿射密码"><a href="#仿射密码" class="headerlink" title="仿射密码"></a>仿射密码</h3><p>原理：<br>仿射密码的加密函数是<br>E(x)=(ax+b)(mod m)，其中：  </p>
-<ul>
-<li>x表示明文按照某种编码得到的数字</li>
-<li>a和m互质</li>
-<li>m是编码系统中字母的数目。</li>
-</ul>
-<p>解密函数是D(x)=$a^{-1}$(x-b)(mod m),其中$a^{-1}$是a在整数群的乘法逆元。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">明文:A F F I N  E C I P H E R </span><br><span class="line">x:  0 5 5 8 13 4 2 8 15 7 4 17</span><br><span class="line">y=5x+8:8 33 33 48 73 28 18 48 83 43 28 93</span><br><span class="line">y mod 26:8 7 7 22 21 2 18 22 5 17 2 15 </span><br><span class="line">密文:I H H W V C S W F R C P</span><br></pre></td></tr></table></figure></p>
-<p>其对应的加密结果是 IHHWVCSWFRCP。</p>
-<p>对于解密过程，正常解密者具有 a 与 b，可以计算得到$a^{-1}$为 21，所以其解密函数是:D(x)=21(x-8)(mod 26)</p>
-<p>破解：<br>首先，我们可以看到的是，仿射密码对于任意两个不同的字母，其最后得到的密文必然不一样，所以其也具有最通用的特点。当密文长度足够长时，我们可以使用频率分析的方法来解决。</p>
-<p>其次，我们可以考虑如何攻击该密码。可以看出当a=1时，仿射加密是凯撒加密。而一般来说，我们利用仿射密码时，其字符集都用的是字母表，一般只有 26 个字母，而不大于 26 的与 26 互素的个数一共有ϕ(26）=ϕ(2)Xϕ(13)=12,算上 b 的偏移可能，一共有可能的密钥空间大小也就是12×26=312 </p>
-<p>一般来说，对于该种密码，我们至少得是在已知部分明文的情况下才可以攻击。下面进行简单的分析。</p>
-<p>这种密码由两种参数来控制，如果我们知道其中任意一个参数，那我们便可以很容易地快速枚举另外一个参数得到答案。</p>
-<p>但是，假设我们已经知道采用的字母集，这里假设为 26 个字母，我们还有另外一种解密方式，我们只需要知道两个加密后的字母$y_1$,$y_2$即可进行解密。那么我们还可以知道:<br>$y_1$=(a$x_1$+b)(mod 26)<br>$y_2$=(a$x_2$+b)(mod 26)<br>二者相减,可得：<br>$y_1$-$y_2$=a($x_1$-$x_2$)(mod 26)</p>
-<p>这里$y_1$,$y_2$已知，如果我们知道密文对应的两个不一样的字符$x_1$,$x_2$，那么我们就可以很容易得到 a，进而就可以得到 b了。</p>
-<h2 id="密码破译"><a href="#密码破译" class="headerlink" title="密码破译"></a>密码破译</h2><p> 经典密码通常很容易被破解。许多经典密码可单由密文而破解，所以它们容易遭受到唯密文攻击法攻击。有些经典密码（例如凯撒密码）的密钥个数有限，所以这类密码可以通过暴力破解尝试所有的密钥。替换式密码有较大的密钥数，但是很容易被频率分析，因为每个密码字母各代替了一个明文字母。多表式替换密码使用多个替换可防止简单的频率分析，但卡西斯基验、弗里德曼试验可用来破解这类密码。</p>
-<h3 id="卡西斯基试验"><a href="#卡西斯基试验" class="headerlink" title="卡西斯基试验"></a>卡西斯基试验</h3><p> 卡西斯基试验是基于类似the这样的常用单词有可能被同样的密钥字母进行加密，从而在密文中重复出现。例如，明文中不同的CRYPTO可能被密钥ABCDEF加密成不同的密文：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">密钥：ABCDEF AB CDEFA BCD EFABCDEFABCD</span><br><span class="line">明文：CRYPTO IS SHORT FOR CRYPTOGRAPHY</span><br><span class="line">密文：CSASXT IT UKSWT GQU GWYQVRKWAQJB</span><br></pre></td></tr></table></figure></p>
-<p>此时明文中重复的元素在密文中并不重复。然而，如果密钥相同的话，结果可能便为（使用密钥ABCD）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">密钥：ABCDAB CD ABCDA BCD ABCDABCDABCD</span><br><span class="line">明文：CRYPTO IS SHORT FOR CRYPTOGRAPHY</span><br><span class="line">密文：CSASTP KV SIQUT GQU CSASTPIUAQJB</span><br></pre></td></tr></table></figure></p>
-<p>此时卡西斯基试验就能产生效果。对于更长的段落此方法更为有效，因为通常密文中重复的片段会更多。如通过下面的密文就能破译出密钥的长度：<br>密文：<strong>DYDUXRMH</strong>TVDV<strong>NQD</strong>QNW<strong>DYDUXRMH</strong>ARTJGW<strong>NQD</strong></p>
-<p>其中，两个DYDUXRMH的出现相隔了18个字母。因此，可以假定密钥的长度是18的约数，即长度为18、9、6、3或2。而两个NQD则相距20个字母，意味着密钥长度应为20、10、5、4或2。取两者的交集，则可以基本确定密钥长度为2。</p>
-<h3 id="弗里德曼试验"><a href="#弗里德曼试验" class="headerlink" title="弗里德曼试验"></a>弗里德曼试验</h3><p>它使用了重合指数（index of coincidence）来描述密文字母频率的不匀性，从而破译密码。$k_p$指目标语言中两个任意字母相同的概率（英文中为0.067），$k_r$指字母表中这种情况出现的概率（英文中为1/26=0.0385），从而密钥长度可以估计为：  </p>
-<p>分子 = $k_p$-$k_r$</p>
-<p>分母 = $k_o$-$k_r$</p>
-<p>密钥长度 = $\frac{分子}{分母}$</p>
-<p>此方法只是一种估计，会随着文本长度的增加而更为精确。在实践中，会尝试接近此估计的多个密钥长度。一种更好的方法是将密文写成矩阵形式，其中列数与假定的密钥长度一致，将每一列的重合指数单独计算，并求得平均重合指数。对于所有可能的密钥长度，平均重合指数最高的最有可能是真正的密钥长度。这样的试验可以作为卡西斯基试验的补充。</p>
-<h3 id="频率分析"><a href="#频率分析" class="headerlink" title="频率分析"></a>频率分析</h3><p>一旦能够确定密钥的长度，密文就能重新写成多列，列数与密钥长度对应。这样每一列其实就是一个凯撒密码，而此密码的密钥（偏移量）则对应于维吉尼亚密码密钥的相应字母。与破译凯撒密码类似的方法，就能将密文破译。</p>
-<p>柯克霍夫方法作为卡西斯基试验的改进，由奥古斯特·柯克霍夫（Auguste Kerckhoffs）提出。它将每一列的字母频率与转换后的明文频率相对应而得出每一列的密钥字母。一旦密钥中每一个字母都能确定，就能很简单地破译密文，从而得到明文。如果维吉尼亚字母表表格本身是杂乱而非按通常字母表顺序的话，那柯克霍夫方法就会无效，但卡西斯基试验和重复指数对于决定密钥长度仍旧是有效的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/02/Android编译器相关/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/02/Android编译器相关/" itemprop="url">Android编译器相关</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-02T10:17:43+08:00">
-                2019-01-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/02/Android编译器相关/" class="leancloud_visitors" data-flag-title="Android编译器相关">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MIR -&gt; LIR -&gt; native code</p>
-<p>SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。<br>之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。</p>
-<p>在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。</p>
-<p>接着就调用cu.cg-&gt;Materialize()用来产生最终代码，其中重要的两个调用就是MethodMIR2LIR()和AssembleLIR()。<br>通MethodMIR2LIR()将MIR转化为LIR，遍历每个BasicBlock，对每个基本块执行MethodBlockCodeGen，<br>本质上最后是执行了CompileDalvikInstruction。CompileDalvikInstruction也就是通过解析指令，然后根据opcode进行分支判断，<br>调用最终不同的指令生成函数，最后LIR之间也形成一个双向链表。最终将MIR转换为LIR。</p>
-<p>AssembleLIR()最终调用的是AssembleInstructions函数。程序中维护了一个编码指令表MipsMir2Lir::EncodingMap，<br>AssembleInstructions即是通过查找这个表来进行翻译，将LIR转化为了MIPS指令，<br>并将所翻译的指令存储到CodeBufferMir2Lir::code_buffer_之中。<br>这样就完成了一次编译的完整流程。</p>
-<p>总结：<br>MIR为对dalvik指令进行SSA变换之后的指令形态。<br>LIR为对MIR形态的指令进行解析生成的另一种形态的指令。<br>native code为通过查找编码指令表将LIR形态的指令翻译为对应不同平台的汇编指令。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2367,7 +2401,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2378,7 +2412,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2389,7 +2423,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

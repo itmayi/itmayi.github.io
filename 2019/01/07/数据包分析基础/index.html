@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="http,http2,数据包回放,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="http2协议http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。 http/2源于SPDY，但仍有不同的地方，主要是以下两点：  HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT  注：spdy是Google开发的基于TCP的应用层协议，用以最">
+<meta name="keywords" content="http,http2,数据包回放">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据包分析基础">
+<meta property="og:url" content="http://yoursite.com/2019/01/07/数据包分析基础/index.html">
+<meta property="og:site_name" content="Heinz Blog">
+<meta property="og:description" content="http2协议http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。 http/2源于SPDY，但仍有不同的地方，主要是以下两点：  HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT  注：spdy是Google开发的基于TCP的应用层协议，用以最">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f">
+<meta property="og:updated_time" content="2019-01-07T02:16:35.333Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据包分析基础">
+<meta name="twitter:description" content="http2协议http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。 http/2源于SPDY，但仍有不同的地方，主要是以下两点：  HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT  注：spdy是Google开发的基于TCP的应用层协议，用以最">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/07/数据包分析基础/">
+
+
+
+
+
+  <title>数据包分析基础 | Heinz Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heinz Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">记录每一段岁月的美好！</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/数据包分析基础/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">数据包分析基础</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T09:21:38+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析基础/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/数据包分析基础/" class="leancloud_visitors" data-flag-title="数据包分析基础">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="http2协议"><a href="#http2协议" class="headerlink" title="http2协议"></a>http2协议</h2><p>http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。</p>
+<p>http/2源于SPDY，但仍有不同的地方，主要是以下两点：</p>
+<ul>
+<li>HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS</li>
+<li>HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT</li>
+</ul>
+<p>注：spdy是Google开发的基于TCP的应用层协议，用以最小化网络延迟，提升网络速度，优化用户的网络使用体验。SPDY并不是一种用于替代HTTP的协议，而是对HTTP协议的增强。新协议的功能包括数据流的多路复用、请求优先级以及HTTP报头压缩。互联网工程任务组（IETF）对谷歌提出的SPDY协议进行了标准化，于2015年5推出了类似于SPDY协议的 HTTP 2.0 协议标准（简称HTTP/2）。谷歌因此宣布放弃对SPDY协议的支持，转而支持HTTP/2。此外，著名的开源HTTP服务器软件 Nginx 也于2015年9月移除了对SPDY的支持，转而支持HTTP/2。</p>
+<h2 id="二进制格式"><a href="#二进制格式" class="headerlink" title="二进制格式"></a>二进制格式</h2><p>HTTP/1 的请求和响应报文，都是由起始行、首部和实体正文（可选）组成，各部分之间以文本换行符分隔。<br>HTTP/2 将请求和响应数据分割为更小的帧，并对它们采用二进制编码。<br>帧（Frame）：HTTP/2 数据通信的最小单位。<br>消息（Message）：指 HTTP/2 中逻辑上的 HTTP 消息。例如请求和响应等，消息由一个或多个帧组成<br>流（Stream）：存在于连接中的一个虚拟通道。流可以承载双向消息，每个流都有一个唯一的整数 ID。</p>
+<p>HTTP/2 中，同域名下所有通信都在单个连接上完成，这个连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装。</p>
+<p>Frame 是 HTTP/2 二进制格式的基础，Frame 的基本格式如下</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&amp;shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f" alt="image"></p>
+<h2 id="http2的影响"><a href="#http2的影响" class="headerlink" title="http2的影响"></a>http2的影响</h2><p>现在http2还没被大范围部署使用，我们也无法确定到底会发生什么变化，但至少可以参考SPDY的例子和曾经做过的实验来进行大概估计。</p>
+<p>http2减少了网络往返传输的数量，并且用多路复用和快速丢弃不需要的流的办法来完全避免了head of line blocking的困扰。</p>
+<p>它也支持大量并行流，所以即使网站的数据分发在各处也不是问题。</p>
+<p>合理利用流的优先级，可以让客户端尽可能优先收到更重要的数据。</p>
+<p>所有这些加起来，我认为页面载入时间和站点相应的速度都会更快。简而言之：更好的web体验。</p>
+<p>但到底能变得多快，到底提升有多大呢？我认为目前很难说清楚。毕竟这些技术依然在早期，我们还没法看见客户端和服务器实现这些并真正受益于新协议所提供的强大功能。</p>
+<h2 id="集线器、交换机、路由器"><a href="#集线器、交换机、路由器" class="headerlink" title="集线器、交换机、路由器"></a>集线器、交换机、路由器</h2><h3 id="集线器"><a href="#集线器" class="headerlink" title="集线器"></a>集线器</h3><p>集线器(Hub)工作在最底层(物理层)，没有相匹配的软件系统，是纯硬件设备,集线器主要用来连接计算机等网络终端。</p>
+<p>集线器为<strong>共享式带宽</strong>，连接在集线器上的任何一个设备发送数据时，其他所有设备必须等待，此设备享有全部带宽，通讯完毕，再由其他设备使用带宽。正因此，集线器连接了一个冲突域的网络。所有设备相互交替使用，就好象大家一起过一根独木桥一样。</p>
+<p>集线器<strong>不能判断数据包的目的地和类型</strong>，所以如果是广播数据包也依然转发，而且所有设备发出数据以广播方式发送到每个接口，这样集线器也连接了一个广播域的网络。</p>
+<h3 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h3><p>交换机工作在数据链接层(第二层)，和集线器一样主要用于连接计算机等网络终端设备。允许连接在交换机上的设备并行通讯，好比高速公路上的汽车并行行使一般，设备间通讯不会再发生冲突，因此交换机打破了冲突域，交换机每个接口是一个冲突域，不会与其他接口发生通讯冲突。</p>
+<p>有系统的交换机可以记录MAC地址表，发送的数据不会再以广播方式发送到每个接口，而是直接到达目的接口，节省了接口带宽。但是交换机和集线器一样不能判断广播数据包，会把广播发送到全部接口，所以交换机和集线器一样连接了一个广播域网络。</p>
+<p>高端一点的交换机不仅可以记录MAC地址表，还可以划分VLAN（虚拟局域网）来隔离广播，但是VLAN间也同样不能通讯。要使VLAN间能够通讯，必须有三层设备介入。</p>
+<h3 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h3><p>路由器工作在网络层(第三层)，主要用来进行网络与网络的连接，所有路由器都有自己的操作系统。路由器把数据从一个网络发送到另一个网络，这个过程就叫路由。路由器不仅能像交换机一样隔离冲突域，而且还能检测广播数据包，并丢弃广播包来隔离广播域，有效的扩大了网络的规模。</p>
+<p>在路由器中记录着路由表，路由器以此来转发数据，以实现网络间的通讯。路由器的介入可以使交换机划分的VLAN实现互相通讯。</p>
+<h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><table>
+<thead>
+<tr>
+<th>name</th>
+<th>complete connection</th>
+<th>stateful</th>
+<th>selected replay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>TCPReplay|No Required|No|No<br>Tomahawk|Required|Yes|No<br>Mokey|No Required|Yes|No<br>Avalanche|Required|Yes|No<br>SocketReplay|No Required|Yes|Yes</p>
+<h3 id="TcpReplay"><a href="#TcpReplay" class="headerlink" title="TcpReplay"></a>TcpReplay</h3><p>Tcpreplay是一个工具套件，用来测试各种网络设备，包括：交换机、路由器、防火墙、NIDS和IPS等。它使用嗅探工具抓取的数据包，允许你拆分客户端和服务端流量，重写2、3、4层头信息，最终将流量回放到网络中。3.4 版本包括以下部分：</p>
+<ul>
+<li><p>Tcpprep:将流量拆分为客户端和服务端两个方向，并存放为缓存文件</p>
+</li>
+<li><p>Tcprewrite:重写pcap文件的TCP/IP层和数据链路层的头信息</p>
+</li>
+<li><p>Tcpreplay:以可控的速度将pcap文件回放到网络中</p>
+</li>
+<li><p>Tcpreplay-edit:在tcpreplay基础上增加编辑功能</p>
+</li>
+<li><p>Tcpbirdge:桥接两个不同网段</p>
+</li>
+<li><p>Tcpcapinfo:pcap 文件解码器和编译器</p>
+</li>
+</ul>
+<p>原文链接：<a href="https://www.cnblogs.com/jiayy/p/3447027.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiayy/p/3447027.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/http/" rel="tag"># http</a>
+          
+            <a href="/tags/http2/" rel="tag"># http2</a>
+          
+            <a href="/tags/数据包回放/" rel="tag"># 数据包回放</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/07/http-http2协议/" rel="next" title="数据包分析基础">
+                <i class="fa fa-chevron-left"></i> 数据包分析基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/07/wireshark数据包分析/" rel="prev" title="wireshark数据包分析">
+                wireshark数据包分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Heinz">
+            
+              <p class="site-author-name" itemprop="name">Heinz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/itmayi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:799902881@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#http2协议"><span class="nav-number">1.</span> <span class="nav-text">http2协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制格式"><span class="nav-number">2.</span> <span class="nav-text">二进制格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http2的影响"><span class="nav-number">3.</span> <span class="nav-text">http2的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集线器、交换机、路由器"><span class="nav-number">4.</span> <span class="nav-text">集线器、交换机、路由器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集线器"><span class="nav-number">4.1.</span> <span class="nav-text">集线器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交换机"><span class="nav-number">4.2.</span> <span class="nav-text">交换机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路由器"><span class="nav-number">4.3.</span> <span class="nav-text">路由器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据包回放"><span class="nav-number">5.</span> <span class="nav-text">数据包回放</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">5.1.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TcpReplay"><span class="nav-number">5.2.</span> <span class="nav-text">TcpReplay</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Heinz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("jypPJXy89LBDsg88boqicDg9-gzGzoHsz", "7z1xPLru7WIRw9p0A6SE779N");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

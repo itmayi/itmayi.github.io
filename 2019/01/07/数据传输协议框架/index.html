@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Protocol BUffer,Flat Buffer,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Protocol BufferGoogle Protocol Buffer( 简称 Protobuf) 是 Google 公司内部的混合语言数据标准。Protocol Buffers 是一种轻便高效的结构化数据存储格式，可以用于结构化数据串行化，或者说序列化。它很适合做数据存储或 RPC 数据交换格式。可用于通讯协议、数据存储等领域的语言无关、平台无关、可扩展的序列化结构数据格式。支持python">
+<meta name="keywords" content="Protocol BUffer,Flat Buffer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据传输协议框架">
+<meta property="og:url" content="http://yoursite.com/2019/01/07/数据传输协议框架/index.html">
+<meta property="og:site_name" content="Heinz Blog">
+<meta property="og:description" content="Protocol BufferGoogle Protocol Buffer( 简称 Protobuf) 是 Google 公司内部的混合语言数据标准。Protocol Buffers 是一种轻便高效的结构化数据存储格式，可以用于结构化数据串行化，或者说序列化。它很适合做数据存储或 RPC 数据交换格式。可用于通讯协议、数据存储等领域的语言无关、平台无关、可扩展的序列化结构数据格式。支持python">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEBd038acafb6eb2ec0003778c5413c963b?method=download&shareKey=d4cdfcbeba2aaf600b311182eb01e5fb">
+<meta property="og:updated_time" content="2019-01-08T02:24:07.970Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据传输协议框架">
+<meta name="twitter:description" content="Protocol BufferGoogle Protocol Buffer( 简称 Protobuf) 是 Google 公司内部的混合语言数据标准。Protocol Buffers 是一种轻便高效的结构化数据存储格式，可以用于结构化数据串行化，或者说序列化。它很适合做数据存储或 RPC 数据交换格式。可用于通讯协议、数据存储等领域的语言无关、平台无关、可扩展的序列化结构数据格式。支持python">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/WEBd038acafb6eb2ec0003778c5413c963b?method=download&shareKey=d4cdfcbeba2aaf600b311182eb01e5fb">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/07/数据传输协议框架/">
+
+
+
+
+
+  <title>数据传输协议框架 | Heinz Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heinz Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">记录每一段岁月的美好！</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/数据传输协议框架/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">数据传输协议框架</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T22:11:39+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/数据传输协议框架/" class="leancloud_visitors" data-flag-title="数据传输协议框架">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Protocol-Buffer"><a href="#Protocol-Buffer" class="headerlink" title="Protocol Buffer"></a>Protocol Buffer</h1><p>Google Protocol Buffer( 简称 Protobuf) 是 Google 公司内部的混合语言数据标准。Protocol Buffers 是一种轻便高效的结构化数据存储格式，可以用于结构化数据串行化，或者说序列化。它很适合做数据存储或 RPC 数据交换格式。可用于通讯协议、数据存储等领域的语言无关、平台无关、可扩展的序列化结构数据格式。支持python、Java、c++等语言。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="定义-proto文件"><a href="#定义-proto文件" class="headerlink" title="定义.proto文件"></a>定义.proto文件</h3><p>.proto文件中定义着一系列协议中的实体结构：</p>
+<ul>
+<li><p>message关键字表示一个实体结构，由多个字段组成</p>
+<p>  例如：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto2&quot;;</span><br><span class="line"></span><br><span class="line">package tutorial;</span><br><span class="line"></span><br><span class="line">option java_package = &quot;com.example.tutorial&quot;;</span><br><span class="line">option java_outer_classname = &quot;AddressBookProtos&quot;;</span><br><span class="line"></span><br><span class="line">message Person &#123;</span><br><span class="line">    required string name = 1;</span><br><span class="line">    required int32 id = 2;</span><br><span class="line">    optional string email = 3;</span><br><span class="line"></span><br><span class="line">    enum PhoneType &#123;</span><br><span class="line">        MOBILE = 0;</span><br><span class="line">        HOME = 1;</span><br><span class="line">        WORK = 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    message PhoneNumber &#123;</span><br><span class="line">        required string number = 1;</span><br><span class="line">        optional PhoneType type = 2 [default = HOME];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    repeated PhoneNumber phones = 4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message AddressBook &#123;</span><br><span class="line">    repeated Person people = 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字段包含修饰符、数据类型、唯一标识、初始值。</p>
+<p>  三种修饰符：required、optional、repeated</p>
+<p>  支持的数据类型：<br>  <img src="https://note.youdao.com/yws/api/personal/file/WEBd038acafb6eb2ec0003778c5413c963b?method=download&amp;shareKey=d4cdfcbeba2aaf600b311182eb01e5fb" alt="image"></p>
+</li>
+</ul>
+<h3 id="编译-proto"><a href="#编译-proto" class="headerlink" title="编译.proto"></a>编译.proto</h3><p>使用protocol buffer的编译器将.proto文件编译为目标语言。</p>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc -I=$SRC_DIR --java_out=$DST_DIR $SRC_DIR/xxx.proto</span><br></pre></td></tr></table></figure></p>
+<p>-I 指定源路径，–java_out 选项指定生成java文件，编译完成会在目标路径下生成.java文件。</p>
+<h3 id="Protocol-Buffer-API"><a href="#Protocol-Buffer-API" class="headerlink" title="Protocol Buffer API"></a>Protocol Buffer API</h3><p>.java 文件部分内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// required string name = 1;</span><br><span class="line">public boolean hasName();</span><br><span class="line">public String getName();</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">// optional string email = 3;</span><br><span class="line">public boolean hasEmail();</span><br><span class="line">public String getEmail();</span><br></pre></td></tr></table></figure></p>
+<p>Person.Builder类中也为每个字段生成getter和setter方法,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// required string name = 1;</span><br><span class="line">public boolean hasName();</span><br><span class="line">public java.lang.String getName();</span><br><span class="line">public Builder setName(String value);</span><br><span class="line">public Builder clearName();</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>创建Person实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person john =</span><br><span class="line">  Person.newBuilder()</span><br><span class="line">    .setName(&quot;John Doe&quot;)</span><br><span class="line">    .setAge(15)</span><br><span class="line">    .setEmail(&quot;jdoe@example.com&quot;)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure></p>
+<p>message类和Builder类中内建的其他方法：</p>
+<ul>
+<li>isInitialized(): checks if all the required fields have been set.</li>
+<li>toString(): returns a human-readable representation of the message, particularly useful for debugging</li>
+<li>mergeFrom(Message other): (builder only) merges the contents of other into this message, overwriting singular scalar fields, merging composite fields, and concatenating repeated fields.</li>
+<li>clear(): (builder only) clears all the fields back to the empty state.</li>
+</ul>
+<h3 id="解析和序列化"><a href="#解析和序列化" class="headerlink" title="解析和序列化"></a>解析和序列化</h3><ul>
+<li>byte[] toByteArray();: serializes the message and returns a byte array containing its raw bytes</li>
+<li>static Person parseFrom(byte[] data);: parses a message from the given byte array</li>
+<li>void writeTo(OutputStream output);: serializes the message and writes it to an OutputStream</li>
+<li>static Person parseFrom(InputStream input);: reads and parses a message from an InputStream</li>
+</ul>
+<h2 id="完整实例"><a href="#完整实例" class="headerlink" title="完整实例"></a>完整实例</h2><h3 id="write-a-message"><a href="#write-a-message" class="headerlink" title="write a message"></a>write a message</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">import com.example.tutorial.AddressBookProtos.AddressBook;</span><br><span class="line">import com.example.tutorial.AddressBookProtos.Person;</span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileNotFoundException;</span><br><span class="line">import java.io.FileOutputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.PrintStream;</span><br><span class="line"></span><br><span class="line">class AddPerson &#123;</span><br><span class="line">  // This function fills in a Person message based on user input.</span><br><span class="line">  static Person PromptForAddress(BufferedReader stdin,</span><br><span class="line">                                 PrintStream stdout) throws IOException &#123;</span><br><span class="line">    Person.Builder person = Person.newBuilder();</span><br><span class="line"></span><br><span class="line">    stdout.print(&quot;Enter person ID: &quot;);</span><br><span class="line">    person.setId(Integer.valueOf(stdin.readLine()));</span><br><span class="line"></span><br><span class="line">    stdout.print(&quot;Enter name: &quot;);</span><br><span class="line">    person.setName(stdin.readLine());</span><br><span class="line"></span><br><span class="line">    stdout.print(&quot;Enter email address (blank for none): &quot;);</span><br><span class="line">    String email = stdin.readLine();</span><br><span class="line">    if (email.length() &gt; 0) &#123;</span><br><span class="line">      person.setEmail(email);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    while (true) &#123;</span><br><span class="line">      stdout.print(&quot;Enter a phone number (or leave blank to finish): &quot;);</span><br><span class="line">      String number = stdin.readLine();</span><br><span class="line">      if (number.length() == 0) &#123;</span><br><span class="line">        break;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      Person.PhoneNumber.Builder phoneNumber =</span><br><span class="line">        Person.PhoneNumber.newBuilder().setNumber(number);</span><br><span class="line"></span><br><span class="line">      stdout.print(&quot;Is this a mobile, home, or work phone? &quot;);</span><br><span class="line">      String type = stdin.readLine();</span><br><span class="line">      if (type.equals(&quot;mobile&quot;)) &#123;</span><br><span class="line">        phoneNumber.setType(Person.PhoneType.MOBILE);</span><br><span class="line">      &#125; else if (type.equals(&quot;home&quot;)) &#123;</span><br><span class="line">        phoneNumber.setType(Person.PhoneType.HOME);</span><br><span class="line">      &#125; else if (type.equals(&quot;work&quot;)) &#123;</span><br><span class="line">        phoneNumber.setType(Person.PhoneType.WORK);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        stdout.println(&quot;Unknown phone type.  Using default.&quot;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      person.addPhones(phoneNumber);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return person.build();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Main function:  Reads the entire address book from a file,</span><br><span class="line">  //   adds one person based on user input, then writes it back out to the same</span><br><span class="line">  //   file.</span><br><span class="line">  public static void main(String[] args) throws Exception &#123;</span><br><span class="line">    if (args.length != 1) &#123;</span><br><span class="line">      System.err.println(&quot;Usage:  AddPerson ADDRESS_BOOK_FILE&quot;);</span><br><span class="line">      System.exit(-1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    AddressBook.Builder addressBook = AddressBook.newBuilder();</span><br><span class="line"></span><br><span class="line">    // Read the existing address book.</span><br><span class="line">    try &#123;</span><br><span class="line">      addressBook.mergeFrom(new FileInputStream(args[0]));</span><br><span class="line">    &#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">      System.out.println(args[0] + &quot;: File not found.  Creating a new file.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Add an address.</span><br><span class="line">    addressBook.addPeople(</span><br><span class="line">      PromptForAddress(new BufferedReader(new InputStreamReader(System.in)),</span><br><span class="line">                       System.out));</span><br><span class="line"></span><br><span class="line">    // Write the new address book back to disk.</span><br><span class="line">    FileOutputStream output = new FileOutputStream(args[0]);</span><br><span class="line">    addressBook.build().writeTo(output);</span><br><span class="line">    output.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="read-a-message"><a href="#read-a-message" class="headerlink" title="read a message"></a>read a message</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">import com.example.tutorial.AddressBookProtos.AddressBook;</span><br><span class="line">import com.example.tutorial.AddressBookProtos.Person;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.PrintStream;</span><br><span class="line"></span><br><span class="line">class ListPeople &#123;</span><br><span class="line">  // Iterates though all people in the AddressBook and prints info about them.</span><br><span class="line">  static void Print(AddressBook addressBook) &#123;</span><br><span class="line">    for (Person person: addressBook.getPeopleList()) &#123;</span><br><span class="line">      System.out.println(&quot;Person ID: &quot; + person.getId());</span><br><span class="line">      System.out.println(&quot;  Name: &quot; + person.getName());</span><br><span class="line">      if (person.hasEmail()) &#123;</span><br><span class="line">        System.out.println(&quot;  E-mail address: &quot; + person.getEmail());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      for (Person.PhoneNumber phoneNumber : person.getPhonesList()) &#123;</span><br><span class="line">        switch (phoneNumber.getType()) &#123;</span><br><span class="line">          case MOBILE:</span><br><span class="line">            System.out.print(&quot;  Mobile phone #: &quot;);</span><br><span class="line">            break;</span><br><span class="line">          case HOME:</span><br><span class="line">            System.out.print(&quot;  Home phone #: &quot;);</span><br><span class="line">            break;</span><br><span class="line">          case WORK:</span><br><span class="line">            System.out.print(&quot;  Work phone #: &quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(phoneNumber.getNumber());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Main function:  Reads the entire address book from a file and prints all</span><br><span class="line">  //   the information inside.</span><br><span class="line">  public static void main(String[] args) throws Exception &#123;</span><br><span class="line">    if (args.length != 1) &#123;</span><br><span class="line">      System.err.println(&quot;Usage:  ListPeople ADDRESS_BOOK_FILE&quot;);</span><br><span class="line">      System.exit(-1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Read the existing address book.</span><br><span class="line">    AddressBook addressBook =</span><br><span class="line">      AddressBook.parseFrom(new FileInputStream(args[0]));</span><br><span class="line"></span><br><span class="line">    Print(addressBook);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Flat-Buffer"><a href="#Flat-Buffer" class="headerlink" title="Flat Buffer"></a>Flat Buffer</h1><p>FlatBuffers是一个跨平台的序列化库，旨在实现最高的内存效率。实现了与 Protocol Buffers，Thrift，Apache Avro，SBE 和 Cap’n Proto 类似的序列化格式。它允许我们直接访问序列化数据，而无需先解析/解压缩，同时仍具有良好的向前/向后兼容性。其最初为 Android 游戏和注重性能的应用而开发了FlatBuffers。</p>
+<p>FlatBuffers 的主要目标是避免反序列化。这是通过定义二进制数据协议来实现的，一种将定义好的将数据转换为二进制数据的方法。由该协议创建的二进制结构可以 wire 发送，并且无需进一步处理即可读取。相比较而言，在传输 JSON 时，我们需要将数据转换为字符串，通过 wire 发送，解析字符串，并将其转换为本地对象。Flatbuffers 不需要这些操作。你用二进制装入数据，发送相同的二进制文件，并直接从二进制文件读取。</p>
+<p>尽管 FlatBuffers 有自己的接口定义语言来定义要与之序列化的数据，但它也支持 Protocol Buffers 中的 .proto格式。</p>
+<p>在 schema 中定义对象类型，然后可以将它们编译为 C++ 或 Java 等各种主流语言，以实现零开销读写。FlatBuffers 还支持将 JSON 数据动态地分析到 buffer 中。</p>
+<p>除了解析效率以外，二进制格式还带来了另一个优势，数据的二进制表示通常更具有效率。我们可以使用 4 字节的 UInt 而不是 10 个字符来存储 10 位数字的整数。</p>
+<p>FlatBuffers 与 Protocol Buffers 确实比较相似，主要的区别在于 FlatBuffers 在访问数据之前不需要解析/解包。两者代码也是一个数量级的。但是 Protocol Buffers 既没有可选的文本导入/导出功能，也没有 union 这个语言特性，这两点 FlatBuffers 都有。</p>
+<p>FlatBuffers 专注于移动硬件（内存大小和内存带宽比桌面端硬件更受限制），以及具有最高性能需求的应用程序：游戏。</p>
+<h2 id="支持设备"><a href="#支持设备" class="headerlink" title="支持设备"></a>支持设备</h2><p>Windows、mmacOS、Linux、Android等</p>
+<h2 id="支持语言"><a href="#支持语言" class="headerlink" title="支持语言"></a>支持语言</h2><p>Python、Java、c++等</p>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><h3 id="编写想要序列化的数据结构的schema（IDL-接口定义）文件"><a href="#编写想要序列化的数据结构的schema（IDL-接口定义）文件" class="headerlink" title="编写想要序列化的数据结构的schema（IDL,接口定义）文件"></a>编写想要序列化的数据结构的schema（IDL,接口定义）文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// example IDL file</span><br><span class="line"></span><br><span class="line">namespace MyGame;</span><br><span class="line"></span><br><span class="line">attribute &quot;priority&quot;;</span><br><span class="line"></span><br><span class="line">enum Color : byte &#123; Red = 1, Green, Blue &#125;</span><br><span class="line"></span><br><span class="line">union Any &#123; Monster, Weapon, Pickup &#125;</span><br><span class="line"></span><br><span class="line">struct Vec3 &#123;</span><br><span class="line">  x:float;</span><br><span class="line">  y:float;</span><br><span class="line">  z:float;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">table Monster &#123;</span><br><span class="line">  pos:Vec3;</span><br><span class="line">  mana:short = 150;</span><br><span class="line">  hp:short = 100;</span><br><span class="line">  name:string;</span><br><span class="line">  friendly:bool = false (deprecated, priority: 1);</span><br><span class="line">  inventory:[ubyte];</span><br><span class="line">  color:Color = Blue;</span><br><span class="line">  test:Any;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">root_type Monster;</span><br></pre></td></tr></table></figure>
+<p>在上述的schema文件中有两个重要的概念，struct和table。</p>
+<h4 id="table"><a href="#table" class="headerlink" title="table"></a>table</h4><p>Table 是在 FlatBuffers 中定义对象的主要方式，由一个名称（这里是 Monster）和一个字段列表组成。每个字段都有一个名称，一个类型和一个可选的默认值（如果省略，它默认为 0 / NULL）。</p>
+<p>Table 中每个字段都是可选 optional 的：它不必出现在 wire 表示中，并且可以选择省略每个单独对象的字段。这种设计也是 FlatBuffer 的前向和后向兼容机制。</p>
+<p>假设当前schema是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:int; b:int; &#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="添加字段"><a href="#添加字段" class="headerlink" title="添加字段"></a>添加字段</h5><p>只能在表定义的末尾添加新的字段。旧数据仍会正确读取，并在读取时为您提供默认值。旧代码将简单地忽略新字段。如果希望灵活地使用 schema 中字段的任何顺序，您可以手动分配ids。<br>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:int; b:int; c:int; &#125;</span><br><span class="line">或者</span><br><span class="line">table &#123; c:int (id: 2); a:int (id: 0); b:int (id: 1); &#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="删除字段"><a href="#删除字段" class="headerlink" title="删除字段"></a>删除字段</h5><p>不能从 schema 中删除不再使用的字段，但可以简单地停止将它们写入数据中。此外，可以将它们标记为 deprecated，如上例所示，被标记的字段不会再生成 C ++ 的访问器，从而强制该字段不再被使用。</p>
+<h5 id="更改字段"><a href="#更改字段" class="headerlink" title="更改字段"></a>更改字段</h5><p>可以更改字段名称和 table 名称。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:uint; b:uint; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>直接修改字段的类型，这样做可能可行，也有情况不行。只有在类型改变是相同大小的情况下，是可行的。如果旧数据不包含任何负数，这将是安全的，如果包含了负数，这样改变会出现问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; a:int = 1; b:int = 2; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样修改不可行。任何写入数值为 0 的旧数据都不会再写入 buffer，并依赖于重新创建的默认值。现在这些值将显示为1和2。有些情况下可能不会出错，但必须小心。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table &#123; aa:int; bb:int; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面这种修改方法，修改原来的变量名以后，可能会出现问题。由于已经重命名了字段，这将破坏所有使用此版本 schema 的代码（和 JSON 文件），这与实际的二进制缓冲区不兼容。</p>
+<p>table 是 FlatBuffers 的基石，因为对于大多数需要序列化应用来说，数据结构改变是必不可少的。通常情况下，处理数据结构的变更在大多数序列化解决方案的解析过程中可以透明地完成的。但是一个 FlatBuffer 在被访问之前不会被分析。</p>
+<p>为了解决数据结构变更的问题，table 通过 vtable 间接访问字段。每个 table 都带有一个 vtable（可以在具有相同布局的多个 table 之间共享），并且包含存储此特定类型 vtable 实例的字段的信息。vtable 还可能表明该字段不存在（因为此 FlatBuffer 是使用旧版本的软件编写的，仅仅因为信息对于此实例不是必需的，或者被视为已弃用），在这种情况下会返回默认值。</p>
+<p>table 的内存开销很小（因为 vtables 很小并且共享）访问成本也很小（间接访问），但是提供了很大的灵活性。table 甚至可能比等价的 struct 花费更少的内存，因为字段在等于默认值时不需要存储在 buffer 中。</p>
+<h4 id="structs"><a href="#structs" class="headerlink" title="structs"></a>structs</h4><p>tructs 和 table 非常相似，只是 structs 没有任何字段是可选的（所以也没有默认值），字段可能不会被添加或被弃用。结构可能只包含标量或其他结构。如果确定以后不会进行任何更改。structs 使用的内存少于 table，并且访问速度更快（它们总是以串联方式存储在其父对象中，并且不使用虚拟表）。  </p>
+<p>structs 不提供前向/后向兼容性，但占用内存更小。对于不太可能改变的非常小的对象（例如坐标对或RGBA颜色）存成 struct 是非常有用的。</p>
+<h4 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h4><p>FlatBuffers 支持的 标量 类型有以下几种：</p>
+<ul>
+<li>8 bit: byte (int8), ubyte (uint8), bool</li>
+<li>16 bit: short (int16), ushort (uint16)</li>
+<li>32 bit: int (int32), uint (uint32), float (float32)</li>
+<li>64 bit: long (int64), ulong (uint64), double (float64)</li>
+</ul>
+<p>括号里面的名字对应的是类型的别名。</p>
+<p>FlatBuffers 支持的 非标量 类型有以下几种：</p>
+<ul>
+<li>任何类型的数组。不过不支持嵌套数组，可以用 table 内定义数组的方式来取代嵌套数组。</li>
+<li>UTF-8 和 7-bit ASCII 的字符串。其他格式的编码字符串或者二进制数据，需要用 [byte] 或者 [ubyte] 来替代。</li>
+<li>table、structs、enums、unions</li>
+</ul>
+<p>标量类型的字段有默认值，非标量的字段(string/vector/table)如果没有值的话，默认值为 NULL。</p>
+<p>一旦一个类型声明了，尽量不要改变它的类型，一旦改变了，很可能就会出现错误。上面也提到过了，如果把 int 改成 uint，数据如果有负数，那么就会出错。</p>
+<h4 id="Enums"><a href="#Enums" class="headerlink" title="Enums"></a>Enums</h4><p>定义一系列命名常量，每个命名常量可以分别给一个定值，也可以默认的从前一个值增加一。默认的第一个值是 0。正如在上面例子中看到的枚举声明，使用:(上面例子中是 byte 字节）指定枚举的基本整型，然后确定用这个枚举类型声明的每个字段的类型。</p>
+<p>通常，只应添加枚举值，不要去删除枚举值（对枚举不存在弃用一说）。这需要开发者代码通过处理未知的枚举值来自行处理向前兼容性的问题</p>
+<h4 id="Unions"><a href="#Unions" class="headerlink" title="Unions"></a>Unions</h4><p>这个是 Protocol buffers 中还不支持的类型。</p>
+<p>union 是 C 语言中的概念，一个 union 中可以放置多种类型，共同使用一个内存区域。</p>
+<p>但是在 FlatBuffers 中，Unions 可以像 Enums 一样共享许多属性，但不是常量的新名称，而是使用 table 的名称。可以声明一个 Unions 字段，该字段可以包含对这些类型中的任何一个的引用，即这块内存区域只能由其中一种类型使用。另外还会生成一个带有后缀 _type 的隐藏字段，该字段包含相应的枚举值，从而可以在运行时知道要将哪些类型转换为类型。</p>
+<p>union 跟 enum 比较类似，但是 union 包含的是 table，enum 包含的是 scalar或者 struct。</p>
+<p>Unions 是一种能够在一个 FlatBuffer 中发送多种消息类型的好方法。请注意，因为union 字段实际上是两个字段(有一个隐藏字段)，所以它必须始终是表的一部分，它本身不能作为 FlatBuffer 的 root。</p>
+<h3 id="使用flatc编译"><a href="#使用flatc编译" class="headerlink" title="使用flatc编译"></a>使用flatc编译</h3><p>使用FlatBuffer编译器flatc生成数据结构源代码（C++头文件或者Java类）</p>
+<h3 id="使用相关接口读取或写入flat-buffer"><a href="#使用相关接口读取或写入flat-buffer" class="headerlink" title="使用相关接口读取或写入flat buffer"></a>使用相关接口读取或写入flat buffer</h3><p><a href="https://github.com/google/flatbuffers/blob/master/tests/JavaTest.java" target="_blank" rel="noopener">https://github.com/google/flatbuffers/blob/master/tests/JavaTest.java</a></p>
+<h1 id="Protocol-Buffer-与-Flat-Buffer"><a href="#Protocol-Buffer-与-Flat-Buffer" class="headerlink" title="Protocol Buffer 与 Flat Buffer"></a>Protocol Buffer 与 Flat Buffer</h1><ul>
+<li>弃用的字段，不用手动分配字段的 ID。在 .proto 中扩展一个对象，需要在数字中寻找一个空闲的空位（因为 protocol buffers 有更紧凑的表示方式，所以必须选择更小的数字）。除了这点不方便之外，它还使得删除字段成为问题：如果保留它们，从语意表达上不是很明显的表达出这个字段不能读写了，保留它们，还会生成访问器。如果删除它们，就会有出现严重 bug 的风险，因为当有人重用了这些 ID，会导致读取到旧的数据，这样数据会发生错乱。</li>
+<li>FlatBuffers 区分 table 和 struct。所有 table 字段都是可选的，并且所有 struct 字段都是必需的。</li>
+<li>FlatBuffers 具有原生数组类型而不是 repeated。这给你一个长度，而不必收集所有项目，并且在标量的情况下提供更紧凑的表示，并且确保相邻性。</li>
+<li>FlatBuffers 具有 union 类型，这个也是 protocol buffers 没有的。一个 union 可以替代很多个 optional 字段，这样也可以节约每个字段都要一一检查的时间。</li>
+<li>FlatBuffers 能够为所有标量定义默认值，而不必在每次访问时处理它们的 optional，并且默认值不存在 buffer 中，也不用担心空间的问题。</li>
+<li>可以统一处理模式和数据定义（并且和 JSON 兼容）的解析器。protocol buffers 不兼容 JSON。FlatBuffers 的 flatc 编译器可带的参数也更加强大，具体可带参数列表见此文档</li>
+<li>schema 扩展了一些 protocol buffers 没有的 Attributes</li>
+</ul>
+<p>除去功能上的不同，再就是一些 schema 语法上的细微不同：</p>
+<ul>
+<li>定义对象，protocol buffers 是 message，FlatBuffers 是 table</li>
+<li>ID，protocol buffers 默认是从 1 开始标号，FlatBuffers 默认从 0 开始</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Protocol-BUffer/" rel="tag"># Protocol BUffer</a>
+          
+            <a href="/tags/Flat-Buffer/" rel="tag"># Flat Buffer</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/07/wireshark数据包分析/" rel="next" title="wireshark数据包分析">
+                <i class="fa fa-chevron-left"></i> wireshark数据包分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/08/TLS-SSL协议/" rel="prev" title="TLS/SSL协议">
+                TLS/SSL协议 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Heinz">
+            
+              <p class="site-author-name" itemprop="name">Heinz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/itmayi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:799902881@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Protocol-Buffer"><span class="nav-number">1.</span> <span class="nav-text">Protocol Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.1.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义-proto文件"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义.proto文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译-proto"><span class="nav-number">1.1.2.</span> <span class="nav-text">编译.proto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Protocol-Buffer-API"><span class="nav-number">1.1.3.</span> <span class="nav-text">Protocol Buffer API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析和序列化"><span class="nav-number">1.1.4.</span> <span class="nav-text">解析和序列化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整实例"><span class="nav-number">1.2.</span> <span class="nav-text">完整实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#write-a-message"><span class="nav-number">1.2.1.</span> <span class="nav-text">write a message</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#read-a-message"><span class="nav-number">1.2.2.</span> <span class="nav-text">read a message</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Flat-Buffer"><span class="nav-number">2.</span> <span class="nav-text">Flat Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#支持设备"><span class="nav-number">2.1.</span> <span class="nav-text">支持设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持语言"><span class="nav-number">2.2.</span> <span class="nav-text">支持语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用步骤"><span class="nav-number">2.3.</span> <span class="nav-text">使用步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写想要序列化的数据结构的schema（IDL-接口定义）文件"><span class="nav-number">2.3.1.</span> <span class="nav-text">编写想要序列化的数据结构的schema（IDL,接口定义）文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#table"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">table</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#添加字段"><span class="nav-number">2.3.1.1.1.</span> <span class="nav-text">添加字段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#删除字段"><span class="nav-number">2.3.1.1.2.</span> <span class="nav-text">删除字段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#更改字段"><span class="nav-number">2.3.1.1.3.</span> <span class="nav-text">更改字段</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#structs"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">structs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Types"><span class="nav-number">2.3.1.3.</span> <span class="nav-text">Types</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Enums"><span class="nav-number">2.3.1.4.</span> <span class="nav-text">Enums</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Unions"><span class="nav-number">2.3.1.5.</span> <span class="nav-text">Unions</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用flatc编译"><span class="nav-number">2.3.2.</span> <span class="nav-text">使用flatc编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用相关接口读取或写入flat-buffer"><span class="nav-number">2.3.3.</span> <span class="nav-text">使用相关接口读取或写入flat buffer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Protocol-Buffer-与-Flat-Buffer"><span class="nav-number">3.</span> <span class="nav-text">Protocol Buffer 与 Flat Buffer</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Heinz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("jypPJXy89LBDsg88boqicDg9-gzGzoHsz", "7z1xPLru7WIRw9p0A6SE779N");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
