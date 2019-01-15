@@ -263,6 +263,556 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/Android使用frida-gadget插桩/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/11/Android使用frida-gadget插桩/" itemprop="url">Android使用frida-gadget插桩</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-11T09:25:08+08:00">
+                2019-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/11/Android使用frida-gadget插桩/" class="leancloud_visitors" data-flag-title="Android使用frida-gadget插桩">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="frida-介绍"><a href="#frida-介绍" class="headerlink" title="frida 介绍"></a>frida 介绍</h1><p><em>-来自官网</em><br><a href="https://www.frida.re/" target="_blank" rel="noopener">frida</a> dynamic instrumentation toolkit for developers, reverse-engineers,and security researchers.</p>
+<p>即：frida是一个适用于开发者、逆向工程师、安全研究员的动态插桩工具。</p>
+<p>使用javascript脚本注入进程，执行二进制插桩。可以与调试器共存。</p>
+<p>在脚本和原生函数中实现了双向的bridge，既可hook函数并修改参数，也可使用脚本调用原生函数。</p>
+<p>除本地代码外，内置对Java和Objective C运行时的支持。</p>
+<p>跨平台支持Windows，Mac，GNU/Linux，iOS，Android和 QNX。</p>
+<h2 id="frida-插桩实现"><a href="#frida-插桩实现" class="headerlink" title="frida 插桩实现"></a>frida 插桩实现</h2><p>#TODO</p>
+<h2 id="安装部署（Android）"><a href="#安装部署（Android）" class="headerlink" title="安装部署（Android）"></a>安装部署（Android）</h2><ol>
+<li>有root：下载frida-server,adb推入后以rootz执行,默认监听TCP 27042端口，可通过adb forward转发到计算机上；</li>
+<li>无root：将frida-gadget.so文件集成到apk中，若目标应用时第三方apk还需要反编译修改smail文件，添加System.loadLibrary()调用。</li>
+</ol>
+<p>接下来着重介绍无root情况下的使用方式：</p>
+<p><em>场景：Android studio，作为开发者使用frida-gadget</em></p>
+<p>从<a href="https://github.com/frida/frida/releases" target="_blank" rel="noopener">frida-gadget</a>下载Android版本的gadget压缩包，不同的平台对应不同的gadget压缩包，可依据文件名区分。例如：xxx-android-x86.so.xz，对应的就是x86平台的手机。若没有对应手机架构的压缩包，可选取兼容版本。例如：arm-v7架构，使用的ABI类型是armeabi-v7a，可兼容ABI类型是armeabi。则可选择xxx-android-arm.so.xz压缩包。</p>
+<p>在libs文件夹中新建平台架构对应ABI类型的文件夹，例如：armeabi/, 将解压缩出来的so文件放入Android工程的该文件下，并重命名为libgadget.so。接下来修改build.gradle，添加如下配置：</p>
+<p>在android{}中添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sourceSets.main&#123;</span><br><span class="line">    jniLibs.srcDirs = [&apos;libs&apos;]</span><br><span class="line">    jni.srcDirs = []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在externalNativeBuild{}中添加如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ndk&#123;</span><br><span class="line">    abiFilters &quot;armeabi-v7a&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后再通过<code>System.loadLibrary(&quot;gadget&quot;)</code>加载。</p>
+<p>编辑gadget的配置文件：</p>
+<p>在libgadget.so库所在文件夹下，新建libgadget.config.so文件，其中libxxx.config.so中的xxx与libxxx.so保持一致，文件内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;interaction&quot;: &#123;</span><br><span class="line">    &quot;type&quot;: &quot;script&quot;,</span><br><span class="line">    &quot;path&quot;: &quot;/data/local/tmp/myscript.js&quot;,</span><br><span class="line">    &quot;on_change&quot;: &quot;reload&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>具体关于命名的规则可参考：<a href="https://lief.quarkslab.com/doc/latest/tutorials/09_frida_lief.html" target="_blank" rel="noopener">https://lief.quarkslab.com/doc/latest/tutorials/09_frida_lief.html</a></p>
+<p>编辑myscript.js文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">console.log(&quot;Waiting for Java..&quot;);</span><br><span class="line"></span><br><span class="line">Java.perform(function () &#123;</span><br><span class="line">  var Log = Java.use(&quot;android.util.Log&quot;);</span><br><span class="line">  Log.v(&quot;frida-lief&quot;, &quot;Have fun!&quot;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>将myscript.js推入/data/local/tmp下，赋予可执行权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">adb push myscript.js /data/local/tmp</span><br><span class="line"></span><br><span class="line">adb shell chmod 777 /data//local/tmp/myscript.js</span><br></pre></td></tr></table></figure></p>
+<p>构建App，并运行观察logcat，可看到日志输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Have fun!</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>重点在于在Android studio中调用第三库的相关配置和使用gadget时需要注意的文件规范（配置文件与so库需在同一目录下，二者命名需一致，配置文件添加.so后缀）。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/Android-studio调用第三方so库/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/10/Android-studio调用第三方so库/" itemprop="url">Android studio调用第三方so库</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T20:54:38+08:00">
+                2019-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-studio/" itemprop="url" rel="index">
+                    <span itemprop="name">Android studio</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/10/Android-studio调用第三方so库/" class="leancloud_visitors" data-flag-title="Android studio调用第三方so库">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Android-studio调用第三方so库"><a href="#Android-studio调用第三方so库" class="headerlink" title="Android studio调用第三方so库"></a>Android studio调用第三方so库</h1><ol>
+<li>将so库拷贝到工程下的libs文件下<strong>与平台CPU类型对应</strong>的文件下，如：armeabi/、armeabi-v7a/、armeabi-v8a/、x86/、x86_64/等，<br>可通过<code>adb shell cat /prop/cpuinfo</code>命令查看平台CPU信息。</li>
+</ol>
+<p>构建时可能会遇到的问题：</p>
+<p>提示缺少某个平台的so库</p>
+<p>在build.gradle的externNativeBuild{}中添加如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ndk&#123;</span><br><span class="line">    abiFilters &quot;armeabi-v7a&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">so库找不到</span><br><span class="line"></span><br><span class="line">检查第三方库名字是否是libxxx.so样式</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>在app下的build.gradle的android{}中配置如下信息，然后重新编译<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sourceSets.main &#123;</span><br><span class="line">    jniLibs.srcDirs = [&apos;libs&apos;]</span><br><span class="line">    jni.srcDirs = []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>到这一步，就可以在Java代码中通过System.load()单独加载。但如果想要同本地的so库交互，就还需要以下的配置。</p>
+<ol start="3">
+<li>在CmakeLists.txt中添加如下配置信息<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#设置so库路径</span><br><span class="line">set(my_lib_path $&#123;CMAKE_SOURCE_DIR&#125;/libs)</span><br><span class="line"></span><br><span class="line">#将第三方库作为动态库引用</span><br><span class="line">add_library( gadget</span><br><span class="line">             SHARED</span><br><span class="line">             IMPORTED )</span><br><span class="line"></span><br><span class="line">#指名第三方库的绝对路径</span><br><span class="line">set_target_properties( gadget</span><br><span class="line">                       PROPERTIES IMPORTED_LOCATION</span><br><span class="line">                       $&#123;my_lib_path&#125;/$&#123;ANDROID_ABI&#125;/libgadget.so)</span><br><span class="line">#链接本地库和第三方库</span><br><span class="line">target_link_libraries( # Specifies the target library.</span><br><span class="line">                       native-lib  #本地库</span><br><span class="line">                       gadget</span><br><span class="line">                       $&#123;log-lib&#125; )</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>完成上述步骤后，尝试重新构建运行应用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/09/Android无源码动态调试apk/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/09/Android无源码动态调试apk/" itemprop="url">Android无源码动态调试apk</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-09T20:36:57+08:00">
+                2019-01-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/09/Android无源码动态调试apk/" class="leancloud_visitors" data-flag-title="Android无源码动态调试apk">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>调试环境：</p>
+<p>一台系统属性ro.debuggable = 1（意味着可调试）的真机</p>
+<p>或者一台模拟器</p>
+<p>或者使用mprop/BDOpener工具帮助修改系统ro.debuggable属性。</p>
+<p>或者修改AndroidManifest.xml文件，添加或修改android:debuggable属性为true</p>
+<h1 id="Android-studio-Smalidea-jdwp"><a href="#Android-studio-Smalidea-jdwp" class="headerlink" title="Android studio + Smalidea + jdwp"></a>Android studio + Smalidea + jdwp</h1><p>下载<a href="https://github.com/JesusFreke/smali/wiki/smalidea" target="_blank" rel="noopener">smalidea</a>，否则无法在smali代码行下断点。</p>
+<p>导入Android studio</p>
+<blockquote>
+<p>preferences -&gt;plugins -&gt;install from disk</p>
+</blockquote>
+<p>使用apktool或baksmali反编译apk，得到包含smail文件夹的apk文件夹。</p>
+<blockquote>
+<p>apktool d demo.apk</p>
+</blockquote>
+<p>将反编译得到的apk文件夹使用Android studio打开</p>
+<blockquote>
+<p>打开Android studio</p>
+<p>import project(Gradle,Eclipse ADT,etc)</p>
+<p>右击项目文件夹，”Mark Directory As” -&gt; “Sources Root”</p>
+<p>右击项目文件夹，”Open Module Settings” 配置 Project SDK</p>
+<p>点击 “Edit Configurations”，点击”+” -&gt;”Remote”，随意输入名字，其他不用改，点击”Apply”,”OK”</p>
+</blockquote>
+<p>将端口5005(默认)转发到应用进程</p>
+<blockquote>
+<p>adb shell ps|grep xxx</p>
+<p>adb forward tcp:5005 jdwp:xxx’pid</p>
+</blockquote>
+<p>打开smail文件夹，在想要断点的smail代码行下断点，点击debug按钮</p>
+<p><strong>期间可能遇到的问题</strong>：</p>
+<p>conection prematurally closed.</p>
+<p>解决方法：</p>
+<blockquote>
+<p>重启Android studio</p>
+</blockquote>
+<p>connection refused.</p>
+<p>解决方法：</p>
+<blockquote>
+<p>重新使用adb forward 转发端口</p>
+</blockquote>
+<h1 id="IDA"><a href="#IDA" class="headerlink" title="IDA"></a>IDA</h1><p>将apk文件拖入ida窗口，在弹出的窗口中选择classes.dex文件。</p>
+<p>点击Debug -&gt;Dubugger Options -&gt;选中Suspend on process entry point, “Set specific options” -&gt;设置adb executable路径，填入apk包名和入口activity。</p>
+<p>点击Debug -&gt;Process Options -&gt;设置port为8700</p>
+<p>在想要断点的smail代码行下断点。</p>
+<p>点击”绿色按钮” </p>
+<p><strong>期间可能遇到的问题</strong>：  </p>
+<p>8700 already in use.</p>
+<p>解决方法：</p>
+<blockquote>
+<p>关闭占用8700端口的进程，常见的如：DDMS, Android studio等</p>
+</blockquote>
+<h1 id="Jeb"><a href="#Jeb" class="headerlink" title="Jeb"></a>Jeb</h1><p>Mac需要设置adb路径为全局（其他应用也能够使用，~/.bash_profile中设置只在终端有效）。window只需要将adb路径加入系统环境变量PATH中。</p>
+<p>将apk拖入jeb窗口，在想要断点的smail代码行下断点</p>
+<p>点击Debugger -&gt;start, 选择要调试的应用 -&gt; attach</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/08/TLS-SSL协议/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1662,715 +2212,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/现代密码学基础四/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/06/现代密码学基础四/" itemprop="url">现代密码学基础四</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-06T23:39:30+08:00">
-                2019-01-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/06/现代密码学基础四/" class="leancloud_visitors" data-flag-title="现代密码学基础四">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="哈希函数"><a href="#哈希函数" class="headerlink" title="哈希函数"></a>哈希函数</h2><p>哈希函数（Hash Function）把消息或数据压缩成摘要，使得数据量变小。其一般模型如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">任意长度(m)消息 -&gt; hash散列函数 -&gt; 固定长度h(m)</span><br></pre></td></tr></table></figure></p>
-<p>显然对于任何一个 hash 值，理论上存在若干个消息与之对应，即碰撞。</p>
-<p>散列值的目的如下</p>
-<ul>
-<li>确保消息的完整性，即确保收到的数据确实和发送时的一样（即没有修改、插入、删除或重放），防止中间人篡改。</li>
-<li>冗余校验</li>
-<li>单向口令文件，比如 linux 系统的密码</li>
-<li>入侵检测和病毒检测中的特征码检测</li>
-</ul>
-<p>目前的 Hash 函数主要有 MD5，SHA1，SHA256，SHA512。目前的大多数 hash 函数都是迭代性的，即使用同一个 hash 函数，不同的参数进行多次迭代运算。</p>
-<table>
-<thead>
-<tr>
-<th>算法类型</th>
-<th>输出 Hash 值长度</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>MD5    |128 bit / 256 bit<br>SHA1 |    160 bit<br>SHA256    | 256 bit<br>SHA512 |    512 bit</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/05/现代密码学基础三/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/05/现代密码学基础三/" itemprop="url">现代密码学基础三</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T13:20:51+08:00">
-                2019-01-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/05/现代密码学基础三/" class="leancloud_visitors" data-flag-title="现代密码学基础三">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>在非对称密码中，加密者与解密者所使用的密钥并不一样，典型的有 RSA 加密，背包加密，椭圆曲线加密。</p>
-<h3 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h3><p>RSA 加密算法是一种非对称加密算法。在公开密钥加密和电子商业中 RSA 被广泛使用。RSA 是 1977 年由罗纳德 · 李维斯特（Ron Rivest）、阿迪 · 萨莫尔（Adi Shamir）和伦纳德 · 阿德曼（Leonard Adleman）一起提出的。RSA 就是他们三人姓氏开头字母拼在一起组成的。</p>
-<p>RSA 算法的可靠性由<strong>极大整数因数分解</strong>的难度决定。换言之，对一极大整数做因数分解愈困难，RSA 算法愈可靠。假如有人找到一种快速因数分解的算法的话，那么用 RSA 加密的信息的可靠性就肯定会极度下降。但找到这样的算法的可能性是非常小的。如今，只有短的 RSA 密钥才可能被强力方式解破。到 2017 年为止，还没有任何可靠的攻击 RSA 算法的方式。</p>
-<h4 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h4><h5 id="公钥与私钥的产生"><a href="#公钥与私钥的产生" class="headerlink" title="公钥与私钥的产生"></a>公钥与私钥的产生</h5><ul>
-<li>随机选择两个不同大质数p和q，计算N=pxq</li>
-<li>根据欧拉函数，求得r=φ(N)=φ(p)φ(q)=(p-1)(q-1)</li>
-<li>选择一个小于r的整数e，使e和r互质。并求得e关于r的模反元素，命名为d，有ed≡1(mod r)。</li>
-<li>将p和q的记录销毁。</li>
-</ul>
-<p>此时，(N,e)是公钥，(N,d)是私钥。</p>
-<p>注：在数论，对正整数n，欧拉函数是小于n的正整数中与n互质的数的数目（φ(1)=1）。此函数以其首名研究者欧拉命名(Euler’s totient function)，它又称为Euler’s totient function、φ函数、欧拉商数等。 例如φ(8)=4，因为1,3,5,7均和8互质。</p>
-<h5 id="消息加密"><a href="#消息加密" class="headerlink" title="消息加密"></a>消息加密</h5><p>首先需要将消息 m以一个双方约定好的格式转化为一个小于 N，且与N<br>互质的整数 n。如果消息太长，可以将消息分为几段，这也就是我们所说的块加密，后对于每一部分利用如下公式加密：<br>$n^e$ ≡ c (mod N)</p>
-<h5 id="消息解密"><a href="#消息解密" class="headerlink" title="消息解密"></a>消息解密</h5><p>利用密钥 d进行解密。<br>$c^d$ ≡ n (mod N)</p>
-<h4 id="基本工具"><a href="#基本工具" class="headerlink" title="基本工具"></a>基本工具</h4><ul>
-<li><p>RSAtool</p>
-<ul>
-<li><p>安装</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ius/rsatool.git</span><br><span class="line">cd rsatool</span><br><span class="line">python rsatool.py -h</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>生成私钥</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python rsatool.py -f PEM -o private.pem -p 1234567 -q 7654321</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>RSA Converter</p>
-<ul>
-<li>根据给定的密钥对，生成pem文件</li>
-<li>g根据n,e,d，生成p,q</li>
-</ul>
-</li>
-<li><p>openssl</p>
-<ul>
-<li><p>查看公钥文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rsa -pubin -in pubkey.pem -text -modulus</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>解密</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsautl -decrypt -inkey private.pem -in flag.enc -out flag</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>分解整数工具</p>
-<ul>
-<li>网站分解<a href="http://factordb.com/" target="_blank" rel="noopener">http://factordb.com/</a> </li>
-<li>命令行分解<a href="https://github.com/ryosan-470/factordb-pycli借用" target="_blank" rel="noopener">https://github.com/ryosan-470/factordb-pycli借用</a> factordb 数据库。</li>
-<li><a href="https://sourceforge.net/projects/yafu/" target="_blank" rel="noopener">https://sourceforge.net/projects/yafu/</a></li>
-</ul>
-</li>
-<li><p>python库</p>
-<ul>
-<li>primefac<br>整数分解库，包含了很多整数分解的算法。</li>
-<li>gmpy</li>
-<li>gmpy2<br>安装时，可能会需要自己另行安装 mfpr 与 mpc 库。</li>
-<li>pycrypto</li>
-</ul>
-</li>
-</ul>
-<h4 id="侧信道攻击"><a href="#侧信道攻击" class="headerlink" title="侧信道攻击"></a>侧信道攻击</h4><p>能量分析攻击（侧信道攻击）是一种能够从密码设备中获取秘密信息的密码攻击方法．与其 他攻击方法不同：这种攻击利用的是密码设备的能量消耗特征，而非密码算法的数学特性．能量分析攻击是一种非入侵式攻击，攻击者可以方便地购买实施攻击所需要的设备：所以这种攻击对智能卡之类的密码设备的安全性造成了严重威胁。</p>
-<p>能量分析攻击是安全领域内非常重要的一个部分，我们只在这里简单讨论下。</p>
-<p>能量分析攻击分为： </p>
-<ul>
-<li>简单能量分析攻击（SPA），即对能量迹进行直观分析，肉眼看即可。 </li>
-<li>差分能量分析攻击（DPA），基于能量迹之间的相关系数进行分析。</li>
-</ul>
-<h5 id="攻击条件"><a href="#攻击条件" class="headerlink" title="攻击条件"></a>攻击条件</h5><p>攻击者可获取与加解密相关的侧信道信息，例如能量消耗、运算时间、电磁辐射等等。</p>
-<h3 id="背包加密"><a href="#背包加密" class="headerlink" title="背包加密"></a>背包加密</h3><h4 id="背包问题"><a href="#背包问题" class="headerlink" title="背包问题"></a>背包问题</h4><p>首先，我们先来介绍一下背包问题，假定一个背包可以称重 W，现在有 n 个物品，其重量分别为 $1_1$,$a_2$,…,$a_n$<br> 我们想问一下装哪些物品可以恰好使得背包装满，并且每个物品只能被装一次。这其实就是在解这样的一个问题：<br> $x_1$$a_1$+$x_2$$a_2$+…+$x_n$$a_n$ = W</p>
-<p> 其中$x_i$只能为0和1，显然我们必须枚举所有的 n 个物品的组合才能解决这个问题，而复杂度也就是$2^n$，这也就是背包加密的妙处所在。</p>
-<p> 在加密时，如果我们想要加密的明文为 x，那么我们可以将其表示为 n 位二进制数，然后分别乘上 $a_i$,即可得到加密结果。</p>
-<p> 但是解密的时候，该怎么办呢？我们确实让其他人难以解密密文，但是我们自己也确实没有办法解密密文。</p>
-<p>但是当$a_i$ 是超递增的话，我们就有办法解了，所谓超递增是指序列满足如下条件：第 i 个数大于前面所有数的和。</p>
-<p>为什么满足这样的条件就可以解密了呢？这是因为如果加密后的结果大于 $a_n$的话，其前面的系数为必须 1 的。反之，无论如何也无法使得等式成立。因此，我们可以立马得到对应的明文。</p>
-<h3 id="ECC"><a href="#ECC" class="headerlink" title="ECC"></a>ECC</h3><p>ECC 全称为椭圆曲线加密，EllipseCurve Cryptography，是一种基于椭圆曲线数学的公钥密码。与传统的基于大质数因子分解困难性的加密方法不同，ECC 依赖于解决椭圆曲线离散对数问题的困难性。它的优势主要在于相对于其它方法，它可以在使用较短密钥长度的同时保持相同的密码强度。目前椭圆曲线主要采用的有限域有</p>
-<ul>
-<li>以素数为模的整数域 GF(p)，通常在通用处理器上更为有效。</li>
-<li>特征为 2 的伽罗华域 GF（2^m），可以设计专门的硬件。</li>
-</ul>
-<h3 id="格密码"><a href="#格密码" class="headerlink" title="格密码"></a>格密码</h3><p>格在数学上至少有两种含义</p>
-<ul>
-<li>定义在非空有限集合上的偏序集合 L，满足集合 L 中的任意元素 a，b，使得 a，b 在 L 中存在一个最大下界，和最小上界。具体参见 <a href="https://en.wikipedia.org/wiki/Lattice_(order)。" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Lattice_(order)。</a></li>
-<li>群论中的定义，是 [Math Processing Error] 中的满足某种性质的子集。当然，也可以是其它群。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/04/现代密码学基础二/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/04/现代密码学基础二/" itemprop="url">现代密码学基础二</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T11:50:21+08:00">
-                2019-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/04/现代密码学基础二/" class="leancloud_visitors" data-flag-title="现代密码学基础二">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="块密码"><a href="#块密码" class="headerlink" title="块密码"></a>块密码</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>所谓块加密就是每次加密一块明文，常见的加密算法有</p>
-<ul>
-<li>IDEA 加密</li>
-<li>DES 加密</li>
-<li>AES 加密</li>
-</ul>
-<p>块加密也是对称加密。</p>
-<p>其实，我们也可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有<strong>复杂</strong>的加解密算法来加解密明密文。</p>
-<p>而与此同时，明文往往可能很长也可能很短，因此在块加密时往往需要两个辅助</p>
-<ul>
-<li>padding，即 padding 到指定分组长度</li>
-<li>分组加密模式，即明文分组加密的方式。</li>
-</ul>
-<h3 id="基本策略"><a href="#基本策略" class="headerlink" title="基本策略"></a>基本策略</h3><p>在分组密码设计时，充分使用了 Shannon 提出的两大策略：混淆与扩散两大策略。</p>
-<h4 id="混淆"><a href="#混淆" class="headerlink" title="混淆"></a>混淆</h4><p>混淆，Confusion，将密文与密钥之间的统计关系变得尽可能复杂，使得攻击者即使获取了密文的一些统计特性，也无法推测密钥。一般使用复杂的非线性变换可以得到很好的混淆效果，常见的方法如下</p>
-<ul>
-<li>S 盒</li>
-<li>乘法</li>
-</ul>
-<h4 id="扩散"><a href="#扩散" class="headerlink" title="扩散"></a>扩散</h4><p>扩散，Diffusion，使得明文中的每一位影响密文中的许多位。常见的方法有</p>
-<ul>
-<li>线性变换</li>
-<li>置换</li>
-<li>移位，循环移位</li>
-</ul>
-<h3 id="常见加解密结构"><a href="#常见加解密结构" class="headerlink" title="常见加解密结构"></a>常见加解密结构</h3><p>目前块加密中主要使用的是结构是</p>
-<ul>
-<li>迭代结构，这是因为迭代结构便于设计与实现，同时方便安全性评估。</li>
-</ul>
-<h4 id="迭代结构"><a href="#迭代结构" class="headerlink" title="迭代结构"></a>迭代结构</h4><h5 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h5><p>迭代结构基本如下，一般包括三个部分</p>
-<ul>
-<li>密钥置换</li>
-<li>轮加密函数</li>
-<li>轮解密函数</li>
-</ul>
-<p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/figure/iterated_cipher.png" alt="image"></p>
-<h5 id="轮函数"><a href="#轮函数" class="headerlink" title="轮函数"></a>轮函数</h5><p>目前来说，轮函数主要有主要有以下设计方法</p>
-<ul>
-<li>Feistel Network，由 Horst Feistel 发明，DES 设计者之一。<ul>
-<li>DES</li>
-</ul>
-</li>
-<li>Substitution-Permutation Network(SPN)<ul>
-<li>AES</li>
-</ul>
-</li>
-<li>其他方案</li>
-</ul>
-<p>注：费思妥密码（英语：Feistel cipher）是用于构造分组密码的对称结构，以德国出生的物理学家和密码学家霍斯特·费斯妥（Horst Feistel）命名，他在美国IBM工作期间完成了此项开拓性研究。通常也称为费斯妥网络（Feistel network）。大部分分组密码使用该方案，包括数据加密标准（DES）。费斯妥结构的优点在于加密和解密操作非常相似，在某些情况下甚至是相同的，只需要逆转密钥编排。因此，实现这种密码所需的代码或电路大小能几乎减半。费斯妥网络是一种迭代密码，其中的内部函数称为轮函数。</p>
-<p>注：代换-置换网络是一系列被应用于分组密码中相关的数学运算，代换（Substitution）和置换（Permutation）分别被称作S盒（替換盒，英语：S-boxes）和P盒（排列盒，英语：P-boxes）。这种加密网络使用明文和密钥作为输入，并通过交错的若干“轮”（或“层”）代换操作和置换操作产生密文。</p>
-<h5 id="密钥扩展"><a href="#密钥扩展" class="headerlink" title="密钥扩展"></a>密钥扩展</h5><p>目前，密钥扩展的方法有很多，没有见到什么完美的密钥扩展方法，基本原则是使得密钥的每一个比特尽可能影响多轮的轮密钥。</p>
-<h3 id="常见块加密算法"><a href="#常见块加密算法" class="headerlink" title="常见块加密算法"></a>常见块加密算法</h3><p>//TODO(ARX/DES/IDEA/AES/Simon and Speck)</p>
-<h3 id="分组模式"><a href="#分组模式" class="headerlink" title="分组模式"></a>分组模式</h3><p>分组加密会将明文消息划分为固定大小的块，每块明文分别在密钥控制下加密为密文。当然并不是每个消息都是相应块大小的整数倍，所以我们可能需要进行填充。</p>
-<h4 id="填充规则"><a href="#填充规则" class="headerlink" title="填充规则"></a>填充规则</h4><p>正如我们之前所说，在分组加密中，明文的长度往往并不满足要求，需要进行 padding，而如何 padding 目前也已经有了不少的规定。</p>
-<p>常见的 填充规则 如下。需要注意的是，即使消息的长度是块大小的整数倍，仍然需要填充。</p>
-<p>一般来说，如果在解密之后发现 Padding 不正确，则往往会抛出异常。我们也因此可以知道 Paddig 是否正确。</p>
-<p>Pad with bytes all of the same value as the number of padding bytes (PKCS5 padding)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6F 72 05 05 05 05 05</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = FD 29 85 C9 E8 DF 41 40</span><br></pre></td></tr></table></figure>
-<p>Pad with 0x80 followed by zero bytes (OneAndZeroes Padding)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6F 72 80 00 00 00 00</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = BE 62 5D 9F F3 C6 C8 40</span><br></pre></td></tr></table></figure></p>
-<p>这里其实就是和 md5 和 sha1 的 padding 差不多。</p>
-<p>Pad with zeroes except make the last byte equal to the number of padding bytes<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6f 72 00 00 00 00 05</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = 91 19 2C 64 B5 5C 5D B8</span><br></pre></td></tr></table></figure></p>
-<p>Pad with zero (null) characters<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6f 72 00 00 00 00 00</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = 9E 14 FB 96 C5 FE EB 75</span><br></pre></td></tr></table></figure></p>
-<p>Pad with spaces<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DES INPUT BLOCK  = f  o  r  _  _  _  _  _</span><br><span class="line">(IN HEX)           66 6f 72 20 20 20 20 20</span><br><span class="line">KEY              = 01 23 45 67 89 AB CD EF</span><br><span class="line">DES OUTPUT BLOCK = E3 FF EC E5 21 1F 35 25</span><br></pre></td></tr></table></figure></p>
-<h4 id="ECB模式"><a href="#ECB模式" class="headerlink" title="ECB模式"></a>ECB模式</h4><p>ECB 模式全称为电子密码本模式（Electronic codebook）。</p>
-<h5 id="加密"><a href="#加密" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_encryption.png" alt="image"></p>
-<h5 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_decryption.png" alt="image"></p>
-<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ul>
-<li>实现简单。</li>
-<li>不同明文分组的加密可以并行计算，速度很快。</li>
-</ul>
-<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><ul>
-<li>同样的明文块会被加密成相同的密文块，不会隐藏明文分组的统计规律。正如下图所示<br><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ecb_bad_linux.png" alt="image"></li>
-</ul>
-<p>为了解决统一明文产生相同密文的问题，提出了其它的加密模式。</p>
-<h5 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h5><ul>
-<li>用于随机数的加密保护。</li>
-<li>用于单分组明文的加密。</li>
-</ul>
-<h4 id="CBC模式"><a href="#CBC模式" class="headerlink" title="CBC模式"></a>CBC模式</h4><p>CBC 全称为密码分组链接（Cipher-block chaining） 模式，这里</p>
-<ul>
-<li>IV 不要求保密</li>
-<li>IV 必须是不可预测的，而且要保证完整性。</li>
-</ul>
-<h5 id="加密-1"><a href="#加密-1" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cbc_encryption.png" alt="image"></p>
-<h5 id="解密-1"><a href="#解密-1" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cbc_decryption.png" alt="image"></p>
-<h5 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h5><ul>
-<li>密文块不仅和当前密文块相关，而且和前一个密文块或 IV 相关，隐藏了明文的统计特性。</li>
-<li>具有有限的两步错误传播特性，即密文块中的一位变化只会影响当前密文块和下一密文块。</li>
-<li>具有自同步特性，即第 k 块起密文正确，则第 k+1 块就能正常解密。<h5 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h5></li>
-<li>加密不能并行，解密可以并行。</li>
-</ul>
-<h5 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h5><ul>
-<li>常见的数据加密和 TLS 加密。</li>
-<li>完整性认证和身份认证。</li>
-</ul>
-<h5 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h5><ul>
-<li>字节反转攻击<ul>
-<li>IV 向量，影响第一个明文分组</li>
-<li>第 n 个密文分组，影响第 n + 1 个明文分组</li>
-</ul>
-</li>
-<li>Padding Oracle Attack，具体参见下面介绍</li>
-</ul>
-<h4 id="PCBC模式"><a href="#PCBC模式" class="headerlink" title="PCBC模式"></a>PCBC模式</h4><p>PCBC 的全称为明文密码块链接（Plaintext cipher-block chaining）。也称为填充密码块链接（Propagating cipher-block chaining）。</p>
-<h5 id="加密-2"><a href="#加密-2" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/pcbc_encryption.png" alt="image"></p>
-<h5 id="解密-2"><a href="#解密-2" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/pcbc_decryption.png" alt="image"></p>
-<h5 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h5><ul>
-<li>解密过程难以并行化</li>
-<li>互换邻接的密文块不会对后面的密文块造成影响</li>
-</ul>
-<h4 id="CFB模式"><a href="#CFB模式" class="headerlink" title="CFB模式"></a>CFB模式</h4><p>CFB 全称为密文反馈模式（Cipher feedback）。</p>
-<h5 id="加密-3"><a href="#加密-3" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cfb_encryption.png" alt="image"></p>
-<h5 id="解密-3"><a href="#解密-3" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/cfb_decryption.png" alt="image"></p>
-<h5 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a>优点</h5><ul>
-<li>适应于不同数据格式的要求</li>
-<li>有限错误传播</li>
-<li>自同步<h5 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a>缺点</h5></li>
-<li>加密不能并行化，解密不能并行</li>
-</ul>
-<h5 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h5><p>该模式适应于数据库加密，无线通信加密等对数据格式有特殊要求的加密环境。</p>
-<h4 id="OFB模式"><a href="#OFB模式" class="headerlink" title="OFB模式"></a>OFB模式</h4><p>OFB 全称为输出反馈模式（Output feedback），其反馈内容是分组加密后的内容而不是密文。</p>
-<h5 id="加密-4"><a href="#加密-4" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ofb_encryption.png" alt="image"></p>
-<h5 id="解密-4"><a href="#解密-4" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ofb_decryption.png" alt="image"></p>
-<h5 id="优点-3"><a href="#优点-3" class="headerlink" title="优点"></a>优点</h5><ul>
-<li>不具有错误传播特性。<h5 id="缺点-3"><a href="#缺点-3" class="headerlink" title="缺点"></a>缺点</h5></li>
-<li>IV 无需保密，但是对每个消息必须选择不同的 IV。</li>
-<li>不具有自同步能力。</li>
-</ul>
-<h5 id="应用-3"><a href="#应用-3" class="headerlink" title="应用"></a>应用</h5><p>适用于一些明文冗余度比较大的场景，如图像加密和语音加密。</p>
-<h4 id="CTR模式"><a href="#CTR模式" class="headerlink" title="CTR模式"></a>CTR模式</h4><p>CTR 全称为计数器模式（Counter mode），该模式由 Diffe 和 Hellman 设计。</p>
-<h5 id="加密-5"><a href="#加密-5" class="headerlink" title="加密"></a>加密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ctr_encryption.png" alt="image"></p>
-<h5 id="解密-5"><a href="#解密-5" class="headerlink" title="解密"></a>解密</h5><p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/blockcipher/mode/figure/ctr_encryption.png" alt="image"></p>
-<h4 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h4><p>Padding Oracle Attack 攻击一般需要满足以下几个条件</p>
-<ul>
-<li>加密算法<ul>
-<li>采用 PKCS5 Padding 的加密算法。 当然，非对称加密中 OAEP 的填充方式也有可能会受到影响。</li>
-<li>分组模式为 CBC 模式。</li>
-</ul>
-</li>
-<li>攻击者能力<ul>
-<li>攻击者可以拦截上述加密算法加密的消息。</li>
-<li>攻击者可以和 padding oracle（即服务器） 进行交互：客户端向服务器端发送密文，服务器端会以某种返回信息告知客户端 padding 是否正常。</li>
-</ul>
-</li>
-</ul>
-<p>Padding Oracle Attack 攻击可以达到的效果如下</p>
-<ul>
-<li>在不清楚 key 和 IV 的前提下解密任意给定的密文。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2423,7 +2264,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2434,7 +2275,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2445,7 +2286,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2568,9 +2409,6 @@
 
 
 
-  
-  
-
 
 
 
@@ -2610,16 +2448,6 @@
   
   
     <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/three/three.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
   
 
 

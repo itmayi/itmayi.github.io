@@ -263,6 +263,541 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/dex2oat源码分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/26/dex2oat源码分析/" itemprop="url">Android-逐步认识ART系列三</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T17:52:49+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/26/dex2oat源码分析/" class="leancloud_visitors" data-flag-title="Android-逐步认识ART系列三">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>dex2oat是将dex文件编译成Oat文件的工具，位于/system/bin/dex2oat</p>
+<p>dex2oat生成的oat文件位于设备上/data/dalvik-cache/目录下,同时，由于32位和64位的机器码有所区别，因此这个目录下还会通过子文件夹对oat文件进行分类。例如，手机上通常会有下面两个目录：  </p>
+<ul>
+<li>/data/dalvik-cache/arm/  </li>
+<li>/data/dalvik-cache/arm64/</li>
+</ul>
+<h1 id="dex2oat："><a href="#dex2oat：" class="headerlink" title="dex2oat："></a>dex2oat：</h1><ul>
+<li>Retrieve classes.dex from APK (从apk中检索classes.dex)</li>
+<li>verify each class（验证每个类）</li>
+<li>verify each method（验证每个方法）</li>
+<li>verify each dalvik instruction（验证每条dalvik指令）</li>
+</ul>
+<h1 id="dex2oat编译过程"><a href="#dex2oat编译过程" class="headerlink" title="dex2oat编译过程"></a>dex2oat编译过程</h1><p>依次编译输入参数中的所有dex文件;  每个dex文件又按照单个class进行编译; 对于每个class，依次编译其除abstract函数、\<cinit>之外的所有函数，包括 native（jni）/static/及一般函数，进行生成native code，并存放在compiler中。</cinit></p>
+<p>当编译完成后，会从compiler中把native code， dex文件，以及必要的组织信息，写入到OAT文件中；如果指定了生成app-image，还会再生成一份 app-image文件。</p>
+<h1 id="dex2oat的触发时机"><a href="#dex2oat的触发时机" class="headerlink" title="dex2oat的触发时机"></a>dex2oat的触发时机</h1><p>dex2oat进程的启动，可以分为两大类：一类是 installd进程触发的dex2oat；另一类是由 app中直接调用的dex2oat。</p>
+<h2 id="installd中触发dex2oat有以下几个场景："><a href="#installd中触发dex2oat有以下几个场景：" class="headerlink" title="installd中触发dex2oat有以下几个场景："></a>installd中触发dex2oat有以下几个场景：</h2><pre><code>1. 应用安装，包括普通安装和通过shellCmd安装），安装一个app时，安装过程中需要编译dex文件，会通知installd来触发一个dex2oat进程。
+2. 开机扫描，开机过程中，PMS扫描已安装app过程，判断需要优化时，则会对install发出通知。
+3. BackgroundDexOptService，（空闲时段或者开机之后触发的Backgroud的 Job），会通知installd进行dex2oat
+4. OTADexoptService，好象是OAT过程中的触发的，这个场景没有进行过实际的验证
+</code></pre><h2 id="app中调用dex2oat"><a href="#app中调用dex2oat" class="headerlink" title="app中调用dex2oat"></a>app中调用dex2oat</h2><p>一般是App的进程fork出一个子进程，子进程用来执行dex2oat，编译相关的dex，而父进程进行 waitpid 等待，等待完成后再运行其他逻辑。<br>例如：  </p>
+<ol>
+<li>微信安装后的首次启动，是有dex2oat的调用</li>
+<li>淘宝安装后的首次搜索，也有dex2oat的调用</li>
+</ol>
+<p>这个也是其首次启动或者搜索的一个耗时点。</p>
+<p> 由系统触发的dex2oat，都是通过通知installd来进行编译业务。</p>
+<p> 由应用触发的dex2oat，一般都是自行构建参数，直接调用dex2oat。</p>
+<h1 id="compiler-backend-类型"><a href="#compiler-backend-类型" class="headerlink" title="compiler-backend 类型"></a>compiler-backend 类型</h1><ul>
+<li>Portable</li>
+<li>Quick</li>
+<li><p>Optimizing</p>
+<h2 id="Quick-Backend"><a href="#Quick-Backend" class="headerlink" title="Quick Backend"></a>Quick Backend</h2><blockquote>
+<p>MIR -&gt; LIR -&gt; Native Code</p>
+</blockquote>
+<ul>
+<li>Medium level IR(DEX ByteCode)</li>
+<li>Low level IR</li>
+<li>Native Code</li>
+<li>some optimizations at each stage</li>
+</ul>
+<h2 id="Optimizing-Backend"><a href="#Optimizing-Backend" class="headerlink" title="Optimizing Backend"></a>Optimizing Backend</h2><ul>
+<li>Basically Quick with additional optimizations</li>
+</ul>
+<h2 id="Portable-Backend"><a href="#Portable-Backend" class="headerlink" title="Portable Backend"></a>Portable Backend</h2><blockquote>
+<p>MIR -&gt; LLVM Bitcode -&gt; LLVM optimizer -&gt; LLVM Backend -&gt; native code</p>
+</blockquote>
+<ul>
+<li>Uses LLVM Bitcode as its LIR</li>
+<li>Optimizations using LLVM optimizer</li>
+<li>Code generation is done by LLVM backends</li>
+</ul>
+</li>
+</ul>
+<h1 id="编译优化条件和对象（没太搞明白的地方）"><a href="#编译优化条件和对象（没太搞明白的地方）" class="headerlink" title="编译优化条件和对象（没太搞明白的地方）"></a>编译优化条件和对象（没太搞明白的地方）</h1><h2 id="什么情况下App需要使用dex2oat进行编译优化"><a href="#什么情况下App需要使用dex2oat进行编译优化" class="headerlink" title="什么情况下App需要使用dex2oat进行编译优化?"></a>什么情况下App需要使用dex2oat进行编译优化?</h2><ul>
+<li><p>Number of methods comprising 90% of called methods has changed by &gt; 10%.(被调用方法的比例若大于10%，则会触发dex2oat编译优化)</p>
+<h2 id="若要使用dex2oat-哪些方法会被dex2oat考虑进去？"><a href="#若要使用dex2oat-哪些方法会被dex2oat考虑进去？" class="headerlink" title="若要使用dex2oat,哪些方法会被dex2oat考虑进去？"></a>若要使用dex2oat,哪些方法会被dex2oat考虑进去？</h2></li>
+<li>Methods comprising 90% of called methods.()</li>
+</ul>
+<h1 id="dex2oat命令行参数"><a href="#dex2oat命令行参数" class="headerlink" title="dex2oat命令行参数"></a>dex2oat命令行参数</h1><p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --zip-fd=6 --zip-location=/system/app/</span><br><span class="line">Email.apk --oat-fd=7 --oat-location=/data/dalvik-cache/</span><br><span class="line">system@app@Email.apk@classes.dex --profile-file=/data/</span><br><span class="line">dalvik-cache/profiles/com.android.email</span><br></pre></td></tr></table></figure></p>
+<p>参数说明：<br>–zip-fd=\<file-descriptor>:包含classes.dex文件的zip文件描述符。<br>–oat-fd=\<number>:通过此文件描述符指定输出的oat文件的路径。<br>–oat-location=\<oat-name>:指定一个与–oat-fd指定的文件描述符相对应的象征性名字。<br>–profile-file：引导dex2oat编译优化的配置文件。文件位置：/data/dalvik-cache/profiles/应用包名</oat-name></number></file-descriptor></p>
+<p>其他重要参数说明(参考android7.0.0源码)：<br>-j\<number>:指定进行编译优化时要用到的线程总数。默认根据硬件适配，例如：-j12<br>–dex-file=\<dex-file>:指定要编译的文件，后缀可以是.dex、.jar、.apk，例如：–dex-file=/system/framework/core.jar<br>–dex-location=\<dex-location>:dex文件路径,与–dex-file相对应，例如：–dex-file=/home/build//out/system/framework/core.jar;–dex-location=/system/framework/core.jar。<br>–zip-location=\<zip-location>:zip文件路径。例如：–zip-location=/system/app/Calculator.apk<br>–oat-file=\&lt;file.oat&gt;:输出的oat文件名。例如：–oat-file=/system/framework/boot.oat。<br>–oat-symbols=\&lt;file.oat&gt;:指定输出完整符号的oat路径。例如：–oat-symbols=/symbols/system/framework/boo.art。<br>–instruction-set=(arm|arm64|mips|mips64|x86|x86_64):指定指令集架构类型，默认为arm。<br>–compile-backend=(Quick|Optimizing):指定编译器后端。默认为Optimizing。<br>–compiler-filter=(verify-none|verify-at-runtime|verify-profile|interpret-only|time|space-profile|space|balanced|speed-profile|speed|everything-profile|everything):指定编译器过滤模式，默认为speed。</zip-location></dex-location></dex-file></number></p>
+<h1 id="dex2oat主要流程"><a href="#dex2oat主要流程" class="headerlink" title="dex2oat主要流程"></a>dex2oat主要流程</h1><p>main函数入口：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char** argv) &#123;</span><br><span class="line">  int result = art::dex2oat(argc, argv);</span><br><span class="line">  // Everything was done, do an explicit exit here to avoid running Runtime destructors that take</span><br><span class="line">  // time (bug 10645725) unless we&apos;re a debug build or running on valgrind. Note: The Dex2Oat class</span><br><span class="line">  // should not destruct the runtime in this case.</span><br><span class="line">  if (!art::kIsDebugBuild &amp;&amp; (RUNNING_ON_MEMORY_TOOL == 0)) &#123;</span><br><span class="line">    exit(result);</span><br><span class="line">  &#125;</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>dex2oat函数入口：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">static int dex2oat(int argc, char** argv) &#123;</span><br><span class="line">  b13564922();</span><br><span class="line">    </span><br><span class="line">  TimingLogger timings(&quot;compiler&quot;, false, false);</span><br><span class="line"></span><br><span class="line">  // Allocate `dex2oat` on the heap instead of on the stack, as Clang</span><br><span class="line">  // might produce a stack frame too large for this function or for</span><br><span class="line">  // functions inlining it (such as main), that would not fit the</span><br><span class="line">  // requirements of the `-Wframe-larger-than` option.</span><br><span class="line">  std::unique_ptr&lt;Dex2Oat&gt; dex2oat = MakeUnique&lt;Dex2Oat&gt;(&amp;timings);</span><br><span class="line"></span><br><span class="line">  // Parse arguments. Argument mistakes will lead to exit(EXIT_FAILURE) in UsageError.</span><br><span class="line">  dex2oat-&gt;ParseArgs(argc, argv);</span><br><span class="line"></span><br><span class="line">  // If needed, process profile information for profile guided compilation.</span><br><span class="line">  // This operation involves I/O.</span><br><span class="line">  if (dex2oat-&gt;UseProfileGuidedCompilation()) &#123;</span><br><span class="line">    if (!dex2oat-&gt;LoadProfile()) &#123;</span><br><span class="line">      LOG(ERROR) &lt;&lt; &quot;Failed to process profile file&quot;;</span><br><span class="line">      return EXIT_FAILURE;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Check early that the result of compilation can be written</span><br><span class="line">  if (!dex2oat-&gt;OpenFile()) &#123;</span><br><span class="line">    return EXIT_FAILURE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Print the complete line when any of the following is true:</span><br><span class="line">  //   1) Debug build</span><br><span class="line">  //   2) Compiling an image</span><br><span class="line">  //   3) Compiling with --host</span><br><span class="line">  //   4) Compiling on the host (not a target build)</span><br><span class="line">  // Otherwise, print a stripped command line.</span><br><span class="line">  if (kIsDebugBuild || dex2oat-&gt;IsBootImage() || dex2oat-&gt;IsHost() || !kIsTargetBuild) &#123;</span><br><span class="line">    LOG(INFO) &lt;&lt; CommandLine();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    LOG(INFO) &lt;&lt; StrippedCommandLine();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if (!dex2oat-&gt;Setup()) &#123;</span><br><span class="line">    dex2oat-&gt;EraseOatFiles();</span><br><span class="line">    return EXIT_FAILURE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  bool result;</span><br><span class="line">  if (dex2oat-&gt;IsImage()) &#123;//App Image 或者Boot Image</span><br><span class="line">    result = CompileImage(*dex2oat);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    result = CompileApp(*dex2oat);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  dex2oat-&gt;Shutdown();</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>当使用profile-guide 编译app时，会先 LoadProfile(),进行解析出 class index 和 method index，放到 ProfileCompilationinfo 中;<br>如果当前的编译要生成 image时，走CompileImage流程，否则走CompileApp流程;</p>
+</blockquote>
+<p>不论是编译image还是App都会包含以下一个工作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dex2oat.Compile();//核心</span><br><span class="line"></span><br><span class="line">dex2oat.WriteOatFiles();//嵌入ELF</span><br><span class="line"></span><br><span class="line">dex2oat.FlushCloseOatFiles();</span><br><span class="line"></span><br><span class="line"> dex2oat.DumpTiming()</span><br></pre></td></tr></table></figure></p>
+<p>CompileApp和CompileImage的区别是：</p>
+<ol>
+<li>编译image时需要 LoadClassProfileDescriptors() 产生 image_classes_ 集合，和生成 image（HandleImage()）;</li>
+<li>在生成的app image中将会包含 image_classes_ 集合中类的对象，不在 image_classes_集合中的app的类的对象，将不会被生成到 app-image中。</li>
+<li>LoadClassProfileDescriptors（）在从 profile信息中获取 image_classes_集合时，将会把 app dex 中的类以外的类，都过滤掉，比如 classpath dex 对应的类将不会生成到 app-image;</li>
+</ol>
+<p>dex2oat工作流程总结：</p>
+<ol>
+<li>根据dex2oat接收到的参数，组织编译参数</li>
+<li>如果是 profile-guide 编译，则先进行 load app对应的 profile</li>
+<li>收集参数中包含的所有dex file，启动 Compiler 编译这些dex file（classpath中对应的dex file，即uses-library 引用的jar文件，不会被编译），编译生成的数据放在compiler-driver中</li>
+<li>使用 compiler-driver 中的数据，依据 oat文件设计的格式，组织成oat文件，嵌入到 ELF文件中</li>
+<li>如果指定需要生成 app-image，则使用 HandleImage()， 生成app-image， 即 ***.art 文件</li>
+</ol>
+<h2 id="编译流程"><a href="#编译流程" class="headerlink" title="编译流程"></a>编译流程</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Android-部分系统版本变更行为/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/26/Android-部分系统版本变更行为/" itemprop="url">Android 部分系统版本变更行为</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T17:34:14+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/26/Android-部分系统版本变更行为/" class="leancloud_visitors" data-flag-title="Android 部分系统版本变更行为">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>主要关注安全方面</strong></p>
+<h1 id="Android-6-0部分变更行为："><a href="#Android-6-0部分变更行为：" class="headerlink" title="Android 6.0部分变更行为："></a>Android 6.0部分变更行为：</h1><ul>
+<li>运行时权限</li>
+</ul>
+<p>此版本引入了一种新的权限模式，如今，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，同时为应用开发者精简了安装和自动更新过程。用户可为所安装的各个应用分别授予或撤销权限。</p>
+<ul>
+<li>低电耗模式和应用待机模式</li>
+</ul>
+<p>此版本引入了针对空闲设备和应用的最新节能优化技术。</p>
+<ul>
+<li>低电耗模式：如果用户拔下设备的电源插头，并在屏幕关闭后的一段时间内使其保持不活动状态，设备会进入低电耗模式，在该模式下设备会尝试让系统保持休眠状态。在该模式下，设备会定期短时间恢复正常工作，以便进行应用同步，还可让系统执行任何挂起的操作。</li>
+<li>应用待机模式：应用待机模式允许系统判定应用在用户未主动使用它时处于空闲状态。当用户有一段时间未触摸应用时，系统便会作出此判定。如果拔下了设备电源插头，系统会为其视为空闲的应用停用网络访问以及暂停同步和作业。</li>
+</ul>
+<ul>
+<li>取消支持 Apache HTTP 客户端</li>
+</ul>
+<p>Android 6.0 版移除了对 Apache HTTP 客户端的支持。如果您的应用使用该客户端，并以 Android 2.3（API 级别 9）或更高版本为目标平台，请改用 HttpURLConnection 类。此 API 效率更高，因为它可以通过透明压缩和响应缓存减少网络使用，并可最大限度降低耗电量。要继续使用 Apache HTTP API，您必须先在 build.gradle 文件中声明以下编译时依赖项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    useLibrary &apos;org.apache.http.legacy&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Boring SSL</li>
+</ul>
+<p>Android 正在从使用 OpenSSL 库转向使用 BoringSSL 库。如果您要在应用中使用 Android NDK，请勿链接到并非 NDK API 组成部分的加密库，如 libcrypto.so 和 libssl.so。这些库并非公共 API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，您还可能让自己暴露在安全漏洞的风险之下。请改为修改原生代码，以通过 JNI 调用 Java 加密 API，或静态链接到您选择的加密库。</p>
+<ul>
+<li>运行时</li>
+</ul>
+<p>ART 运行时环境现在可正确实现 newInstance() 方法的访问规则。此变更修正了之前版本中 Dalvik 无法正确检查访问规则的问题。如果您的应用使用 newInstance() 方法，并且您想重写访问检查，请调用 setAccessible() 方法（将输入参数设置为 true）。如果您的应用使用 v7 appcompat 库或 v7 recyclerview 库，则您必须更新应用以使用这些库的最新版本。否则，请务必更新从 XML 引用的任何自定义类，以便能够访问它们的类构造函数。</p>
+<p>此版本更新了动态链接程序的行为。动态链接程序现在可以识别库的 soname 与其路径之间的差异（公开错误 6670），并且现在已实现了按 soname 搜索。之前包含错误的 DT_NEEDED 条目（通常是开发计算机文件系统上的绝对路径）却仍工作正常的应用，如今可能会出现加载失败。</p>
+<p>现已正确实现 dlopen(3) RTLD_LOCAL 标记。请注意，RTLD_LOCAL 是默认值，因此不显式使用 RTLD_LOCAL 的 dlopen(3) 调用将受到影响（除非您的应用显式使用 RTLD_GLOBAL）。使用 RTLD_LOCAL 时，在随后通过调用 dlopen(3) 加载的库中并不能使用这些符号（这与由 DT_NEEDED 条目引用的情况截然不同）。</p>
+<p>在之前版本的 Android 上，如果您的应用请求系统加载包含文本重定位信息的共享库，系统会显示警告，但仍允许加载共享库。从此版本开始，如果您的应用的目标 SDK 版本为 23 或更高，则系统会拒绝加载该库。为帮助您检测库是否加载失败，您的应用应该记录 dlopen(3) 失败日志，并在日志中加入 dlerror(3) 调用返回的问题描述文本。要详细了解如何处理文本重定位，请参阅此指南。</p>
+<ul>
+<li>APK验证</li>
+</ul>
+<p>该平台现在执行的 APK 验证更为严格。如果在清单中声明的文件在 APK 中并不存在，该 APK 将被视为已损坏。移除任何内容后必须重新签署 APK。</p>
+<h1 id="Android-7-0部分变更行为："><a href="#Android-7-0部分变更行为：" class="headerlink" title="Android 7.0部分变更行为："></a>Android 7.0部分变更行为：</h1><ul>
+<li>配置文件指导的 JIT/AOT 编译</li>
+</ul>
+<p>在 Android 7.0 中，我们添加了即时 (JIT) 编译器，对 ART 进行代码分析，让它可以在应用运行时持续提升 Android 应用的性能。JIT 编译器对 Android 运行组件当前的 Ahead of Time (AOT) 编译器进行了补充，有助于提升运行时性能，节省存储空间，加快应用更新和系统更新速度。</p>
+<p>配置文件指导的编译让 Android 运行组件能够根据应用的实际使用以及设备上的情况管理每个应用的 AOT/JIT 编译。例如，Android 运行组件维护每个应用热方法的配置文件，并且可以预编译和缓存这些方法以实现最佳性能。对于应用的其他部分，在实际使用之前不会进行编译。</p>
+<p>除提升应用的关键部分的性能外，配置文件指导的编译还有助于减少整个 RAM 占用，包括关联的二进制文件。此功能对于低内存设备非常尤其重要。</p>
+<p>Android 运行组件在管理配置文件指导的编译时，可最大程度降低对设备电池的影响。仅当设备处于空闲状态和充电时才进行编译，从而可以通过提前执行该工作节约时间和省电。</p>
+<ul>
+<li>快速的应用安装路径</li>
+</ul>
+<p>Android 运行组件的 JIT 编译器最实际的好处之一是应用安装和系统更新的速度。即使在 Android 6.0 中需要几分钟进行优化和安装的大型应用，现在只需几秒钟就可以完成安装。系统更新也变得更快，因为省去了优化步骤</p>
+<p><strong>关于JIT的回归</strong></p>
+<p>在Android 5.0上，系统在安装APK时会直接将dex文件中的代码编译成机器码。编译一个应用就已经很耗时，若编译所有应用，等待时间将会使人难以忍受。</p>
+<p>例如：<br>应用程序编译生成的OAT文件会引用Framework中的代码。一旦系统发生升级，Framework中的实现发生变化，就需要重新修正所有应用程序的OAT文件，使得它们的引用是正确的，这就需要重新编译所有的应用。</p>
+<p>由此可以看到单纯的AOT编译会存在以下问题：</p>
+<ul>
+<li>应用安装时间过长。</li>
+<li>系统每次更新都要重新编译所有应用。</li>
+<li>编译生成的Oat文件中，既包含了原先的Dex文件，又包含了编译后的机器代码。而实际上，对于用户来说，并非会用到应用程序中的所有功能，因此很多时候编译生成的机器码是一直用不到的。一份数据存在两份结果（尽管它们的格式是不一样的）显然是一种存储空间的浪费。</li>
+</ul>
+<p>因此，为了解决上述问题，Android 7.0(代号Nougat,简称N)中添加了JIT编译器和配置文件引导型编译。JIT和AOT的配合，是取两者之长，避两者之短：在APK安装时，并不是一次性将所有代码全部编译成机器码。而是在实际运行过程中，对代码进行分析，将热点代码编译成机器码，让它可以在应用运行时持续提升 Android 应用的性能。</p>
+<p>JIT编译器补充了ART当前的预先AOT编译器的功能，有助于提高运行时性能，节省存储空间，以及加快应用及系统更新速度。相较于 AOT编译器，JIT编译器的优势也更为明显，因为它不会在应用自动更新期间或重新编译应用（在无线下载 OTA 更新期间）时拖慢系统速度。</p>
+<p>尽管JIT和AOT使用相同的编译器，它们所进行的一系列优化也较为相似，但它们生成的代码可能会有所不同。JIT会利用运行时类型信息，可以更高效地进行内联，并可让堆栈替换 OnStackReplacement 编译成为可能，而这一切都会使其生成的代码略有不同。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Android系统版本分布/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/26/Android系统版本分布/" itemprop="url">Android系统版本分布</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T15:56:56+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/26/Android系统版本分布/" class="leancloud_visitors" data-flag-title="Android系统版本分布">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Android 信息中心：<a href="https://developer.android.com/about/dashboards/?hl=zh-cn" target="_blank" rel="noopener">https://developer.android.com/about/dashboards/?hl=zh-cn</a></p>
+<p>Android各个系统版本市场占有率表：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB9c984ab2b3606d4f688dee72ff7fb30f?method=download&amp;shareKey=288a168344f4c3da4e4930c699d19ee2" alt="image"><br>Android各个系统版本市场占有率图：<br><img src="https://note.youdao.com/yws/api/personal/file/WEB75a72b0c1a2257ce5215bc18bb38a8d4?method=download&amp;shareKey=cc627bcace397474e82ad2ad8355057c" alt="image"></p>
+<p>总结，由上表和上图可知：</p>
+<ul>
+<li>Android6.0、Android7.0,7.1、Android8.0,8.1占据了3/4的Android市场。</li>
+<li>单个系统版本市场占有率最高的为Android 6.0，即API 23 </li>
+<li>复合系统版本市场占有率最高的为Android 7.0系列，其中7.0为18.1%，7.1为10.1%</li>
+<li></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Java-打印堆栈信息/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -870,7 +1405,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -881,7 +1416,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -892,7 +1427,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1015,9 +1550,6 @@
 
 
 
-  
-  
-
 
 
 
@@ -1057,16 +1589,6 @@
   
   
     <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/three/three.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
   
 
 
