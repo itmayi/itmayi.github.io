@@ -263,6 +263,548 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/数据包分析基础/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/07/数据包分析基础/" itemprop="url">数据包分析基础</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T09:21:38+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据包分析/" itemprop="url" rel="index">
+                    <span itemprop="name">数据包分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/07/数据包分析基础/" class="leancloud_visitors" data-flag-title="数据包分析基础">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="http2协议"><a href="#http2协议" class="headerlink" title="http2协议"></a>http2协议</h2><p>http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。</p>
+<p>http/2源于SPDY，但仍有不同的地方，主要是以下两点：</p>
+<ul>
+<li>HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS</li>
+<li>HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT</li>
+</ul>
+<p>注：spdy是Google开发的基于TCP的应用层协议，用以最小化网络延迟，提升网络速度，优化用户的网络使用体验。SPDY并不是一种用于替代HTTP的协议，而是对HTTP协议的增强。新协议的功能包括数据流的多路复用、请求优先级以及HTTP报头压缩。互联网工程任务组（IETF）对谷歌提出的SPDY协议进行了标准化，于2015年5推出了类似于SPDY协议的 HTTP 2.0 协议标准（简称HTTP/2）。谷歌因此宣布放弃对SPDY协议的支持，转而支持HTTP/2。此外，著名的开源HTTP服务器软件 Nginx 也于2015年9月移除了对SPDY的支持，转而支持HTTP/2。</p>
+<h2 id="二进制格式"><a href="#二进制格式" class="headerlink" title="二进制格式"></a>二进制格式</h2><p>HTTP/1 的请求和响应报文，都是由起始行、首部和实体正文（可选）组成，各部分之间以文本换行符分隔。<br>HTTP/2 将请求和响应数据分割为更小的帧，并对它们采用二进制编码。<br>帧（Frame）：HTTP/2 数据通信的最小单位。<br>消息（Message）：指 HTTP/2 中逻辑上的 HTTP 消息。例如请求和响应等，消息由一个或多个帧组成<br>流（Stream）：存在于连接中的一个虚拟通道。流可以承载双向消息，每个流都有一个唯一的整数 ID。</p>
+<p>HTTP/2 中，同域名下所有通信都在单个连接上完成，这个连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装。</p>
+<p>Frame 是 HTTP/2 二进制格式的基础，Frame 的基本格式如下</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&amp;shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f" alt="image"></p>
+<h2 id="http2的影响"><a href="#http2的影响" class="headerlink" title="http2的影响"></a>http2的影响</h2><p>现在http2还没被大范围部署使用，我们也无法确定到底会发生什么变化，但至少可以参考SPDY的例子和曾经做过的实验来进行大概估计。</p>
+<p>http2减少了网络往返传输的数量，并且用多路复用和快速丢弃不需要的流的办法来完全避免了head of line blocking的困扰。</p>
+<p>它也支持大量并行流，所以即使网站的数据分发在各处也不是问题。</p>
+<p>合理利用流的优先级，可以让客户端尽可能优先收到更重要的数据。</p>
+<p>所有这些加起来，我认为页面载入时间和站点相应的速度都会更快。简而言之：更好的web体验。</p>
+<p>但到底能变得多快，到底提升有多大呢？我认为目前很难说清楚。毕竟这些技术依然在早期，我们还没法看见客户端和服务器实现这些并真正受益于新协议所提供的强大功能。</p>
+<h2 id="集线器、交换机、路由器"><a href="#集线器、交换机、路由器" class="headerlink" title="集线器、交换机、路由器"></a>集线器、交换机、路由器</h2><h3 id="集线器"><a href="#集线器" class="headerlink" title="集线器"></a>集线器</h3><p>集线器(Hub)工作在最底层(物理层)，没有相匹配的软件系统，是纯硬件设备,集线器主要用来连接计算机等网络终端。</p>
+<p>集线器为<strong>共享式带宽</strong>，连接在集线器上的任何一个设备发送数据时，其他所有设备必须等待，此设备享有全部带宽，通讯完毕，再由其他设备使用带宽。正因此，集线器连接了一个冲突域的网络。所有设备相互交替使用，就好象大家一起过一根独木桥一样。</p>
+<p>集线器<strong>不能判断数据包的目的地和类型</strong>，所以如果是广播数据包也依然转发，而且所有设备发出数据以广播方式发送到每个接口，这样集线器也连接了一个广播域的网络。</p>
+<h3 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h3><p>交换机工作在数据链接层(第二层)，和集线器一样主要用于连接计算机等网络终端设备。允许连接在交换机上的设备并行通讯，好比高速公路上的汽车并行行使一般，设备间通讯不会再发生冲突，因此交换机打破了冲突域，交换机每个接口是一个冲突域，不会与其他接口发生通讯冲突。</p>
+<p>有系统的交换机可以记录MAC地址表，发送的数据不会再以广播方式发送到每个接口，而是直接到达目的接口，节省了接口带宽。但是交换机和集线器一样不能判断广播数据包，会把广播发送到全部接口，所以交换机和集线器一样连接了一个广播域网络。</p>
+<p>高端一点的交换机不仅可以记录MAC地址表，还可以划分VLAN（虚拟局域网）来隔离广播，但是VLAN间也同样不能通讯。要使VLAN间能够通讯，必须有三层设备介入。</p>
+<h3 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h3><p>路由器工作在网络层(第三层)，主要用来进行网络与网络的连接，所有路由器都有自己的操作系统。路由器把数据从一个网络发送到另一个网络，这个过程就叫路由。路由器不仅能像交换机一样隔离冲突域，而且还能检测广播数据包，并丢弃广播包来隔离广播域，有效的扩大了网络的规模。</p>
+<p>在路由器中记录着路由表，路由器以此来转发数据，以实现网络间的通讯。路由器的介入可以使交换机划分的VLAN实现互相通讯。</p>
+<h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><table>
+<thead>
+<tr>
+<th>name</th>
+<th>complete connection</th>
+<th>stateful</th>
+<th>selected replay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>TCPReplay|No Required|No|No<br>Tomahawk|Required|Yes|No<br>Mokey|No Required|Yes|No<br>Avalanche|Required|Yes|No<br>SocketReplay|No Required|Yes|Yes</p>
+<h3 id="TcpReplay"><a href="#TcpReplay" class="headerlink" title="TcpReplay"></a>TcpReplay</h3><p>Tcpreplay是一个工具套件，用来测试各种网络设备，包括：交换机、路由器、防火墙、NIDS和IPS等。它使用嗅探工具抓取的数据包，允许你拆分客户端和服务端流量，重写2、3、4层头信息，最终将流量回放到网络中。3.4 版本包括以下部分：</p>
+<ul>
+<li><p>Tcpprep:将流量拆分为客户端和服务端两个方向，并存放为缓存文件</p>
+</li>
+<li><p>Tcprewrite:重写pcap文件的TCP/IP层和数据链路层的头信息</p>
+</li>
+<li><p>Tcpreplay:以可控的速度将pcap文件回放到网络中</p>
+</li>
+<li><p>Tcpreplay-edit:在tcpreplay基础上增加编辑功能</p>
+</li>
+<li><p>Tcpbirdge:桥接两个不同网段</p>
+</li>
+<li><p>Tcpcapinfo:pcap 文件解码器和编译器</p>
+</li>
+</ul>
+<p>原文链接：<a href="https://www.cnblogs.com/jiayy/p/3447027.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiayy/p/3447027.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/现代密码学基础六/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/现代密码学基础六/" itemprop="url">现代密码学基础六</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-06T23:54:24+08:00">
+                2019-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/06/现代密码学基础六/" class="leancloud_visitors" data-flag-title="现代密码学基础六">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="攻击模式"><a href="#攻击模式" class="headerlink" title="攻击模式"></a>攻击模式</h2><p>在我们攻击一个密码学系统时，我们或多或少会得到关于这个系统的一些信息。根据得到信息量的不同，我们可以采用的方法就可能不同。在当今的密码学分析时，一般我们都会假设攻击者知道密码学算法，这个假设是合理的，因为历史上有很多保密的算法最后都被人所知，比如 RC4。被知道的方式多重多样，比如间谍，逆向工程等。</p>
+<p>这里我们根据攻击者获取密码学系统的信息的多少将攻击模式分为以下几类</p>
+<ul>
+<li>唯密文攻击：攻击者仅能获得一些加密过的密文。</li>
+<li>已知明文攻击：攻击者有一些密文对应的明文。</li>
+<li>选择明文攻击：攻击者在开始攻击时可以选择一些明文，并获取加密后的密文。如果攻击者在攻击中途可以根据已经获取的信息选择新的明文并获取对应的密文，则称为适应性选择明文攻击。</li>
+<li>选择密文攻击：攻击者在开始攻击之前可以选择一些密文，并获取解密后的明文。如果攻击者在攻击图中可以根据已经获取的信息选择一些新的密文并获取对应的明文，则称为适应性选择密文攻击。</li>
+<li>相关密钥攻击：攻击者可以获得两个或多个相关密钥的加密或解密后+ 的密文或明文。但是攻击者不知道这些密钥。</li>
+</ul>
+<h2 id="常见攻击方法"><a href="#常见攻击方法" class="headerlink" title="常见攻击方法"></a>常见攻击方法</h2><p>根据不同的攻击模式，可能会有不同的攻击方法，目前常见的攻击方法主要有</p>
+<ul>
+<li>暴力攻击</li>
+<li>中间相遇攻击</li>
+<li>线性分析</li>
+<li>差分分析</li>
+<li>不可能差分分析</li>
+<li>积分分析</li>
+<li>代数分析</li>
+<li>相关密钥攻击</li>
+<li>侧信道攻击</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/现代密码学基础五/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/现代密码学基础五/" itemprop="url">现代密码学基础五</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-06T23:47:48+08:00">
+                2019-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/06/现代密码学基础五/" class="leancloud_visitors" data-flag-title="现代密码学基础五">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p>在计算机世界中，我们可能会需要电子签名，因为我们大多数情况下会使用电子文件，那这时候怎么办呢？当然，我们仍然可以选择使用自己的名字。但其实还有另外一种方式，那就是采用数字签名，这种签名更加难以伪造，可信程度更高。数字签名的主要用处是确保消息确实来自于声称产生该消息的人。</p>
+<p>数字签名依赖于非对称密码，因为我们必须确保一方能够做的事情，而另一方不能够做出这样的事情。其基本原理如下</p>
+<p><img src="https://ctf-wiki.github.io/ctf-wiki/crypto/signature/figure/Digital_Signature_diagram.png" alt="image"></p>
+<h3 id="RSA数字签名"><a href="#RSA数字签名" class="headerlink" title="RSA数字签名"></a>RSA数字签名</h3><p>原理类似于 RSA 加密，只是这里使用私钥进行加密，将加密后的结果作为签名。</p>
+<h3 id="DSA数字签名"><a href="#DSA数字签名" class="headerlink" title="DSA数字签名"></a>DSA数字签名</h3><p>//TODO</p>
+<h2 id="证书格式"><a href="#证书格式" class="headerlink" title="证书格式"></a>证书格式</h2><h3 id="DER"><a href="#DER" class="headerlink" title="DER"></a>DER</h3><p>使用该扩展名的证书采用<strong>二进制编码</strong>，当然，这些证书也可以使用 CER 或者 CRT 作为扩展名。</p>
+<h3 id="PEM"><a href="#PEM" class="headerlink" title="PEM"></a>PEM</h3><p>使用该扩展名的证书采用 Base64 编码，文件的开始是一行 —–BEGIN。</p>
+<h3 id="格式转换"><a href="#格式转换" class="headerlink" title="格式转换"></a>格式转换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -outform der -in certificate.pem -out certificate.der</span><br><span class="line">openssl x509 -inform der -in certificate.cer -out certificate.pem</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/现代密码学基础四/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1846,524 +2388,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/02/Android编译器相关/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/02/Android编译器相关/" itemprop="url">Android编译器相关</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-02T10:17:43+08:00">
-                2019-01-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/02/Android编译器相关/" class="leancloud_visitors" data-flag-title="Android编译器相关">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MIR -&gt; LIR -&gt; native code</p>
-<p>SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。<br>之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。</p>
-<p>在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。</p>
-<p>接着就调用cu.cg-&gt;Materialize()用来产生最终代码，其中重要的两个调用就是MethodMIR2LIR()和AssembleLIR()。<br>通MethodMIR2LIR()将MIR转化为LIR，遍历每个BasicBlock，对每个基本块执行MethodBlockCodeGen，<br>本质上最后是执行了CompileDalvikInstruction。CompileDalvikInstruction也就是通过解析指令，然后根据opcode进行分支判断，<br>调用最终不同的指令生成函数，最后LIR之间也形成一个双向链表。最终将MIR转换为LIR。</p>
-<p>AssembleLIR()最终调用的是AssembleInstructions函数。程序中维护了一个编码指令表MipsMir2Lir::EncodingMap，<br>AssembleInstructions即是通过查找这个表来进行翻译，将LIR转化为了MIPS指令，<br>并将所翻译的指令存储到CodeBufferMir2Lir::code_buffer_之中。<br>这样就完成了一次编译的完整流程。</p>
-<p>总结：<br>MIR为对dalvik指令进行SSA变换之后的指令形态。<br>LIR为对MIR形态的指令进行解析生成的另一种形态的指令。<br>native code为通过查找编码指令表将LIR形态的指令翻译为对应不同平台的汇编指令。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/28/Android-逐步认识ART系列二/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/28/Android-逐步认识ART系列二/" itemprop="url">Android 逐步认识ART系列二</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-28T11:33:34+08:00">
-                2018-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/12/28/Android-逐步认识ART系列二/" class="leancloud_visitors" data-flag-title="Android 逐步认识ART系列二">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="boot-oat"><a href="#boot-oat" class="headerlink" title="boot.oat"></a>boot.oat</h1><ul>
-<li>Contains libs and frameworks in boot class path<br>  – To be pre-loaded in all apps（系统启动路径下的的需要预加载库和框架）</li>
-</ul>
-<p>任何应用程序都不是孤立存在的，几乎所有应用程序都会依赖Android Framework中提供的基础类，例如Activity，Intent，Parcel等类。所以在应用程序的代码中，自然少不了对于这些类的引用.</p>
-<p>考虑到几乎所有应用都存在这种引用关系，在运行时都会依赖于Framework中的类，因此系统如何处理这部分逻辑就是非常重要的了，因为这个处理的方法将影响到所有应用程序。</p>
-<p>在AOSP编译时，会将所有这些公共类放到专门的一个Oat文件中，这个文件就是：boot.oat。与之配合的还有一个boot.art文件。</p>
-<p>boot.oat可以在两个地方找到：</p>
-<ol>
-<li><p>/system/framework/[platform]/boot.oat</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/system/framework/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     50767704 2014-11-20 19:07 boot.oat</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>/data/dalvik-cache/[platform]/system@<a href="mailto:framework@boot.oat" target="_blank" rel="noopener">framework@boot.oat</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/data/dalvik-cache/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     51003824 1970-05-29 01:45 system@framework@boot.oat</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --image=/data/dalvik-cache/system@framework@boot.art --runtime-arg</span><br><span class="line">-Xms64m --runtime-arg -Xmx64m --dex-file=/system/framework/core-libart.jar --dex-file=/</span><br><span class="line">system/framework/conscrypt.jar --dex-file=/system/framework/okhttp.jar --dex-file=/</span><br><span class="line">system/framework/core-junit.jar --dex-file=/system/framework/bouncycastle.jar --dexfile=/system/framework/ext.jar --dex-file=/system/framework/framework.jar --dex-file=/</span><br><span class="line">system/framework/framework2.jar --dex-file=/system/framework/telephony-common.jar --</span><br><span class="line">dex-file=/system/framework/voip-common.jar --dex-file=/system/framework/mms-common.jar</span><br><span class="line">--dex-file=/system/framework/android.policy.jar --dex-file=/system/framework/</span><br><span class="line">services.jar --dex-file=/system/framework/apache-xml.jar --dex-file=/system/framework/</span><br><span class="line">webviewchromium.jar --oat-file=/data/dalvik-cache/system@framework@boot.oat --runtimearg -implicit-checks:none --instruction-set=arm --instruction-set-features=default --</span><br><span class="line">base=0x70000000 --image-classes-zip=/system/framework/framework.jar</span><br></pre></td></tr></table></figure>
-<p><strong>上面命令编译进boot.oat中的jar:</strong><br>/system/framework/core-libart.jar<br>/system/framework/conscrypt.jar<br>/system/framework/okhQp.jar<br>/system/framework/core-junit.jar<br>/system/framework/bouncycastle.jar<br>/system/framework/ext.jar<br>/system/framework/framework.jar<br>/system/framework/framework2.jar<br>/system/framework/telephony-common.jar<br>/system/framework/voip-common.jar<br>/system/framework/mms-common.jar<br>/system/framework/android.policy.jar<br>/system/framework/services.jar<br>/system/framework/apache-xml.jar<br>/system/framework/webviewchromium.jar  </p>
-<h1 id="boot-art-boot-image"><a href="#boot-art-boot-image" class="headerlink" title="boot.art(boot image)"></a>boot.art(boot image)</h1><ul>
-<li>contains absolute pointers for methods in boot.oat(以绝对地址指向boot.oat中的方法)</li>
-<li>boot.art和boot.oat的加载地址都是32位，在64位的系统上，高32位都是0</li>
-</ul>
-<p>boot.art中包含了指向boot.oat中方法代码的指针，它被称之为启动镜像（Boot Image），并且被加载的位置是固定的。boot.oat被加载的地址紧随着boot.art。</p>
-<p>boot.art可以在两个地方找到：</p>
-<ol>
-<li><p>/system/framework/[platform]/boot.art</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/system/framework/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     11829248 2014-11-20 19:07 boot.art</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>/data/dalvik-cache/[platform]/system@<a href="mailto:framework@boot.art" target="_blank" rel="noopener">framework@boot.art</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/data/dalvik-cache/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     11829248 1970-05-29 01:45 system@framework@boot.art</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="Profiling"><a href="#Profiling" class="headerlink" title="Profiling"></a>Profiling</h1><ul>
-<li>By default,ART compiles methods regardless of impact on performance(ART编译方法时，不会考虑对性能的影响)</li>
-<li>Profiling feature allows ART to be more selective on which methods to compile(profile能够控制dex2oat具体要对哪些方法进行编译优化)</li>
-<li>Profiling配置默认可能是关闭的。可以通过setprop手动打开</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setprop dalvik.vm.profiler 1</span><br></pre></td></tr></table></figure>
-<p>- No AOT compilation upon app install(在App安装时不会进行AOT优化，一方面时为了减少安装时间、另一方面时节省存储空间)</p>
-<ul>
-<li>Profiling data is collected while app is runing(在App运行期间，会收集profile数据)</li>
-<li>Profile files are placed in /data/dalvik-cache/profiles</li>
-<li>Profile file name is the package name</li>
-<li>Profile data is used to determine if AOT compilation will be done</li>
-</ul>
-<p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">42/2/352  </span><br><span class="line">android.database.Cursor com.android.email.provider.EmailProvider.uiAccounts(java.lang.String[])/1/128  </span><br><span class="line">void com.android.email.NotificationController.ensureHandlerExists()/1/37</span><br><span class="line">int com.android.email.provider.EmailProvider.getFolderTypeFromMailboxType(int)/2/56</span><br><span class="line">boolean com.android.mail.browse.ConversationCursor$ConversationProvider.onCreate()/1/49</span><br><span class="line">com.google.common.collect.ImmutableList com.google.common.collect.ImmutableList.of()/1/3</span><br><span class="line">&lt;snip&gt;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>First line is the summary inforamtion<blockquote>
-<p>count/Null methods count/Boot path methods count</p>
-</blockquote>
-</li>
-<li>Subsequent lines are the profile data<blockquote>
-<p>Methods name/Count/Size</p>
-</blockquote>
-</li>
-</ul>
-<h1 id="App-Image"><a href="#App-Image" class="headerlink" title="App Image"></a>App Image</h1><ul>
-<li>/data/app/xxx/oat/arm/base.art</li>
-<li>/data/app/xxx/oat/rm/base.odex</li>
-</ul>
-<p>base.art 就是对应的App image文件。主要记录已经编译好的类的具体信息以及函数在oat文件的位置，相当于缓存，在app运行的时候会加载到虚拟机，可以加快启动速度。</p>
-<p><strong>在Android7.0上，dex2oat的参数 compiler-filter被指定为profile类型的几个compiler-filter之一时，dex2oat还会生成app-image文件。</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/27/Android-逐步认识ART系列一/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/27/Android-逐步认识ART系列一/" itemprop="url">Android 逐步认识ART系列一</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-27T22:52:11+08:00">
-                2018-12-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/12/27/Android-逐步认识ART系列一/" class="leancloud_visitors" data-flag-title="Android 逐步认识ART系列一">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>参考资料：<br>原文：<a href="https://blog.csdn.net/hl09083253cy/article/details/78418809" target="_blank" rel="noopener">https://blog.csdn.net/hl09083253cy/article/details/78418809</a><br>原文：<a href="https://paul.pub/android-art-vm/#id-art-vs-dalvik" target="_blank" rel="noopener">https://paul.pub/android-art-vm/#id-art-vs-dalvik</a><br>Android Source：<a href="https://source.android.com.devices/tech/dalvik/configure" target="_blank" rel="noopener">https://source.android.com.devices/tech/dalvik/configure</a>  </p>
-<h1 id="JIT"><a href="#JIT" class="headerlink" title="JIT"></a>JIT</h1><p>我们知道，C/C++的效率要比 Java好，因为C/C++会被直接编译成汇编指令，CPU可以直接读取运行；而Java却是需要虚拟机一步一步的解释每一条 java bytecode。</p>
-<p>而Dalvik 中使用了一个技术，叫做JIT，会在解释执行一个java方法或者一个java代码段时，进行trace，并在不断的执行过程中找到 hotspot，</p>
-<p>然后将相应的方法或者代码片段编译为对应的汇编指令，下次再执行到该方法时，会直接执行其对应的汇编指令，依次来提升部分效率。</p>
-<p>可以理解为：运行时追踪，并对hotspot进行编译生成高效的可执行指令。</p>
-<p>JIT的运行流程</p>
-<ol>
-<li>用户运行应用，而这随后就会触发 ART 加载 .dex 文件。<ol>
-<li>如果有 .oat 文件（即 .dex 文件的 AOT 二进制文件），则 ART 会直接使用该文件。虽然 .oat 文件会定期生成，但文件中不一定会包含经过编译的代码（即 AOT 二进制文件）。</li>
-<li>如果没有 .oat 文件，则 ART 会通过 JIT 或解释器执行 .dex 文件。如果有 .oat 文件，ART 将一律使用这类文件。否则，它将在内存中使用并解压 APK 文件，从而得到 .dex 文件，但是这会导致消耗大量内存（相当于 dex 文件的大小）。</li>
-</ol>
-</li>
-<li>针对任何未根据speed编译过滤器编译（见下文）的应用启用JIT（也就是说，要尽可能多地编译应用中的代码）。</li>
-<li>将 JIT 配置文件数据转存到只限应用访问的系统目录内的文件中。</li>
-<li>AOT 编译 dex2oat 守护进程通过解析该文件来推进其编译。</li>
-</ol>
-<p>要开启 JIT 日志记录，请运行以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell setprop dalvik.vm.extra-opts -verbose:jit</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
-<p>要停用 JIT，请运行以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell setprop dalvik.vm.usejit false</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
-<h1 id="AOT"><a href="#AOT" class="headerlink" title="AOT"></a>AOT</h1><p>Ahead-of-time（AOT）是相对于Just-in-time（JIT）而言的。JIT是在运行时进行字节码到本地机器码的编译，这也是为什么Java普遍被认为效率比C++差的原因。无论是解释器的解释还是运行过程中即时编译，都比C++编译出的本地机器码执行多了一个耗费时间的过程。而AOT就是向C++编译过程靠拢的一项技术：当APK在安装的时候，系统会通过一个名称为dex2oat的工具将APK中的dex文件编译成包含本地机器码的oat文件存放下来。这样做之后，在程序执行的时候，就可以直接使用已经编译好的机器码以加快效率。</p>
-<h1 id="单纯的JIT存在的问题"><a href="#单纯的JIT存在的问题" class="headerlink" title="单纯的JIT存在的问题"></a>单纯的JIT存在的问题</h1><ol>
-<li>执行效率差</li>
-</ol>
-<h1 id="单纯的AOT存在的问题"><a href="#单纯的AOT存在的问题" class="headerlink" title="单纯的AOT存在的问题"></a>单纯的AOT存在的问题</h1><ol>
-<li>应用安装时间长</li>
-<li>系统更新后，要重新编译所有应用</li>
-<li>浪费存储空间（为所有方法执行编译）</li>
-</ol>
-<h1 id="AOT-JIT"><a href="#AOT-JIT" class="headerlink" title="AOT+JIT"></a>AOT+JIT</h1><p>从Android 7.0（代号Nougat,简称N）开始，ART组合使用了AOT、JIT和配置文件引导型编译。所有这些编译模式的组合均可配置。例如，在Pixel设备上，相应的配置如下：</p>
-<ol>
-<li>最初在安装应用程序的时候不执行任何AOT编译。应用程序运行的前几次都将使用解释模式，<strong>并且经常执行的方法将被JIT编译</strong>。</li>
-<li><strong>当设备处于空闲状态并正在充电时</strong>，编译守护进程会根据第一次运行期间生成的Profile文件对<strong>常用代码</strong>运行AOT编译。</li>
-<li>应用程序的<strong>下一次重新启动将使用Profile文件引导的代码</strong>，并<strong>避免在运行时为已编译的方法进行JIT编译</strong>。在<strong>新运行期间得到JIT编译的方法将被添加到Profile文件中</strong>，然后被编译守护进程使用。</li>
-</ol>
-<p>ART包含一个编译器（dex2oat工具）和一个为启动zygote而加载的运行时（libart.so）。在应用程序安装时，APK文件会传递给dex2oat工具，该工具会为根据APK文件生成一个或多个编译产物，这些产物文件名和扩展名可能会在不同版本之间发生变化，但从Android 8.0版本开始，生成的文件是：</p>
-<ul>
-<li>.vdex：包含APK的未压缩Dex代码，以及一些额外的元数据用来加速验证。</li>
-<li>.odex：包含APK中方法的AOT编译代码。（注意，虽然Dalvik虚拟机时代也会生成odex文件，但和这里的odex文件仅仅是后缀一样，文件内容已经完全不同了）</li>
-<li>.art（可选）：包含APK中列出的一些字符串和类的ART内部表示，用于加速应用程序的启动    </li>
-</ul>
-<h1 id="编译选项"><a href="#编译选项" class="headerlink" title="编译选项"></a>编译选项</h1><p>ART的编译选项分为以下两个类别：</p>
-<ol>
-<li>系统ROM配置：编译系统映像时，会对哪些代码进行AOT编译。</li>
-<li>运行时配置：ART如何在设备上编译和运行应用。</li>
-</ol>
-<p>用于配置这两个类别的一个核心ART选项就是”编译过滤器“，编译过滤器可控制ART如何编译DEX代码，是一个传递给dex2oat工具的选项。从Android 8.0开始，有四个官方支持的过滤器：</p>
-<ol>
-<li>verify：只运行DEX代码验证</li>
-<li>quicken：运行DEX代码验证，并优化一些DEX指令，以获得更好的解释器性能。</li>
-<li>speed：运行DEX代码验证，并对所有方法进行AOT编译。</li>
-<li><p>speed-profile：运行DEX代码验证，并对配置文件中列出的方法进行AOT编译</p>
-<h2 id="系统ROM配置"><a href="#系统ROM配置" class="headerlink" title="系统ROM配置"></a>系统ROM配置</h2><p>有一些编译选项可用于配置系统ROM，如何配置这些选项取决于/system的可用存储空间以及预先安装的应用数量。编译到系统AROM中的JAR/APK可以分为以下四个类别：</p>
-<ol>
-<li>启动类路径代码：默认使用speed编译过滤器进行编译 </li>
-<li>系统服务代码：默认使用speed编译过滤器进行编译</li>
-<li>产品专属的核心应用：默认使用speed编译过滤器进行编译</li>
-<li>所有其他应用：默认使用quicken编译过滤器进行编译</li>
-</ol>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2416,7 +2440,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2427,7 +2451,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2438,7 +2462,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

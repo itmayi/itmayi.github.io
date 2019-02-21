@@ -263,6 +263,524 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/02/Android编译器相关/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/02/Android编译器相关/" itemprop="url">Android编译器相关</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-02T10:17:43+08:00">
+                2019-01-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/02/Android编译器相关/" class="leancloud_visitors" data-flag-title="Android编译器相关">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MIR -&gt; LIR -&gt; native code</p>
+<p>SSA：（编译器后端寄存器分配算法，static single assignment）静态单一复制法，是一种中间表示形式。<br>之所以称之为单赋值，是因为每个名字在SSA中仅被赋值一次。</p>
+<p>在某种程度上，可以认为MIR即为对dalvik指令进行SSA变换之后的指令形态。</p>
+<p>接着就调用cu.cg-&gt;Materialize()用来产生最终代码，其中重要的两个调用就是MethodMIR2LIR()和AssembleLIR()。<br>通MethodMIR2LIR()将MIR转化为LIR，遍历每个BasicBlock，对每个基本块执行MethodBlockCodeGen，<br>本质上最后是执行了CompileDalvikInstruction。CompileDalvikInstruction也就是通过解析指令，然后根据opcode进行分支判断，<br>调用最终不同的指令生成函数，最后LIR之间也形成一个双向链表。最终将MIR转换为LIR。</p>
+<p>AssembleLIR()最终调用的是AssembleInstructions函数。程序中维护了一个编码指令表MipsMir2Lir::EncodingMap，<br>AssembleInstructions即是通过查找这个表来进行翻译，将LIR转化为了MIPS指令，<br>并将所翻译的指令存储到CodeBufferMir2Lir::code_buffer_之中。<br>这样就完成了一次编译的完整流程。</p>
+<p>总结：<br>MIR为对dalvik指令进行SSA变换之后的指令形态。<br>LIR为对MIR形态的指令进行解析生成的另一种形态的指令。<br>native code为通过查找编码指令表将LIR形态的指令翻译为对应不同平台的汇编指令。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/28/Android-逐步认识ART系列二/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/28/Android-逐步认识ART系列二/" itemprop="url">Android 逐步认识ART系列二</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-28T11:33:34+08:00">
+                2018-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/28/Android-逐步认识ART系列二/" class="leancloud_visitors" data-flag-title="Android 逐步认识ART系列二">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="boot-oat"><a href="#boot-oat" class="headerlink" title="boot.oat"></a>boot.oat</h1><ul>
+<li>Contains libs and frameworks in boot class path<br>  – To be pre-loaded in all apps（系统启动路径下的的需要预加载库和框架）</li>
+</ul>
+<p>任何应用程序都不是孤立存在的，几乎所有应用程序都会依赖Android Framework中提供的基础类，例如Activity，Intent，Parcel等类。所以在应用程序的代码中，自然少不了对于这些类的引用.</p>
+<p>考虑到几乎所有应用都存在这种引用关系，在运行时都会依赖于Framework中的类，因此系统如何处理这部分逻辑就是非常重要的了，因为这个处理的方法将影响到所有应用程序。</p>
+<p>在AOSP编译时，会将所有这些公共类放到专门的一个Oat文件中，这个文件就是：boot.oat。与之配合的还有一个boot.art文件。</p>
+<p>boot.oat可以在两个地方找到：</p>
+<ol>
+<li><p>/system/framework/[platform]/boot.oat</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/system/framework/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     50767704 2014-11-20 19:07 boot.oat</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/data/dalvik-cache/[platform]/system@<a href="mailto:framework@boot.oat" target="_blank" rel="noopener">framework@boot.oat</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/data/dalvik-cache/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     51003824 1970-05-29 01:45 system@framework@boot.oat</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/system/bin/dex2oat --image=/data/dalvik-cache/system@framework@boot.art --runtime-arg</span><br><span class="line">-Xms64m --runtime-arg -Xmx64m --dex-file=/system/framework/core-libart.jar --dex-file=/</span><br><span class="line">system/framework/conscrypt.jar --dex-file=/system/framework/okhttp.jar --dex-file=/</span><br><span class="line">system/framework/core-junit.jar --dex-file=/system/framework/bouncycastle.jar --dexfile=/system/framework/ext.jar --dex-file=/system/framework/framework.jar --dex-file=/</span><br><span class="line">system/framework/framework2.jar --dex-file=/system/framework/telephony-common.jar --</span><br><span class="line">dex-file=/system/framework/voip-common.jar --dex-file=/system/framework/mms-common.jar</span><br><span class="line">--dex-file=/system/framework/android.policy.jar --dex-file=/system/framework/</span><br><span class="line">services.jar --dex-file=/system/framework/apache-xml.jar --dex-file=/system/framework/</span><br><span class="line">webviewchromium.jar --oat-file=/data/dalvik-cache/system@framework@boot.oat --runtimearg -implicit-checks:none --instruction-set=arm --instruction-set-features=default --</span><br><span class="line">base=0x70000000 --image-classes-zip=/system/framework/framework.jar</span><br></pre></td></tr></table></figure>
+<p><strong>上面命令编译进boot.oat中的jar:</strong><br>/system/framework/core-libart.jar<br>/system/framework/conscrypt.jar<br>/system/framework/okhQp.jar<br>/system/framework/core-junit.jar<br>/system/framework/bouncycastle.jar<br>/system/framework/ext.jar<br>/system/framework/framework.jar<br>/system/framework/framework2.jar<br>/system/framework/telephony-common.jar<br>/system/framework/voip-common.jar<br>/system/framework/mms-common.jar<br>/system/framework/android.policy.jar<br>/system/framework/services.jar<br>/system/framework/apache-xml.jar<br>/system/framework/webviewchromium.jar  </p>
+<h1 id="boot-art-boot-image"><a href="#boot-art-boot-image" class="headerlink" title="boot.art(boot image)"></a>boot.art(boot image)</h1><ul>
+<li>contains absolute pointers for methods in boot.oat(以绝对地址指向boot.oat中的方法)</li>
+<li>boot.art和boot.oat的加载地址都是32位，在64位的系统上，高32位都是0</li>
+</ul>
+<p>boot.art中包含了指向boot.oat中方法代码的指针，它被称之为启动镜像（Boot Image），并且被加载的位置是固定的。boot.oat被加载的地址紧随着boot.art。</p>
+<p>boot.art可以在两个地方找到：</p>
+<ol>
+<li><p>/system/framework/[platform]/boot.art</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/system/framework/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     11829248 2014-11-20 19:07 boot.art</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/data/dalvik-cache/[platform]/system@<a href="mailto:framework@boot.art" target="_blank" rel="noopener">framework@boot.art</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@hammerhead:/data/dalvik-cache/arm # ls -l</span><br><span class="line">-rw-r--r-- root     root     11829248 1970-05-29 01:45 system@framework@boot.art</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="Profiling"><a href="#Profiling" class="headerlink" title="Profiling"></a>Profiling</h1><ul>
+<li>By default,ART compiles methods regardless of impact on performance(ART编译方法时，不会考虑对性能的影响)</li>
+<li>Profiling feature allows ART to be more selective on which methods to compile(profile能够控制dex2oat具体要对哪些方法进行编译优化)</li>
+<li>Profiling配置默认可能是关闭的。可以通过setprop手动打开</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setprop dalvik.vm.profiler 1</span><br></pre></td></tr></table></figure>
+<p>- No AOT compilation upon app install(在App安装时不会进行AOT优化，一方面时为了减少安装时间、另一方面时节省存储空间)</p>
+<ul>
+<li>Profiling data is collected while app is runing(在App运行期间，会收集profile数据)</li>
+<li>Profile files are placed in /data/dalvik-cache/profiles</li>
+<li>Profile file name is the package name</li>
+<li>Profile data is used to determine if AOT compilation will be done</li>
+</ul>
+<p>example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">42/2/352  </span><br><span class="line">android.database.Cursor com.android.email.provider.EmailProvider.uiAccounts(java.lang.String[])/1/128  </span><br><span class="line">void com.android.email.NotificationController.ensureHandlerExists()/1/37</span><br><span class="line">int com.android.email.provider.EmailProvider.getFolderTypeFromMailboxType(int)/2/56</span><br><span class="line">boolean com.android.mail.browse.ConversationCursor$ConversationProvider.onCreate()/1/49</span><br><span class="line">com.google.common.collect.ImmutableList com.google.common.collect.ImmutableList.of()/1/3</span><br><span class="line">&lt;snip&gt;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>First line is the summary inforamtion<blockquote>
+<p>count/Null methods count/Boot path methods count</p>
+</blockquote>
+</li>
+<li>Subsequent lines are the profile data<blockquote>
+<p>Methods name/Count/Size</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="App-Image"><a href="#App-Image" class="headerlink" title="App Image"></a>App Image</h1><ul>
+<li>/data/app/xxx/oat/arm/base.art</li>
+<li>/data/app/xxx/oat/rm/base.odex</li>
+</ul>
+<p>base.art 就是对应的App image文件。主要记录已经编译好的类的具体信息以及函数在oat文件的位置，相当于缓存，在app运行的时候会加载到虚拟机，可以加快启动速度。</p>
+<p><strong>在Android7.0上，dex2oat的参数 compiler-filter被指定为profile类型的几个compiler-filter之一时，dex2oat还会生成app-image文件。</strong></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/27/Android-逐步认识ART系列一/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/27/Android-逐步认识ART系列一/" itemprop="url">Android 逐步认识ART系列一</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-27T22:52:11+08:00">
+                2018-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/27/Android-逐步认识ART系列一/" class="leancloud_visitors" data-flag-title="Android 逐步认识ART系列一">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考资料：<br>原文：<a href="https://blog.csdn.net/hl09083253cy/article/details/78418809" target="_blank" rel="noopener">https://blog.csdn.net/hl09083253cy/article/details/78418809</a><br>原文：<a href="https://paul.pub/android-art-vm/#id-art-vs-dalvik" target="_blank" rel="noopener">https://paul.pub/android-art-vm/#id-art-vs-dalvik</a><br>Android Source：<a href="https://source.android.com.devices/tech/dalvik/configure" target="_blank" rel="noopener">https://source.android.com.devices/tech/dalvik/configure</a>  </p>
+<h1 id="JIT"><a href="#JIT" class="headerlink" title="JIT"></a>JIT</h1><p>我们知道，C/C++的效率要比 Java好，因为C/C++会被直接编译成汇编指令，CPU可以直接读取运行；而Java却是需要虚拟机一步一步的解释每一条 java bytecode。</p>
+<p>而Dalvik 中使用了一个技术，叫做JIT，会在解释执行一个java方法或者一个java代码段时，进行trace，并在不断的执行过程中找到 hotspot，</p>
+<p>然后将相应的方法或者代码片段编译为对应的汇编指令，下次再执行到该方法时，会直接执行其对应的汇编指令，依次来提升部分效率。</p>
+<p>可以理解为：运行时追踪，并对hotspot进行编译生成高效的可执行指令。</p>
+<p>JIT的运行流程</p>
+<ol>
+<li>用户运行应用，而这随后就会触发 ART 加载 .dex 文件。<ol>
+<li>如果有 .oat 文件（即 .dex 文件的 AOT 二进制文件），则 ART 会直接使用该文件。虽然 .oat 文件会定期生成，但文件中不一定会包含经过编译的代码（即 AOT 二进制文件）。</li>
+<li>如果没有 .oat 文件，则 ART 会通过 JIT 或解释器执行 .dex 文件。如果有 .oat 文件，ART 将一律使用这类文件。否则，它将在内存中使用并解压 APK 文件，从而得到 .dex 文件，但是这会导致消耗大量内存（相当于 dex 文件的大小）。</li>
+</ol>
+</li>
+<li>针对任何未根据speed编译过滤器编译（见下文）的应用启用JIT（也就是说，要尽可能多地编译应用中的代码）。</li>
+<li>将 JIT 配置文件数据转存到只限应用访问的系统目录内的文件中。</li>
+<li>AOT 编译 dex2oat 守护进程通过解析该文件来推进其编译。</li>
+</ol>
+<p>要开启 JIT 日志记录，请运行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell setprop dalvik.vm.extra-opts -verbose:jit</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
+<p>要停用 JIT，请运行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell setprop dalvik.vm.usejit false</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
+<h1 id="AOT"><a href="#AOT" class="headerlink" title="AOT"></a>AOT</h1><p>Ahead-of-time（AOT）是相对于Just-in-time（JIT）而言的。JIT是在运行时进行字节码到本地机器码的编译，这也是为什么Java普遍被认为效率比C++差的原因。无论是解释器的解释还是运行过程中即时编译，都比C++编译出的本地机器码执行多了一个耗费时间的过程。而AOT就是向C++编译过程靠拢的一项技术：当APK在安装的时候，系统会通过一个名称为dex2oat的工具将APK中的dex文件编译成包含本地机器码的oat文件存放下来。这样做之后，在程序执行的时候，就可以直接使用已经编译好的机器码以加快效率。</p>
+<h1 id="单纯的JIT存在的问题"><a href="#单纯的JIT存在的问题" class="headerlink" title="单纯的JIT存在的问题"></a>单纯的JIT存在的问题</h1><ol>
+<li>执行效率差</li>
+</ol>
+<h1 id="单纯的AOT存在的问题"><a href="#单纯的AOT存在的问题" class="headerlink" title="单纯的AOT存在的问题"></a>单纯的AOT存在的问题</h1><ol>
+<li>应用安装时间长</li>
+<li>系统更新后，要重新编译所有应用</li>
+<li>浪费存储空间（为所有方法执行编译）</li>
+</ol>
+<h1 id="AOT-JIT"><a href="#AOT-JIT" class="headerlink" title="AOT+JIT"></a>AOT+JIT</h1><p>从Android 7.0（代号Nougat,简称N）开始，ART组合使用了AOT、JIT和配置文件引导型编译。所有这些编译模式的组合均可配置。例如，在Pixel设备上，相应的配置如下：</p>
+<ol>
+<li>最初在安装应用程序的时候不执行任何AOT编译。应用程序运行的前几次都将使用解释模式，<strong>并且经常执行的方法将被JIT编译</strong>。</li>
+<li><strong>当设备处于空闲状态并正在充电时</strong>，编译守护进程会根据第一次运行期间生成的Profile文件对<strong>常用代码</strong>运行AOT编译。</li>
+<li>应用程序的<strong>下一次重新启动将使用Profile文件引导的代码</strong>，并<strong>避免在运行时为已编译的方法进行JIT编译</strong>。在<strong>新运行期间得到JIT编译的方法将被添加到Profile文件中</strong>，然后被编译守护进程使用。</li>
+</ol>
+<p>ART包含一个编译器（dex2oat工具）和一个为启动zygote而加载的运行时（libart.so）。在应用程序安装时，APK文件会传递给dex2oat工具，该工具会为根据APK文件生成一个或多个编译产物，这些产物文件名和扩展名可能会在不同版本之间发生变化，但从Android 8.0版本开始，生成的文件是：</p>
+<ul>
+<li>.vdex：包含APK的未压缩Dex代码，以及一些额外的元数据用来加速验证。</li>
+<li>.odex：包含APK中方法的AOT编译代码。（注意，虽然Dalvik虚拟机时代也会生成odex文件，但和这里的odex文件仅仅是后缀一样，文件内容已经完全不同了）</li>
+<li>.art（可选）：包含APK中列出的一些字符串和类的ART内部表示，用于加速应用程序的启动    </li>
+</ul>
+<h1 id="编译选项"><a href="#编译选项" class="headerlink" title="编译选项"></a>编译选项</h1><p>ART的编译选项分为以下两个类别：</p>
+<ol>
+<li>系统ROM配置：编译系统映像时，会对哪些代码进行AOT编译。</li>
+<li>运行时配置：ART如何在设备上编译和运行应用。</li>
+</ol>
+<p>用于配置这两个类别的一个核心ART选项就是”编译过滤器“，编译过滤器可控制ART如何编译DEX代码，是一个传递给dex2oat工具的选项。从Android 8.0开始，有四个官方支持的过滤器：</p>
+<ol>
+<li>verify：只运行DEX代码验证</li>
+<li>quicken：运行DEX代码验证，并优化一些DEX指令，以获得更好的解释器性能。</li>
+<li>speed：运行DEX代码验证，并对所有方法进行AOT编译。</li>
+<li><p>speed-profile：运行DEX代码验证，并对配置文件中列出的方法进行AOT编译</p>
+<h2 id="系统ROM配置"><a href="#系统ROM配置" class="headerlink" title="系统ROM配置"></a>系统ROM配置</h2><p>有一些编译选项可用于配置系统ROM，如何配置这些选项取决于/system的可用存储空间以及预先安装的应用数量。编译到系统AROM中的JAR/APK可以分为以下四个类别：</p>
+<ol>
+<li>启动类路径代码：默认使用speed编译过滤器进行编译 </li>
+<li>系统服务代码：默认使用speed编译过滤器进行编译</li>
+<li>产品专属的核心应用：默认使用speed编译过滤器进行编译</li>
+<li>所有其他应用：默认使用quicken编译过滤器进行编译</li>
+</ol>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/dex2oat源码分析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1405,7 +1923,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1416,7 +1934,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1427,7 +1945,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
