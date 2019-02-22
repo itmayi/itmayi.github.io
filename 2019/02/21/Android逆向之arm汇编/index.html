@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="古典密码学,多表代换密码,">
+  <meta name="keywords" content="arm,">
 
 
 
@@ -79,18 +79,31 @@
 
 
 
-<meta name="description" content="多表代换密码对于多表替换加密来说，加密后的字母几乎不再保持原来的频率，所以我们一般只能通过寻找算法实现对应的弱点进行破解。 维吉尼亚密码维吉尼亚密码是广为人知的多表替换式密码，也称为多字母替换式密码。 在一个凯撒密码中，字母表中的每一字母都会作一定的偏移，例如偏移量为3时，A就转换为了D、B转换为了E……而维吉尼亚密码则是由一些偏移量不同的恺撒密码组成。 为了生成密码，需要使用表格法。这一表格包括">
-<meta name="keywords" content="古典密码学,多表代换密码">
+<meta name="description" content="ARMARM CPU有15个通用寄存器，分别编号为R0~R15。其中R13也叫SP，用于保存栈顶地址；R14也叫LR，用于保存函数的返回地址；R15也叫PC，由于ARM架构的指令预读，实际运行时PC寄存器并不指向当前执行的指令，而是指向当前指令地址加8处。 有关所有ARM指令的文档下载链接如下： http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-">
+<meta name="keywords" content="arm">
 <meta property="og:type" content="article">
-<meta property="og:title" content="古典密码学基础二">
-<meta property="og:url" content="http://yoursite.com/2019/01/03/古典密码学基础二/index.html">
+<meta property="og:title" content="Android逆向之arm汇编">
+<meta property="og:url" content="http://yoursite.com/2019/02/21/Android逆向之arm汇编/index.html">
 <meta property="og:site_name" content="Heinz Blog">
-<meta property="og:description" content="多表代换密码对于多表替换加密来说，加密后的字母几乎不再保持原来的频率，所以我们一般只能通过寻找算法实现对应的弱点进行破解。 维吉尼亚密码维吉尼亚密码是广为人知的多表替换式密码，也称为多字母替换式密码。 在一个凯撒密码中，字母表中的每一字母都会作一定的偏移，例如偏移量为3时，A就转换为了D、B转换为了E……而维吉尼亚密码则是由一些偏移量不同的恺撒密码组成。 为了生成密码，需要使用表格法。这一表格包括">
+<meta property="og:description" content="ARMARM CPU有15个通用寄存器，分别编号为R0~R15。其中R13也叫SP，用于保存栈顶地址；R14也叫LR，用于保存函数的返回地址；R15也叫PC，由于ARM架构的指令预读，实际运行时PC寄存器并不指向当前执行的指令，而是指向当前指令地址加8处。 有关所有ARM指令的文档下载链接如下： http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-03T07:58:56.902Z">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165915tb4l4ya6t4m4s0l4.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165915stmeyibm3tt3bdt6.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165915rs4kes166z1ohn6b.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165915e6i436370q3j0t4i.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165916x3h9hjhk469jhz64.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165916axk9zbx8xwnv1vku.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165916phb4kbgkm46jk2b4.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165916axk9zbx8xwnv1vku.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165916j1md2u4b2w3u3npu.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165917xoassssgmmfaegpg.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165917vv2ypprlpdo66ulb.png">
+<meta property="og:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165917ck8wav68ttwtjeva.png">
+<meta property="og:updated_time" content="2019-02-22T02:15:15.532Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="古典密码学基础二">
-<meta name="twitter:description" content="多表代换密码对于多表替换加密来说，加密后的字母几乎不再保持原来的频率，所以我们一般只能通过寻找算法实现对应的弱点进行破解。 维吉尼亚密码维吉尼亚密码是广为人知的多表替换式密码，也称为多字母替换式密码。 在一个凯撒密码中，字母表中的每一字母都会作一定的偏移，例如偏移量为3时，A就转换为了D、B转换为了E……而维吉尼亚密码则是由一些偏移量不同的恺撒密码组成。 为了生成密码，需要使用表格法。这一表格包括">
+<meta name="twitter:title" content="Android逆向之arm汇编">
+<meta name="twitter:description" content="ARMARM CPU有15个通用寄存器，分别编号为R0~R15。其中R13也叫SP，用于保存栈顶地址；R14也叫LR，用于保存函数的返回地址；R15也叫PC，由于ARM架构的指令预读，实际运行时PC寄存器并不指向当前执行的指令，而是指向当前指令地址加8处。 有关所有ARM指令的文档下载链接如下： http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-">
+<meta name="twitter:image" content="https://gslab.qq.com/data/attachment/portal/201604/25/165915tb4l4ya6t4m4s0l4.png">
 
 
 
@@ -120,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/03/古典密码学基础二/">
+  <link rel="canonical" href="http://yoursite.com/2019/02/21/Android逆向之arm汇编/">
 
 
 
 
 
-  <title>古典密码学基础二 | Heinz Blog</title>
+  <title>Android逆向之arm汇编 | Heinz Blog</title>
   
 
 
@@ -263,7 +276,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/古典密码学基础二/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/21/Android逆向之arm汇编/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Heinz">
@@ -280,7 +293,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">古典密码学基础二</h2>
+          <h2 class="post-title" itemprop="name headline">Android逆向之arm汇编</h2>
         
 
         <div class="post-meta">
@@ -292,8 +305,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T15:56:14+08:00">
-                2019-01-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-21T22:10:23+08:00">
+                2019-02-21
               </time>
             
 
@@ -315,8 +328,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/密码学/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
+                  <a href="/categories/Android逆向/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
                   </a>
                 </span>
 
@@ -332,7 +345,7 @@
 
           
           
-             <span id="/2019/01/03/古典密码学基础二/" class="leancloud_visitors" data-flag-title="古典密码学基础二">
+             <span id="/2019/02/21/Android逆向之arm汇编/" class="leancloud_visitors" data-flag-title="Android逆向之arm汇编">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -363,19 +376,78 @@
       
 
       
-        <h3 id="多表代换密码"><a href="#多表代换密码" class="headerlink" title="多表代换密码"></a>多表代换密码</h3><p>对于多表替换加密来说，加密后的字母几乎不再保持原来的频率，所以我们一般只能通过寻找算法实现对应的弱点进行破解。</p>
-<h4 id="维吉尼亚密码"><a href="#维吉尼亚密码" class="headerlink" title="维吉尼亚密码"></a>维吉尼亚密码</h4><p>维吉尼亚密码是广为人知的多表替换式密码，也称为多字母替换式密码。</p>
-<p>在一个凯撒密码中，字母表中的每一字母都会作一定的偏移，例如偏移量为3时，A就转换为了D、B转换为了E……而维吉尼亚密码则是由一些偏移量不同的恺撒密码组成。</p>
-<p>为了生成密码，需要使用表格法。这一表格包括了26行字母表，每一行都由前一行向左偏移一位得到。具体使用哪一行字母表进行编译是基于密钥进行的，在过程中会不断地变换。</p>
-<p>例如：</p>
-<p>假设明文是ATTACKATDAWN，选择某一关键词并重复而得到密钥，如关键词为LEMON时，密钥为：LEMONLEMONLE</p>
-<p>对于明文的第一个字母A，对应密钥的第一个字母L，于是使用表格中L行字母表进行加密，得到密文第一个字母L。类似地，明文第二个字母为T，在表格中使用对应的E行进行加密，得到密文第二个字母X。以此类推，可以得到：</p>
-<p>明文：ATTACKATDAWN<br>密钥：LEMONLEMONLE<br>密文：LXFOPVEFRNHR</p>
-<p>解密的过程则与加密相反。例如：根据密钥第一个字母L所对应的L行字母表，发现密文第一个字母L位于A列，因而明文第一个字母为A。密钥第二个字母E对应E行字母表，而密文第二个字母X位于此行T列，因而明文第二个字母为T。以此类推便可得到明文。</p>
-<p>用数字0-25代替字母A-Z，维吉尼亚密码的加密文法可以写成同余的形式：</p>
-<p>$C_i$=$P_i$+$K_i(mod\ 26)$</p>
-<p>解密方法则能写成：</p>
-<p>$P_i$=$C_i$-$K_i(mod\ 26)$</p>
+        <h1 id="ARM"><a href="#ARM" class="headerlink" title="ARM"></a>ARM</h1><p>ARM CPU有15个通用寄存器，分别编号为R0~R15。其中R13也叫SP，用于保存栈顶地址；R14也叫LR，用于保存函数的返回地址；R15也叫PC，由于ARM架构的指令预读，实际运行时PC寄存器并不指向当前执行的指令，而是指向当前指令地址加8处。</p>
+<p>有关所有ARM指令的文档下载链接如下：</p>
+<p><a href="http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt1.pdf" target="_blank" rel="noopener">http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt1.pdf</a></p>
+<p><a href="http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt2.pdf" target="_blank" rel="noopener">http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt2.pdf</a></p>
+<p><a href="http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt3.pdf" target="_blank" rel="noopener">http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt3.pdf</a></p>
+<h2 id="指令样例"><a href="#指令样例" class="headerlink" title="指令样例"></a>指令样例</h2><h3 id="B-BL"><a href="#B-BL" class="headerlink" title="B/BL"></a>B/BL</h3><p>B/BL指令是最常用的几条指令，作用是跳转到指定的位置，相关的文档解释在ARM7-TDMI-manual-pt2.pdf的4-8页。</p>
+<p>指令的二进制解释图：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915tb4l4ya6t4m4s0l4.png" alt="image"></p>
+<p>Cond位表示这条指令是会在何种条件下执行，具体到实际中每个条件都会给B指令加上后缀，比如“BNE/BEQ/BGT”等，也就是我们熟悉的条件跳转指令，作为程序的分支使用。</p>
+<p>如图是IDA反汇编中一个条件跳转示例：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915stmeyibm3tt3bdt6.png" alt="image"></p>
+<p>图中两条指令表示“如果R2等于R0则跳转到0x1C04”。</p>
+<p>“101”则是B指令的标识码。</p>
+<p>L位表示是否需要保存该指令的下一条指令到LR寄存器，这类B指令就叫BL指令，一般用于跳转到函数内部，其中LR保存返回地址。</p>
+<p>Offset是目标地址与该指令的相对偏移（需要考虑到CPU的指令预读，以及左移两位，偏移是按4字节对齐的）。</p>
+<p>下面还是按上图的那条指令作例子实际分析各个字段的意思：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915rs4kes166z1ohn6b.png" alt="image"></p>
+<p>对应二进制</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915e6i436370q3j0t4i.png" alt="image"></p>
+<p>按照二进制解释图中的格式排列（从高位到低位）就是：</p>
+<p>0000 - 101 - 0 - 0000 0000 0000 0000 0000 1011</p>
+<p>Cond - op -    L -    offset</p>
+<p>Cond表示EQ，等于的时候跳转（ARM7-TDMI-manual-pt2.pdf的4-5页）。</p>
+<p>101是标识。</p>
+<p>L是0，表示不需要保存下一条指令。</p>
+<p>Offset是1011，左移两位就是101100，也就是0x2C。当CPU执行到该指令时（0x1BD0处），PC应该指向0x1BD8，所以实际跳转地址就是0x1BD8+0x2C，也就是0x1C04。</p>
+<h3 id="LDR-STR"><a href="#LDR-STR" class="headerlink" title="LDR/STR"></a>LDR/STR</h3><p>LDR/STR指令用于向内存读/写数据，相关文档在ARM7-TDMI-manual-pt2.pdf的4-28页。</p>
+<p>指令的二进制解释如图：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916x3h9hjhk469jhz64.png" alt="image"></p>
+<p>看起来很复杂，但我们需要关注的地方不多。不再做详细解释，直接看例子：</p>
+<p>指令</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916axk9zbx8xwnv1vku.png" alt="image"></p>
+<p>对应二进制</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916phb4kbgkm46jk2b4.png" alt="image"></p>
+<p>按照二进制格式排列：</p>
+<p>1110 - 01 - 011001 - 1100 - 0010 - 0000 0000 0000</p>
+<p>Cond - op -    IPUBWL - Rn - Rd - Offset</p>
+<p>Cond表示任何条件都可以（ARM7-TDMI-manual-pt2.pdf的4-5页）。</p>
+<p>01是指令标识。</p>
+<p>I是0，表示offset是一个立即数。</p>
+<p>B是0，表示传输的是一个字，ARM指令集中的“字”是8个字节。</p>
+<p>L是1，表示是读内存。</p>
+<p>Rn是0xC，表示基址寄存器是R12.</p>
+<p>Rd是2，表示把内存值读到R2。</p>
+<p>Offset是0，表示基址寄存器需要加上0.</p>
+<p>所以解释成指令就是：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916axk9zbx8xwnv1vku.png" alt="image"></p>
+<p>意思就是，读取R12寄存器指向的内存到R2寄存器中，一共读取4个字节（一个字）。</p>
+<h1 id="Thumb"><a href="#Thumb" class="headerlink" title="Thumb"></a>Thumb</h1><p>THUMB指令是ARM指令的精简版，在日常的分析中也经常会碰到，具体的文档在ARM7-TDMI-manual-pt3.pdf。分析方法同上，不再缀述。一段程序中有可能同时出现这两种指令集，主要靠CPSR寄存器中的标识位确定当前执行的是何种指令集：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916j1md2u4b2w3u3npu.png" alt="image"></p>
+<p>红框即是当前指令集状态，1表示在THUMB指令集，0表示在ARM指令集。</p>
+<h1 id="函数传参"><a href="#函数传参" class="headerlink" title="函数传参"></a>函数传参</h1><p>从汇编层面来看，不同的编译方式对函数传参的做法不同，一种比较常见的做法是把前四个参数放到R0~3寄存器中，剩下的参数放到栈中，函数的返回值放在R0中。</p>
+<p>如图，C语言中一个简单的函数调用：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165917xoassssgmmfaegpg.png" alt="image"></p>
+<p>调用它的汇编代码则是：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165917vv2ypprlpdo66ulb.png" alt="image"></p>
+<p>可以看到，调用R6中的函数（old_compile）后，把返回值作为参数直接调用hasHooked函数。</p>
+<h1 id="浮点数基础"><a href="#浮点数基础" class="headerlink" title="浮点数基础"></a>浮点数基础</h1><p>在看汇编代码的时候，有时候会碰到浮点数以及浮点指令，这里简单说说浮点数在内存中的二进制形式。具体就是IEEE 754标准。</p>
+<p>32位浮点数的二进制格式如图：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165917ck8wav68ttwtjeva.png" alt="image"></p>
+<p>S为符号位，Exp为指数位，Fraction为有效数字。 指数部分即使用所谓的偏正值形式表示，偏正值为实际的指数大小与一个固定值（32位的情况是127）的和。采用这种方式表示的目的是简化比较。因为，指数的值可能为正也可能为负，如果采用补码表示的话，全体符号位S和Exp自身的符号位将导致不能简单的进行大小比较。正因为如此，指数部分通常采用一个无符号的正数值存储。单精度的指数部分是−126～+127加上偏移值127，指数值的大小从1～254（0和255是特殊值）。浮点小数计算时，指数值减去偏正值将是实际的指数大小。（摘自维基百科<a href="https://zh.wikipedia.org/wiki/IEEE_754）" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/IEEE_754）</a></p>
+<p>具体来看个例子，浮点数十六进制：</p>
+<p>00 00 80 3F</p>
+<p>也就是0x3F800000</p>
+<p>二进制</p>
+<p>0    01111111    000 0000 0000 0000 0000 0000</p>
+<p>S    Exp    Fraction</p>
+<p>S为0，代表这是一个正数。</p>
+<p>Exp为0x7F，根据偏正值定义，真实值是0x7F-0x7F=0。</p>
+<p>Fraction为0，注意，这里的Fraction是二进制小数。例如，Fraction为1011001则对应二进制小数1.1011001（整数部分恒为1，后接二进制小数），转换成十进制就是2^(-0)+2^(-1)+2^(-3)+2^(-4)+2^(-7).</p>
+<p>计算方法就是（S）F*2^E，其中S是符号位，E是指数位Exp，F是有效位Fraction。</p>
+<p>所以这个值就是+2^(-0)，也就是1.</p>
 
       
     </div>
@@ -393,9 +465,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/古典密码学/" rel="tag"># 古典密码学</a>
-          
-            <a href="/tags/多表代换密码/" rel="tag"># 多表代换密码</a>
+            <a href="/tags/arm/" rel="tag"># arm</a>
           
         </div>
       
@@ -408,8 +478,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/03/古典密码学基础/" rel="next" title="古典密码学基础一">
-                <i class="fa fa-chevron-left"></i> 古典密码学基础一
+              <a href="/2019/02/21/Android逆向之smali语法/" rel="next" title="Android逆向之smali语法">
+                <i class="fa fa-chevron-left"></i> Android逆向之smali语法
               </a>
             
           </div>
@@ -417,10 +487,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/03/古典密码学基础三/" rel="prev" title="古典密码学基础三">
-                古典密码学基础三 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -570,7 +636,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#多表代换密码"><span class="nav-number">1.</span> <span class="nav-text">多表代换密码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#维吉尼亚密码"><span class="nav-number">1.1.</span> <span class="nav-text">维吉尼亚密码</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ARM"><span class="nav-number">1.</span> <span class="nav-text">ARM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#指令样例"><span class="nav-number">1.1.</span> <span class="nav-text">指令样例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-BL"><span class="nav-number">1.1.1.</span> <span class="nav-text">B/BL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDR-STR"><span class="nav-number">1.1.2.</span> <span class="nav-text">LDR/STR</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Thumb"><span class="nav-number">2.</span> <span class="nav-text">Thumb</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数传参"><span class="nav-number">3.</span> <span class="nav-text">函数传参</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#浮点数基础"><span class="nav-number">4.</span> <span class="nav-text">浮点数基础</span></a></li></ol></div>
             
 
           </div>

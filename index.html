@@ -263,6 +263,230 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/21/Android逆向之arm汇编/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/21/Android逆向之arm汇编/" itemprop="url">Android逆向之arm汇编</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-21T22:10:23+08:00">
+                2019-02-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/02/21/Android逆向之arm汇编/" class="leancloud_visitors" data-flag-title="Android逆向之arm汇编">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ARM"><a href="#ARM" class="headerlink" title="ARM"></a>ARM</h1><p>ARM CPU有15个通用寄存器，分别编号为R0~R15。其中R13也叫SP，用于保存栈顶地址；R14也叫LR，用于保存函数的返回地址；R15也叫PC，由于ARM架构的指令预读，实际运行时PC寄存器并不指向当前执行的指令，而是指向当前指令地址加8处。</p>
+<p>有关所有ARM指令的文档下载链接如下：</p>
+<p><a href="http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt1.pdf" target="_blank" rel="noopener">http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt1.pdf</a></p>
+<p><a href="http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt2.pdf" target="_blank" rel="noopener">http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt2.pdf</a></p>
+<p><a href="http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt3.pdf" target="_blank" rel="noopener">http://bear.ces.cwru.edu/eecs_382/ARM7-TDMI-manual-pt3.pdf</a></p>
+<h2 id="指令样例"><a href="#指令样例" class="headerlink" title="指令样例"></a>指令样例</h2><h3 id="B-BL"><a href="#B-BL" class="headerlink" title="B/BL"></a>B/BL</h3><p>B/BL指令是最常用的几条指令，作用是跳转到指定的位置，相关的文档解释在ARM7-TDMI-manual-pt2.pdf的4-8页。</p>
+<p>指令的二进制解释图：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915tb4l4ya6t4m4s0l4.png" alt="image"></p>
+<p>Cond位表示这条指令是会在何种条件下执行，具体到实际中每个条件都会给B指令加上后缀，比如“BNE/BEQ/BGT”等，也就是我们熟悉的条件跳转指令，作为程序的分支使用。</p>
+<p>如图是IDA反汇编中一个条件跳转示例：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915stmeyibm3tt3bdt6.png" alt="image"></p>
+<p>图中两条指令表示“如果R2等于R0则跳转到0x1C04”。</p>
+<p>“101”则是B指令的标识码。</p>
+<p>L位表示是否需要保存该指令的下一条指令到LR寄存器，这类B指令就叫BL指令，一般用于跳转到函数内部，其中LR保存返回地址。</p>
+<p>Offset是目标地址与该指令的相对偏移（需要考虑到CPU的指令预读，以及左移两位，偏移是按4字节对齐的）。</p>
+<p>下面还是按上图的那条指令作例子实际分析各个字段的意思：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915rs4kes166z1ohn6b.png" alt="image"></p>
+<p>对应二进制</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165915e6i436370q3j0t4i.png" alt="image"></p>
+<p>按照二进制解释图中的格式排列（从高位到低位）就是：</p>
+<p>0000 - 101 - 0 - 0000 0000 0000 0000 0000 1011</p>
+<p>Cond - op -    L -    offset</p>
+<p>Cond表示EQ，等于的时候跳转（ARM7-TDMI-manual-pt2.pdf的4-5页）。</p>
+<p>101是标识。</p>
+<p>L是0，表示不需要保存下一条指令。</p>
+<p>Offset是1011，左移两位就是101100，也就是0x2C。当CPU执行到该指令时（0x1BD0处），PC应该指向0x1BD8，所以实际跳转地址就是0x1BD8+0x2C，也就是0x1C04。</p>
+<h3 id="LDR-STR"><a href="#LDR-STR" class="headerlink" title="LDR/STR"></a>LDR/STR</h3><p>LDR/STR指令用于向内存读/写数据，相关文档在ARM7-TDMI-manual-pt2.pdf的4-28页。</p>
+<p>指令的二进制解释如图：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916x3h9hjhk469jhz64.png" alt="image"></p>
+<p>看起来很复杂，但我们需要关注的地方不多。不再做详细解释，直接看例子：</p>
+<p>指令</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916axk9zbx8xwnv1vku.png" alt="image"></p>
+<p>对应二进制</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916phb4kbgkm46jk2b4.png" alt="image"></p>
+<p>按照二进制格式排列：</p>
+<p>1110 - 01 - 011001 - 1100 - 0010 - 0000 0000 0000</p>
+<p>Cond - op -    IPUBWL - Rn - Rd - Offset</p>
+<p>Cond表示任何条件都可以（ARM7-TDMI-manual-pt2.pdf的4-5页）。</p>
+<p>01是指令标识。</p>
+<p>I是0，表示offset是一个立即数。</p>
+<p>B是0，表示传输的是一个字，ARM指令集中的“字”是8个字节。</p>
+<p>L是1，表示是读内存。</p>
+<p>Rn是0xC，表示基址寄存器是R12.</p>
+<p>Rd是2，表示把内存值读到R2。</p>
+<p>Offset是0，表示基址寄存器需要加上0.</p>
+<p>所以解释成指令就是：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916axk9zbx8xwnv1vku.png" alt="image"></p>
+<p>意思就是，读取R12寄存器指向的内存到R2寄存器中，一共读取4个字节（一个字）。</p>
+<h1 id="Thumb"><a href="#Thumb" class="headerlink" title="Thumb"></a>Thumb</h1><p>THUMB指令是ARM指令的精简版，在日常的分析中也经常会碰到，具体的文档在ARM7-TDMI-manual-pt3.pdf。分析方法同上，不再缀述。一段程序中有可能同时出现这两种指令集，主要靠CPSR寄存器中的标识位确定当前执行的是何种指令集：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165916j1md2u4b2w3u3npu.png" alt="image"></p>
+<p>红框即是当前指令集状态，1表示在THUMB指令集，0表示在ARM指令集。</p>
+<h1 id="函数传参"><a href="#函数传参" class="headerlink" title="函数传参"></a>函数传参</h1><p>从汇编层面来看，不同的编译方式对函数传参的做法不同，一种比较常见的做法是把前四个参数放到R0~3寄存器中，剩下的参数放到栈中，函数的返回值放在R0中。</p>
+<p>如图，C语言中一个简单的函数调用：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165917xoassssgmmfaegpg.png" alt="image"></p>
+<p>调用它的汇编代码则是：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165917vv2ypprlpdo66ulb.png" alt="image"></p>
+<p>可以看到，调用R6中的函数（old_compile）后，把返回值作为参数直接调用hasHooked函数。</p>
+<h1 id="浮点数基础"><a href="#浮点数基础" class="headerlink" title="浮点数基础"></a>浮点数基础</h1><p>在看汇编代码的时候，有时候会碰到浮点数以及浮点指令，这里简单说说浮点数在内存中的二进制形式。具体就是IEEE 754标准。</p>
+<p>32位浮点数的二进制格式如图：</p>
+<p><img src="https://gslab.qq.com/data/attachment/portal/201604/25/165917ck8wav68ttwtjeva.png" alt="image"></p>
+<p>S为符号位，Exp为指数位，Fraction为有效数字。 指数部分即使用所谓的偏正值形式表示，偏正值为实际的指数大小与一个固定值（32位的情况是127）的和。采用这种方式表示的目的是简化比较。因为，指数的值可能为正也可能为负，如果采用补码表示的话，全体符号位S和Exp自身的符号位将导致不能简单的进行大小比较。正因为如此，指数部分通常采用一个无符号的正数值存储。单精度的指数部分是−126～+127加上偏移值127，指数值的大小从1～254（0和255是特殊值）。浮点小数计算时，指数值减去偏正值将是实际的指数大小。（摘自维基百科<a href="https://zh.wikipedia.org/wiki/IEEE_754）" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/IEEE_754）</a></p>
+<p>具体来看个例子，浮点数十六进制：</p>
+<p>00 00 80 3F</p>
+<p>也就是0x3F800000</p>
+<p>二进制</p>
+<p>0    01111111    000 0000 0000 0000 0000 0000</p>
+<p>S    Exp    Fraction</p>
+<p>S为0，代表这是一个正数。</p>
+<p>Exp为0x7F，根据偏正值定义，真实值是0x7F-0x7F=0。</p>
+<p>Fraction为0，注意，这里的Fraction是二进制小数。例如，Fraction为1011001则对应二进制小数1.1011001（整数部分恒为1，后接二进制小数），转换成十进制就是2^(-0)+2^(-1)+2^(-3)+2^(-4)+2^(-7).</p>
+<p>计算方法就是（S）F*2^E，其中S是符号位，E是指数位Exp，F是有效位Fraction。</p>
+<p>所以这个值就是+2^(-0)，也就是1.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/21/Android逆向之smali语法/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2010,215 +2234,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/http-http2协议/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Heinz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Heinz Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/07/http-http2协议/" itemprop="url">http2协议、数据包回放</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T09:21:38+08:00">
-                2019-01-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据包分析/" itemprop="url" rel="index">
-                    <span itemprop="name">数据包分析</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/01/07/http-http2协议/" class="leancloud_visitors" data-flag-title="http2协议、数据包回放">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="http2协议"><a href="#http2协议" class="headerlink" title="http2协议"></a>http2协议</h2><p>http2协议是一个二进制协议。采用二进制格式协议传输数据，而不是http/1.x的文本格式。</p>
-<p>http/2源于SPDY，但仍有不同的地方，主要是以下两点：</p>
-<ul>
-<li>HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS</li>
-<li>HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DELEFT</li>
-</ul>
-<p>注：spdy是Google开发的基于TCP的应用层协议，用以最小化网络延迟，提升网络速度，优化用户的网络使用体验。SPDY并不是一种用于替代HTTP的协议，而是对HTTP协议的增强。新协议的功能包括数据流的多路复用、请求优先级以及HTTP报头压缩。互联网工程任务组（IETF）对谷歌提出的SPDY协议进行了标准化，于2015年5推出了类似于SPDY协议的 HTTP 2.0 协议标准（简称HTTP/2）。谷歌因此宣布放弃对SPDY协议的支持，转而支持HTTP/2。此外，著名的开源HTTP服务器软件 Nginx 也于2015年9月移除了对SPDY的支持，转而支持HTTP/2。</p>
-<h2 id="二进制格式"><a href="#二进制格式" class="headerlink" title="二进制格式"></a>二进制格式</h2><p>HTTP/1 的请求和响应报文，都是由起始行、首部和实体正文（可选）组成，各部分之间以文本换行符分隔。<br>HTTP/2 将请求和响应数据分割为更小的帧，并对它们采用二进制编码。<br>帧（Frame）：HTTP/2 数据通信的最小单位。<br>消息（Message）：指 HTTP/2 中逻辑上的 HTTP 消息。例如请求和响应等，消息由一个或多个帧组成<br>流（Stream）：存在于连接中的一个虚拟通道。流可以承载双向消息，每个流都有一个唯一的整数 ID。</p>
-<p>HTTP/2 中，同域名下所有通信都在单个连接上完成，这个连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装。</p>
-<p>Frame 是 HTTP/2 二进制格式的基础，Frame 的基本格式如下</p>
-<p><img src="https://note.youdao.com/yws/api/personal/file/WEB838ae8fda562512d2d95b9d69dd73b1a?method=download&amp;shareKey=19abcf09a1c0f9e2d3f35b8ab0fc884f" alt="image"></p>
-<h2 id="http2的影响"><a href="#http2的影响" class="headerlink" title="http2的影响"></a>http2的影响</h2><p>现在http2还没被大范围部署使用，我们也无法确定到底会发生什么变化，但至少可以参考SPDY的例子和曾经做过的实验来进行大概估计。</p>
-<p>http2减少了网络往返传输的数量，并且用多路复用和快速丢弃不需要的流的办法来完全避免了head of line blocking的困扰。</p>
-<p>它也支持大量并行流，所以即使网站的数据分发在各处也不是问题。</p>
-<p>合理利用流的优先级，可以让客户端尽可能优先收到更重要的数据。</p>
-<p>所有这些加起来，我认为页面载入时间和站点相应的速度都会更快。简而言之：更好的web体验。</p>
-<p>但到底能变得多快，到底提升有多大呢？我认为目前很难说清楚。毕竟这些技术依然在早期，我们还没法看见客户端和服务器实现这些并真正受益于新协议所提供的强大功能。</p>
-<h2 id="集线器、交换机、路由器"><a href="#集线器、交换机、路由器" class="headerlink" title="集线器、交换机、路由器"></a>集线器、交换机、路由器</h2><h3 id="集线器"><a href="#集线器" class="headerlink" title="集线器"></a>集线器</h3><p>集线器(Hub)工作在最底层(物理层)，没有相匹配的软件系统，是纯硬件设备,集线器主要用来连接计算机等网络终端。</p>
-<p>集线器为<strong>共享式带宽</strong>，连接在集线器上的任何一个设备发送数据时，其他所有设备必须等待，此设备享有全部带宽，通讯完毕，再由其他设备使用带宽。正因此，集线器连接了一个冲突域的网络。所有设备相互交替使用，就好象大家一起过一根独木桥一样。</p>
-<p>集线器<strong>不能判断数据包的目的地和类型</strong>，所以如果是广播数据包也依然转发，而且所有设备发出数据以广播方式发送到每个接口，这样集线器也连接了一个广播域的网络。</p>
-<h3 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h3><p>交换机工作在数据链接层(第二层)，和集线器一样主要用于连接计算机等网络终端设备。允许连接在交换机上的设备并行通讯，好比高速公路上的汽车并行行使一般，设备间通讯不会再发生冲突，因此交换机打破了冲突域，交换机每个接口是一个冲突域，不会与其他接口发生通讯冲突。</p>
-<p>有系统的交换机可以记录MAC地址表，发送的数据不会再以广播方式发送到每个接口，而是直接到达目的接口，节省了接口带宽。但是交换机和集线器一样不能判断广播数据包，会把广播发送到全部接口，所以交换机和集线器一样连接了一个广播域网络。</p>
-<p>高端一点的交换机不仅可以记录MAC地址表，还可以划分VLAN（虚拟局域网）来隔离广播，但是VLAN间也同样不能通讯。要使VLAN间能够通讯，必须有三层设备介入。</p>
-<h3 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h3><p>路由器工作在网络层(第三层)，主要用来进行网络与网络的连接，所有路由器都有自己的操作系统。路由器把数据从一个网络发送到另一个网络，这个过程就叫路由。路由器不仅能像交换机一样隔离冲突域，而且还能检测广播数据包，并丢弃广播包来隔离广播域，有效的扩大了网络的规模。</p>
-<p>在路由器中记录着路由表，路由器以此来转发数据，以实现网络间的通讯。路由器的介入可以使交换机划分的VLAN实现互相通讯。</p>
-<h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><table>
-<thead>
-<tr>
-<th>name</th>
-<th>complete connection</th>
-<th>stateful</th>
-<th>selected replay</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>TCPReplay|No Required|No|No<br>Tomahawk|Required|Yes|No<br>Mokey|No Required|Yes|No<br>Avalanche|Required|Yes|No<br>SocketReplay|No Required|Yes|Yes</p>
-<h3 id="TcpReplay"><a href="#TcpReplay" class="headerlink" title="TcpReplay"></a>TcpReplay</h3><p>Tcpreplay是一个工具套件，用来测试各种网络设备，包括：交换机、路由器、防火墙、NIDS和IPS等。它使用嗅探工具抓取的数据包，允许你拆分客户端和服务端流量，重写2、3、4层头信息，最终将流量回放到网络中。3.4 版本包括以下部分：</p>
-<ul>
-<li><p>Tcpprep:将流量拆分为客户端和服务端两个方向，并存放为缓存文件</p>
-</li>
-<li><p>Tcprewrite:重写pcap文件的TCP/IP层和数据链路层的头信息</p>
-</li>
-<li><p>Tcpreplay:以可控的速度将pcap文件回放到网络中</p>
-</li>
-<li><p>Tcpreplay-edit:在tcpreplay基础上增加编辑功能</p>
-</li>
-<li><p>Tcpbirdge:桥接两个不同网段</p>
-</li>
-<li><p>Tcpcapinfo:pcap 文件解码器和编译器</p>
-</li>
-</ul>
-<p>原文链接：<a href="https://www.cnblogs.com/jiayy/p/3447027.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiayy/p/3447027.html</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2271,7 +2286,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2293,7 +2308,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

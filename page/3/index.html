@@ -263,6 +263,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/古典密码学基础/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Heinz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heinz Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/03/古典密码学基础/" itemprop="url">古典密码学基础一</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T09:28:25+08:00">
+                2019-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/03/古典密码学基础/" class="leancloud_visitors" data-flag-title="古典密码学基础一">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>古典密码学是密码学中的其中一个类型，其大部分加密方式都是利用替换式密码或移项式密码，或者两者的混合。其与历史中经常使用，但现代已经很少使用，大部分已经不再使用。在古典密码学中，设计者主要考虑消息的保密性，使得只有相关密钥的人才可以解密密文获得消息的内容，对于消息的完整性和不可否认性则并没有进行太多的考虑。<br>。</p>
+<h2 id="密码分类"><a href="#密码分类" class="headerlink" title="密码分类"></a>密码分类</h2><h3 id="单表代换密码"><a href="#单表代换密码" class="headerlink" title="单表代换密码"></a>单表代换密码</h3><p>对字母做系统的替换，直到讯息被替换为难以理解的字。</p>
+<h4 id="凯撒密码"><a href="#凯撒密码" class="headerlink" title="凯撒密码"></a>凯撒密码</h4><p>凯撒密码是广为人知的单表式替换密码，它只使用一个密码字母集。</p>
+<p>为了使用凯撒密码加密讯息，每个密码字母集中字母将会被其位置的后三个字母替代。因此字母A將会被字母D替代、字母B將会被字母E替代、字母C將会被字母F替代等，最后，X、Y和Z將分別的被替代成A、B和C。例如，”WIKIPEDIA”將被加密成”ZLNLSHGLD”。凱撒把字母向后移”3”位，但其他数字也是类似。</p>
+<p>根据偏移量的不同，还存在若干特定的恺撒密码名称：</p>
+<ul>
+<li>偏移量为 10：Avocat （A→K）</li>
+<li>偏移量为 13：ROT13</li>
+<li>偏移量为 -5：Cassis （K 6）</li>
+<li>偏移量为 -6：Cassette （K 7）</li>
+</ul>
+<p>另一种替换式密码是使用关键字（等同于密钥），你可以选择一个字母或片段并去除所有的空格和重复字母，接着把它当做密码字母集的开头，把去除密钥后的其他字母接续排序。例如，如果关键字是cipher，则密码字母表会是下面的情况：</p>
+<p>一般密码字母集: a b c d e f g h i j k l m n o p q r s t u v w x y z</p>
+<p>密钥密码字母集: c i p h e r s t u v w x y z a b d f g j k l m n o q</p>
+<p>还有一种基于密钥的凯撒密码，其基本原理是利用一个密钥，将密钥的每一位转换为数字（一般转化为字母表对应顺序的数字），分别以这一数字为密钥加密明文的每一位字母。例如：<br>密文：s0a6u3u1s0bv1a<br>密钥：guangtou<br>偏移：6,20,0,13,6,19,14,20<br>明文：y0u6u3h1y0uj1u  </p>
+<p>对于不带密钥的凯撒密码来说，破解方式有两种：  </p>
+<ul>
+<li>遍历 26 个偏移量，适用于普遍情况。</li>
+<li>在密文长度足够长的时候，使用词频分析<a href="https://quipqiup.com/" target="_blank" rel="noopener">https://quipqiup.com/</a></li>
+</ul>
+<p>其中，第一种方式肯定可以得到明文，而第二种方式则不一定可以得到正确的明文。</p>
+<p>而对于基于密钥的凯撒密码来说，一般来说必须知道对应的密钥。</p>
+<p>工具：<br>一般我们有如下的工具，其中 JPK 比较通用。</p>
+<ul>
+<li>JPK，可解带密钥与不带密钥</li>
+<li><a href="http://planetcalc.com/1434/" target="_blank" rel="noopener">http://planetcalc.com/1434/</a></li>
+<li><a href="http://www.qqxiuzi.cn/bianma/ROT5-13-18-47.php" target="_blank" rel="noopener">http://www.qqxiuzi.cn/bianma/ROT5-13-18-47.php</a></li>
+</ul>
+<h4 id="简单替换密码"><a href="#简单替换密码" class="headerlink" title="简单替换密码"></a>简单替换密码</h4><p>简单替换密码（Simple Substitution Cipher）加密时，将每个明文字母替换为与之唯一对应且不同的字母。它与恺撒密码之间的区别是其密码字母表的字母不是简单的移位，而是完全是混乱的，这也使得其破解难度要高于凯撒密码。 比如：<br>明文字母 : abcdefghijklmnopqrstuvwxyz<br>密钥字母 : phqgiumeaylnofdxjkrcvstzwb<br>a 对应 p，d 对应 h，以此类推。<br>明文：the quick brown fox jumps over the lazy dog<br>密文：cei jvaql hkdtf udz yvoxr dsik cei npbw gdm<br>而解密时，我们一般是知道了每一个字母的对应规则，才可以正常解密。</p>
+<p>由于这种加密方式导致其所有的密钥个数是26!，所以几乎上不可能使用暴力的解决方式。所以我们 一般采用词频分析。</p>
+<p>工具：<a href="http://quipqiup.com/" target="_blank" rel="noopener">http://quipqiup.com/</a></p>
+<h3 id="移位式密码"><a href="#移位式密码" class="headerlink" title="移位式密码"></a>移位式密码</h3><p>与凯撒密码类似，区别在于移位密码不仅会处理字母，还会处理数字和特殊字符，常用 ASCII 码表进行移位。其破解方法也是遍历所有的可能性来得到可能的结果。</p>
+<h4 id="纵线式移位密码"><a href="#纵线式移位密码" class="headerlink" title="纵线式移位密码"></a>纵线式移位密码</h4><p>一个移位式密码的具体例子就是纵线式移位密码。先选择一个关键字，把原来的讯息由左向右、由上到下依照关键字长度转写成长方形。接着把关键字的字母依照字母集顺序编号，例如a就是1，b就是2，c就是3等。例如：关键字是CAT，明文是THE SKY IS BLUE，则讯息应该被转换成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C A T  </span><br><span class="line">3 1 20  </span><br><span class="line">T H E  </span><br><span class="line">S K Y  </span><br><span class="line">I S B  </span><br><span class="line">L U E</span><br></pre></td></tr></table></figure></p>
+<p> 最后把讯息以行为单位，依照编号大小调换位置，呈现的应该是 A为第一行，C为第二行，T为第三行。然后就可以把讯息转换成HKSUTSILEYBE</p>
+<h4 id="中国式密码"><a href="#中国式密码" class="headerlink" title="中国式密码"></a>中国式密码</h4><p> 另外一种移位式密码是中国式密码，移位的方法是将讯息的字母加密成由右向左、上下交替的不规则的字母。例如，如果明文是THE DOG RAN FAR，则中国式密码看起来像这样：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">R  R   G   T</span><br><span class="line">A  A   O   H</span><br><span class="line">F  N   D   E</span><br></pre></td></tr></table></figure></p>
+<p> 密文将被是：RRGT AAOH FNDE</p>
+<h4 id="艾特巴什码"><a href="#艾特巴什码" class="headerlink" title="艾特巴什码"></a>艾特巴什码</h4><p>埃特巴什码（Atbash Cipher）其实可以视为下面要介绍的简单替换密码的特例，它使用字母表中的最后一个字母代表第一个字母，倒数第二个字母代表第二个字母。在罗马字母表中，它是这样出现的：<br>明文：A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br>密文：Z Y X W V U T S R Q P O N M L K J I H G F E D C B A<br>下面给出一个例子：<br>明文：the quick brown fox jumps over the lazy dog<br>密文：gsv jfrxp yildm ulc qfnkh levi gsv ozab wlt</p>
+<p>可以看出其密钥空间足够短，同时当密文足够长时，仍然可以采用词频分析的方法解决。</p>
+<p>工具：<a href="http://www.practicalcryptography.com/ciphers/classical-era/atbash-cipher/" target="_blank" rel="noopener">http://www.practicalcryptography.com/ciphers/classical-era/atbash-cipher/</a></p>
+<h3 id="仿射密码"><a href="#仿射密码" class="headerlink" title="仿射密码"></a>仿射密码</h3><p>原理：<br>仿射密码的加密函数是<br>E(x)=(ax+b)(mod m)，其中：  </p>
+<ul>
+<li>x表示明文按照某种编码得到的数字</li>
+<li>a和m互质</li>
+<li>m是编码系统中字母的数目。</li>
+</ul>
+<p>解密函数是D(x)=$a^{-1}$(x-b)(mod m),其中$a^{-1}$是a在整数群的乘法逆元。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">明文:A F F I N  E C I P H E R </span><br><span class="line">x:  0 5 5 8 13 4 2 8 15 7 4 17</span><br><span class="line">y=5x+8:8 33 33 48 73 28 18 48 83 43 28 93</span><br><span class="line">y mod 26:8 7 7 22 21 2 18 22 5 17 2 15 </span><br><span class="line">密文:I H H W V C S W F R C P</span><br></pre></td></tr></table></figure></p>
+<p>其对应的加密结果是 IHHWVCSWFRCP。</p>
+<p>对于解密过程，正常解密者具有 a 与 b，可以计算得到$a^{-1}$为 21，所以其解密函数是:D(x)=21(x-8)(mod 26)</p>
+<p>破解：<br>首先，我们可以看到的是，仿射密码对于任意两个不同的字母，其最后得到的密文必然不一样，所以其也具有最通用的特点。当密文长度足够长时，我们可以使用频率分析的方法来解决。</p>
+<p>其次，我们可以考虑如何攻击该密码。可以看出当a=1时，仿射加密是凯撒加密。而一般来说，我们利用仿射密码时，其字符集都用的是字母表，一般只有 26 个字母，而不大于 26 的与 26 互素的个数一共有ϕ(26）=ϕ(2)Xϕ(13)=12,算上 b 的偏移可能，一共有可能的密钥空间大小也就是12×26=312 </p>
+<p>一般来说，对于该种密码，我们至少得是在已知部分明文的情况下才可以攻击。下面进行简单的分析。</p>
+<p>这种密码由两种参数来控制，如果我们知道其中任意一个参数，那我们便可以很容易地快速枚举另外一个参数得到答案。</p>
+<p>但是，假设我们已经知道采用的字母集，这里假设为 26 个字母，我们还有另外一种解密方式，我们只需要知道两个加密后的字母$y_1$,$y_2$即可进行解密。那么我们还可以知道:<br>$y_1$=(a$x_1$+b)(mod 26)<br>$y_2$=(a$x_2$+b)(mod 26)<br>二者相减,可得：<br>$y_1$-$y_2$=a($x_1$-$x_2$)(mod 26)</p>
+<p>这里$y_1$,$y_2$已知，如果我们知道密文对应的两个不一样的字符$x_1$,$x_2$，那么我们就可以很容易得到 a，进而就可以得到 b了。</p>
+<h2 id="密码破译"><a href="#密码破译" class="headerlink" title="密码破译"></a>密码破译</h2><p> 经典密码通常很容易被破解。许多经典密码可单由密文而破解，所以它们容易遭受到唯密文攻击法攻击。有些经典密码（例如凯撒密码）的密钥个数有限，所以这类密码可以通过暴力破解尝试所有的密钥。替换式密码有较大的密钥数，但是很容易被频率分析，因为每个密码字母各代替了一个明文字母。多表式替换密码使用多个替换可防止简单的频率分析，但卡西斯基验、弗里德曼试验可用来破解这类密码。</p>
+<h3 id="卡西斯基试验"><a href="#卡西斯基试验" class="headerlink" title="卡西斯基试验"></a>卡西斯基试验</h3><p> 卡西斯基试验是基于类似the这样的常用单词有可能被同样的密钥字母进行加密，从而在密文中重复出现。例如，明文中不同的CRYPTO可能被密钥ABCDEF加密成不同的密文：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">密钥：ABCDEF AB CDEFA BCD EFABCDEFABCD</span><br><span class="line">明文：CRYPTO IS SHORT FOR CRYPTOGRAPHY</span><br><span class="line">密文：CSASXT IT UKSWT GQU GWYQVRKWAQJB</span><br></pre></td></tr></table></figure></p>
+<p>此时明文中重复的元素在密文中并不重复。然而，如果密钥相同的话，结果可能便为（使用密钥ABCD）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">密钥：ABCDAB CD ABCDA BCD ABCDABCDABCD</span><br><span class="line">明文：CRYPTO IS SHORT FOR CRYPTOGRAPHY</span><br><span class="line">密文：CSASTP KV SIQUT GQU CSASTPIUAQJB</span><br></pre></td></tr></table></figure></p>
+<p>此时卡西斯基试验就能产生效果。对于更长的段落此方法更为有效，因为通常密文中重复的片段会更多。如通过下面的密文就能破译出密钥的长度：<br>密文：<strong>DYDUXRMH</strong>TVDV<strong>NQD</strong>QNW<strong>DYDUXRMH</strong>ARTJGW<strong>NQD</strong></p>
+<p>其中，两个DYDUXRMH的出现相隔了18个字母。因此，可以假定密钥的长度是18的约数，即长度为18、9、6、3或2。而两个NQD则相距20个字母，意味着密钥长度应为20、10、5、4或2。取两者的交集，则可以基本确定密钥长度为2。</p>
+<h3 id="弗里德曼试验"><a href="#弗里德曼试验" class="headerlink" title="弗里德曼试验"></a>弗里德曼试验</h3><p>它使用了重合指数（index of coincidence）来描述密文字母频率的不匀性，从而破译密码。$k_p$指目标语言中两个任意字母相同的概率（英文中为0.067），$k_r$指字母表中这种情况出现的概率（英文中为1/26=0.0385），从而密钥长度可以估计为：  </p>
+<p>分子 = $k_p$-$k_r$</p>
+<p>分母 = $k_o$-$k_r$</p>
+<p>密钥长度 = $\frac{分子}{分母}$</p>
+<p>此方法只是一种估计，会随着文本长度的增加而更为精确。在实践中，会尝试接近此估计的多个密钥长度。一种更好的方法是将密文写成矩阵形式，其中列数与假定的密钥长度一致，将每一列的重合指数单独计算，并求得平均重合指数。对于所有可能的密钥长度，平均重合指数最高的最有可能是真正的密钥长度。这样的试验可以作为卡西斯基试验的补充。</p>
+<h3 id="频率分析"><a href="#频率分析" class="headerlink" title="频率分析"></a>频率分析</h3><p>一旦能够确定密钥的长度，密文就能重新写成多列，列数与密钥长度对应。这样每一列其实就是一个凯撒密码，而此密码的密钥（偏移量）则对应于维吉尼亚密码密钥的相应字母。与破译凯撒密码类似的方法，就能将密文破译。</p>
+<p>柯克霍夫方法作为卡西斯基试验的改进，由奥古斯特·柯克霍夫（Auguste Kerckhoffs）提出。它将每一列的字母频率与转换后的明文频率相对应而得出每一列的密钥字母。一旦密钥中每一个字母都能确定，就能很简单地破译密文，从而得到明文。如果维吉尼亚字母表表格本身是杂乱而非按通常字母表顺序的话，那柯克霍夫方法就会无效，但卡西斯基试验和重复指数对于决定密钥长度仍旧是有效的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/02/Android编译器相关/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1923,7 +2141,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1945,7 +2163,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
